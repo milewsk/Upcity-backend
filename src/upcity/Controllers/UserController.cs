@@ -5,12 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using upcity.Data;
-using upcity.Data.UserRepo;
-using upcity.Domain.Models;
-using upcity.Domain.ModelsDto;
-using upcity.Helpers;
-using upcity.Interfaces;
 
 namespace upcity.Controllers
 {
