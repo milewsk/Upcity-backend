@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using upcity.Domain.Models;
 using upcity.SharedKernel.Interfaces;
 
-namespace upcity.Infrastructure.Data.Interfaces
+namespace Infrastructure.Data.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {

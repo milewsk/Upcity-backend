@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace upcity.Domain.Models
+namespace Domain.Models
 {
-    public class Product
+    public class ProductDetails
     {
     }
 }

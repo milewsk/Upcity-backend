@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ardalis.Specification;
 
-namespace upcity.ApplicationCore.Interfaces
+namespace ApplicationCore.Interfaces
 {
     public interface IRepository<TEntity>  where TEntity : class
     {
