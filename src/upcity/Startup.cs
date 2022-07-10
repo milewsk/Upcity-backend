@@ -13,9 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using upcity.Data.UserRepo;
-using upcity.Database;
-using upcity.Helpers;
+
 
 namespace upcity
 {

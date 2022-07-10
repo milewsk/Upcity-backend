@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ApplicationCore.Interfaces;
+using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using upcity.Domain.Models;
-using upcity.SharedKernel.Interfaces;
+
 
 namespace Infrastructure.Data.Interfaces
 {
