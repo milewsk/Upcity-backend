@@ -12,7 +12,11 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.HasKey(u => u.Id);
             builder.Property(us => us.Email).IsRequired(true).HasMaxLength(50);
+            builder.Property(us => us.Password).IsRequired(true).HasMaxLength(50);
+
+            
         }
     }
 }

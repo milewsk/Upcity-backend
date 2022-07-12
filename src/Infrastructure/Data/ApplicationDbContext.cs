@@ -1,9 +1,9 @@
-﻿
-using Domain.Models;
+﻿using Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
@@ -11,7 +11,7 @@ namespace Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -27,13 +27,8 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<User>(entity => { 
-                entity.HasKey(u => u.Id);
-                entity.Property(u => u.Email).IsRequired();
-                entity.Property(u => u.Password).IsRequired();
-                entity.HasIndex(u => u.Email).IsUnique();
-                
-            });
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         }
     }
 }

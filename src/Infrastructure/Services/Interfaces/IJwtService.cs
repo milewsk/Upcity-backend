@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ApplicationCore.Interfaces
+namespace Infrastructure.Services.Interfaces
 {
     public interface IJwtService
     {

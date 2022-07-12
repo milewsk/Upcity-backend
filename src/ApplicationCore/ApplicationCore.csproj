@@ -11,13 +11,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Repositories\" />
-		<Folder Include="Interfaces\" />
-		<Folder Include="Services\" />
+		<Folder Include="Services\Interfaces\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Domain\Domain.csproj" />
 	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 

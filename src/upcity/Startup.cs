@@ -35,9 +35,7 @@ namespace upcity
 
             services.AddControllers();
 
-            services.AddScoped<IUserRepository2, UserRepository>();
-            services.AddScoped<JwtService>();
-
+          
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "upcity", Version = "v1" });

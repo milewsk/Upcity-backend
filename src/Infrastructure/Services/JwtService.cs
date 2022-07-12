@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace upcity.Helpers
+namespace Infrastructure.Services
 {
     public class JwtService
     {
