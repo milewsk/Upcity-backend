@@ -1,3 +1,5 @@
+using ApplicationCore.Services;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,7 +37,8 @@ namespace upcity
 
             services.AddControllers();
 
-          
+            ConfigureCoreServices.AddWebServices(services, Configuration);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "upcity", Version = "v1" });

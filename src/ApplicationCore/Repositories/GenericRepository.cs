@@ -36,18 +36,22 @@ namespace ApplicationCore.Repositories
         public virtual async void Add(TEntity entity)
         {
             await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
         public virtual async void AddRange(IEnumerable<TEntity> entities)
         {
             await _context.Set<TEntity>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
         }
         public virtual void Remove(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
+            _context.SaveChanges();
         }
         public virtual void RemoveRange(IEnumerable<TEntity> entities)
         {
             _context.Set<TEntity>().RemoveRange(entities);
+            _context.SaveChanges();
         }
     }
 }

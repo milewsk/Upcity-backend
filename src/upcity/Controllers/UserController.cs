@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Services.Interfaces;
+using ApplicationCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Services.Interfaces;
 
 namespace upcity.Controllers
 {
@@ -13,12 +15,12 @@ namespace upcity.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IUserRepository2 _userRepository;
+        private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
 
-        public UserController(IUserRepository2 userRepository, IJwtService jwtService)
+        public UserController(IUserService userService, IJwtService jwtService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _jwtService = jwtService;
 
         }
