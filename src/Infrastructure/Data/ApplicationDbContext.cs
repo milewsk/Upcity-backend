@@ -17,6 +17,9 @@ namespace Infrastructure.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Place> Places { get; set; }
+        public DbSet<PlaceDetails> PlacesDetails { get; set; }
+        public DbSet<Coordinates> Coordinates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

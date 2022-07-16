@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Services.Interfaces;
+using upcity.Helpers;
+using PublicApi.ModelsDto;
 
 namespace upcity.Controllers
 {
@@ -53,7 +55,7 @@ namespace upcity.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
         {
 
-            User user = _userRepository.CreateUser(userDto);
+            User user = _userService.CreateUser(userDto);
             if (user != null)
             {
                 return Created("created",JsonConvert.SerializeObject(new ResponseSchema(200, "Rejestracja pomyślna", new { email = user.Email })));
@@ -66,7 +68,7 @@ namespace upcity.Controllers
         [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserDto userDto)
         {
-            var user = _userRepository.LoginUser(userDto);
+            var user = _userService.LoginUser(userDto);
 
             if (user == null) return BadRequest(new { message = "Podany email lub hasło są niepoprawne" });
 

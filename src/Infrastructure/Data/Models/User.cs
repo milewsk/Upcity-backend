@@ -8,7 +8,10 @@ namespace Infrastructure.Data.Models
 {
     public class User 
     {
-        public Guid Id { get; set; }
+        public Guid ID { get; set; }
+        public int IsDeleted { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime LastEditDate { get; set; }
 
         public string Email { get; set; }
 

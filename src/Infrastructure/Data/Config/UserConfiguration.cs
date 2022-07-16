@@ -1,4 +1,4 @@
-﻿using Domain.Models;
+﻿using Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -12,7 +12,9 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(u => u.Id);
+            builder.HasKey(u => u.ID);
+            builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
+            builder.Property(b => b.LastEditDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(us => us.Email).IsRequired(true).HasMaxLength(50);
             builder.Property(us => us.Password).IsRequired(true).HasMaxLength(50);
 
