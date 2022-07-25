@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
         private readonly IAppLogger<Exception> _appLogger;
         private readonly IUserRepository _userRepository;
@@ -24,13 +24,39 @@ namespace ApplicationCore.Services
         {
             try
             {
-               _userRepository.Add(new User() { Email = email, Password = password });
-                return await _userRepository.GetByEmail(email);
+                _userRepository.Add(new User() { Email = email, Password = password });
+                return await _userRepository.GetUserByEmail(email);
             }
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
                 return null;
+            }
+        }
+
+        public async Task<User> GetUserByGuid(Guid id)
+        {
+            try
+            {
+                return await _userRepository.GetUserByGuid(id);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<bool> IsEmailExist(string email)
+        {
+            try
+            {
+                return await _userRepository.IsEmailExist(email);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return false;
             }
         }
     }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Infrastructure.Services.Interfaces;
 using upcity.Helpers;
 using PublicApi.ModelsDto;
+using ApplicationCore.Entities;
 
 namespace upcity.Controllers
 {
@@ -38,7 +39,7 @@ namespace upcity.Controllers
 
                 Guid userId = new Guid(token.Issuer);
 
-                var user = _userRepository.GetUserByGuid(userId);
+                var user = _userService.GetUserByGuid(userId);
 
                 return Ok(user);
 
@@ -55,11 +56,11 @@ namespace upcity.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
         {
 
-            User user = _userService.CreateUser(userDto);
-            if (user != null)
-            {
-                return Created("created",JsonConvert.SerializeObject(new ResponseSchema(200, "Rejestracja pomyślna", new { email = user.Email })));
-            }
+            //User user = _userService.CreateUser(userDto.Email, userDto.Password);
+            //if (user != null)
+            //{
+            //    return Created("created",JsonConvert.SerializeObject(new ResponseSchema(200, "Rejestracja pomyślna", new { email = user.Email })));
+            //}
 
             return BadRequest(new ResponseSchema(400, "Taki użytkownik już istnieje", null));
         }
@@ -68,16 +69,16 @@ namespace upcity.Controllers
         [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserDto userDto)
         {
-            var user = _userService.LoginUser(userDto);
+            //var user = _userService.LoginUser(userDto);
 
-            if (user == null) return BadRequest(new { message = "Podany email lub hasło są niepoprawne" });
+            //if (user == null) return BadRequest(new { message = "Podany email lub hasło są niepoprawne" });
 
-            var jwt = _jwtService.Generate(user.Id);
+            //var jwt = _jwtService.Generate(user.Id);
 
-            Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
+            //Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
 
             
-            return Ok(JsonConvert.SerializeObject(new ResponseSchema( 200,"Logowanie pomyślne", new { jwt })));
+            return Ok(JsonConvert.SerializeObject(new ResponseSchema( 200,"Logowanie pomyślne", new { })));
         }
 
         [HttpPost]

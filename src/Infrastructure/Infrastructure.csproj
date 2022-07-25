@@ -5,6 +5,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Data\Models\Place.cs~RF43d54b.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Ardalis.Specification" Version="6.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.13">

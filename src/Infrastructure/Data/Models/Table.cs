@@ -8,14 +8,13 @@ namespace Infrastructure.Data.Models
     public class Table
     {
         public Guid ID { get; set; }
-        [Range(0,1)]
-        public int IsDeleted { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime LastEditDate { get; set; }
+        public DateTime LastModificationDate { get; set; }
         public int ChairsAmount { get; set; }
         public int IsReserved { get; set; }
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
+        public Reservation Reservation { get; set; }
          
     }
 }

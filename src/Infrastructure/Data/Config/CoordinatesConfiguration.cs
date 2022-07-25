@@ -13,7 +13,6 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Coordinates> builder)
         {
             builder.HasKey(b => b.ID);
-            builder.Property(b => b.IsDeleted).HasDefaultValue(0).IsRequired();
             builder.Property(b => b.Latitude).IsRequired();
             builder.Property(b => b.Longitude).IsRequired();
         }

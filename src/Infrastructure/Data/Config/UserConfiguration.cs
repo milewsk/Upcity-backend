@@ -14,7 +14,7 @@ namespace Infrastructure.Data.Config
         {
             builder.HasKey(u => u.ID);
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
-            builder.Property(b => b.LastEditDate).IsRequired().HasDefaultValue(new DateTime());
+            builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(us => us.Email).IsRequired(true).HasMaxLength(50);
             builder.Property(us => us.Password).IsRequired(true).HasMaxLength(50);
 

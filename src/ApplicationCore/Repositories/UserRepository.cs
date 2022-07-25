@@ -21,9 +21,18 @@ namespace ApplicationCore.Repositories
             _context = context;
         }
 
-        public virtual async Task<User> GetByEmail(string email)
+        public virtual async Task<User> GetUserByEmail(string email)
         {
             return await _context.Set<User>().Where(x => x.Email == email).FirstOrDefaultAsync();
+        }
+
+        public virtual async Task<User> GetUserByGuid(Guid id)
+        {
+            return await _context.Set<User>().Where(x => x.ID == id).FirstOrDefaultAsync();
+        }
+        public  async Task<bool> IsEmailExist(string email) 
+        {
+            return await _context.Set<User>().Where(x => x.Email == email).AnyAsync();
         }
     }
 }

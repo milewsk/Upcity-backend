@@ -12,9 +12,8 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<PlaceDetails> builder)
         {
             builder.HasKey(b => b.ID);
-            builder.Property(b => b.IsDeleted).HasDefaultValue(0).IsRequired();
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
-            builder.Property(b => b.LastEditDate).IsRequired().HasDefaultValue(new DateTime());
+            builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
 
         }
     }
