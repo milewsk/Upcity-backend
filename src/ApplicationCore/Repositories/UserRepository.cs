@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Interfaces;
 using ApplicationCore.Repositories.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Models;
 using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,9 +22,9 @@ namespace ApplicationCore.Repositories
             _context = context;
         }
 
-        public virtual async Task<User> GetUserByEmail(string email)
+        public virtual async Task<User> GetUser(string email, string password)
         {
-            return await _context.Set<User>().Where(x => x.Email == email).FirstOrDefaultAsync();
+            return await _context.Set<User>().Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
         }
 
         public virtual async Task<User> GetUserByGuid(Guid id)

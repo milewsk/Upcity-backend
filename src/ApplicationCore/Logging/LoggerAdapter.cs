@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Interfaces;
 
-namespace Infrastructure.Logging
+namespace ApplicationCore.Logging
 {
     public class LoggerAdapter<T> : IAppLogger<T>
     {

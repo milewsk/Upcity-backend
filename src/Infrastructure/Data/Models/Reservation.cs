@@ -12,8 +12,6 @@ namespace Infrastructure.Data.Models
         public DateTime LastModificationDate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public Place Place { get; set; }
-        public Guid PlaceID { get; set; }
         public Table Table { get; set; }
         public Guid TableID { get; set; }
     }

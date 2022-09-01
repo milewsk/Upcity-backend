@@ -13,8 +13,8 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Coordinates> builder)
         {
             builder.HasKey(b => b.ID);
-            builder.Property(b => b.Latitude).IsRequired();
-            builder.Property(b => b.Longitude).IsRequired();
+            builder.Property(b => b.Latitude).IsRequired().HasColumnType("decimal(10,7)");
+            builder.Property(b => b.Longitude).IsRequired().HasColumnType("decimal(10,7)");
         }
     }
 }

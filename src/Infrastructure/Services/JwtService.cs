@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Infrastructure.Services.Interfaces;
 
 namespace Infrastructure.Services
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly string secureKey = "secure key is very secured";
         public string Generate(Guid id)

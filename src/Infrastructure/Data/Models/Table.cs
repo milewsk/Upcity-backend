@@ -14,7 +14,7 @@ namespace Infrastructure.Data.Models
         public int IsReserved { get; set; }
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
-        public Reservation Reservation { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
          
     }
 }

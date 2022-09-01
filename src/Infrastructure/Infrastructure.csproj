@@ -5,21 +5,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Data\Models\Place.cs~RF43d54b.TMP" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Ardalis.Specification" Version="6.0.0" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.13">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.13" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.13">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			
 		</PackageReference>
 	</ItemGroup>
 

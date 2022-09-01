@@ -13,4 +13,8 @@
     <ProjectReference Include="..\src\upcity\PublicApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper\" />
+  </ItemGroup>
+
 </Project>

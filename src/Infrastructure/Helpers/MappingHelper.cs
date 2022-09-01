@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Infrastructure.Data.Dto;
+using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Common.Helper
+namespace Infrastructure.Helpers
 {
     public static class MappingHelper
     {
@@ -20,7 +22,7 @@ namespace Common.Helper
         {
             MapperConfig = new MapperConfiguration(cfg => {
 
-
+                cfg.CreateMap<UserDto, User>();
             });
         }
     }

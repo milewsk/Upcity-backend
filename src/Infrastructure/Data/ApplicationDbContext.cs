@@ -45,13 +45,15 @@ namespace Infrastructure.Data
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
             builder.Entity<Place>().HasOne(pd => pd.PlaceDetails).WithOne(c => c.Place).HasForeignKey<PlaceDetails>(c => c.PlaceID);
             builder.Entity<Place>().HasMany<Product>(p => p.Products).WithOne(pr => pr.Place).HasForeignKey(pr => pr.PlaceID);
-            builder.Entity<Place>().HasMany<Table>(p => p.Tables).WithOne(t => t.Place).HasForeignKey(t => t.PlaceID);
+            builder.Entity<Place>().HasMany<Table>(p => p.Tables).WithOne(t => t.Place).HasForeignKey(t => t.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Tables_Places_PlaceID");
 
+            builder.Entity<PlaceTag>().HasKey(pt => pt.ID);
             builder.Entity<PlaceTag>().HasOne<Place>(pt => pt.Place).WithMany(p => p.PlaceTags).HasForeignKey(pt => pt.PlaceID);
 
-            builder.Entity<ProductTag>().HasOne<Product>(pt => pt.Product).WithMany(p => p.)
+            builder.Entity<ProductTag>().HasKey(pt => pt.ID);
+            builder.Entity<ProductTag>().HasOne<Product>(pt => pt.Product).WithMany(p => p.ProductTags).HasForeignKey(pt => pt.ProductID);
 
-            builder.Entity<Table>().HasOne(t => t.Reservation).WithOne(r => r.Table).HasForeignKey<Reservation>(r => r.TableID);
+            builder.Entity<Table>().HasMany<Reservation>(t => t.Reservations).WithOne(r => r.Table).HasForeignKey(r => r.TableID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Reservation_Tables_TableID");
         }
     }
 }

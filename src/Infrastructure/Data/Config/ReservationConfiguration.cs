@@ -12,7 +12,6 @@ namespace Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder.HasKey(b => b.ID);
-
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
 

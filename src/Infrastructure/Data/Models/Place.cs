@@ -12,6 +12,7 @@ namespace Infrastructure.Data.Models
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
         public string Name { get; set; }
+        public int Type { get; set; }
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }
         public ICollection<Table> Tables { get; set; }

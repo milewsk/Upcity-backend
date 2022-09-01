@@ -1,8 +1,7 @@
-﻿using ApplicationCore.Entities;
+﻿using Infrastructure.Data.Models;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
-using Infrastructure.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,8 +23,9 @@ namespace ApplicationCore.Services
         {
             try
             {
-                _userRepository.Add(new User() { Email = email, Password = password });
-                return await _userRepository.GetUserByEmail(email);
+                //  _userRepository.Add();
+                //  return await _userRepository.GetUserByEmail(email);
+                return null;
             }
             catch (Exception ex)
             {
@@ -39,6 +39,19 @@ namespace ApplicationCore.Services
             try
             {
                 return await _userRepository.GetUserByGuid(id);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<User> GetUser(string email, string password)
+        {
+            try
+            {
+                return await _userRepository.GetUser(email, password);
             }
             catch (Exception ex)
             {

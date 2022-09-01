@@ -14,9 +14,9 @@ namespace Infrastructure.Data.Models
         public string Name { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-        public bool HaveDiscount { get; set; } = false;
-        public decimal? DiscountPrice { get; set; } = null;
-        public string DiscountCode { get; set; } = null;
+        public bool HaveDiscount { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public string DiscountCode { get; set; }
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
         public IList<ProductTag> ProductTags { get; set; }

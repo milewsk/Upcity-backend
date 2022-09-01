@@ -10,7 +10,8 @@ namespace ApplicationCore.Repositories.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> GetUserByEmail(string email);
+
+        Task<User> GetUser(string email, string password);
         Task<User> GetUserByGuid(Guid id);
         Task<bool> IsEmailExist(string email);
     }
