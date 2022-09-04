@@ -1,5 +1,5 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
+using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

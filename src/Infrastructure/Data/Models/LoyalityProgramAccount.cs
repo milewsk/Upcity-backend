@@ -10,7 +10,6 @@ namespace Infrastructure.Data.Models
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
         public int Points { get; set; }
-
         public User User { get; set; }
         public Guid UserID { get; set; }
     }

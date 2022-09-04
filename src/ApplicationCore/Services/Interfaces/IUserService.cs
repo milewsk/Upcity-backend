@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Data.Models;
+using Infrastructure.Helpers;
+using Infrastructure.Helpers.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,11 +10,12 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUser(string email, string password);
-        Task<User> CreateUser(string email, string password);
+        Task<Tuple<UserLoginResult, User>> GetUser(string email, string password);
+        Task<Tuple<UserRegisterResult, string>> CreateUser(string email, string password);
         Task<User> GetUserByGuid(Guid ID);
         //User LoginUser(User user);
         Task<bool> IsEmailExist(string email);
 
+        //bool CheckCrudentials(string email, string password);
     }
 }

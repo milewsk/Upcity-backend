@@ -2,7 +2,6 @@
 using ApplicationCore.Repositories.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
-using ApplicationCore.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

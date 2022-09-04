@@ -12,6 +12,10 @@ using upcity.Helpers;
 using Infrastructure.Helpers;
 using Infrastructure.Data.Dto;
 using Infrastructure.Data.Models;
+using System.Net;
+using Infrastructure.Helpers.Enums;
+using System.Net.Http.Headers;
+ 
 
 namespace upcity.Controllers
 {
@@ -85,8 +89,9 @@ namespace upcity.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
         {
 
-            User user = await _userService.CreateUser(userDto.Email, userDto.Password);
-            if (user != null)
+            var result = await _userService.CreateUser(userDto.Email, userDto.Password);
+            //edit this
+            if (result.Item2 != null)
             { 
             return Created("created",JsonConvert.SerializeObject(new ResponseSchema(200, "Rejestracja pomyślna", new { email = user.Email })));
             }
@@ -98,21 +103,22 @@ namespace upcity.Controllers
         [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserDto userDto)
         {
-            User user = await _userService.GetUser(userDto.Email, userDto.Password);
-            if(user.ID != null)
+            Tuple<UserLoginResult,User> result = await _userService.GetUser(userDto.Email, userDto.Password);
+
+            switch (result.Item1)
             {
-                var jwt = _jwtService.Generate(user.ID);
-                Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
-                return Ok()
-            }
+                case UserLoginResult.Ok:
+                    var jwt = _jwtService.Generate(result.Item2.ID);
+                    Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
+                    return Ok(new {jwt = jwt });
+                case UserLoginResult.WrongPassword:
+                    return NotFound(result.Item1.GetDescription());
+                default:
+                    return BadRequest();
+            }   
+            
             
             return BadRequest(new { message = "Podany email lub hasło są niepoprawne" });
-
-        
-
-         
-
-            return Ok(JsonConvert.SerializeObject(new ResponseSchema(200, "Logowanie pomyślne", new { })));
         }
 
         [HttpPost]

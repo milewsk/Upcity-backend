@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
 using Ardalis.Specification;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

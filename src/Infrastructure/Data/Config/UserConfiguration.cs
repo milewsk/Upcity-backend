@@ -17,8 +17,6 @@ namespace Infrastructure.Data.Config
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(us => us.Email).IsRequired(true).HasMaxLength(50);
             builder.Property(us => us.Password).IsRequired(true).HasMaxLength(50);
-
-            
         }
     }
 }
