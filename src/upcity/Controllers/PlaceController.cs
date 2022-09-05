@@ -11,6 +11,5 @@ namespace PublicApi.Controllers
     [ApiController]
     public class PlaceController : ControllerBase
     {
-        private readonly 
     }
 }

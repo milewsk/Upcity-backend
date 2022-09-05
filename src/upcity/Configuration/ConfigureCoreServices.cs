@@ -19,6 +19,8 @@ namespace ApplicationCore.Services
         {
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
+
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IJwtService, JwtService>();

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
+using Infrastructure.Services.Interfaces;
 
 namespace ApplicationCore.Services
 {
@@ -15,9 +16,12 @@ namespace ApplicationCore.Services
     {
         private readonly IAppLogger<Exception> _appLogger;
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository, IAppLogger<Exception> appLogger)
+        private readonly IJwtService _jwtService;
+
+        public UserService(IUserRepository userRepository, IAppLogger<Exception> appLogger, IJwtService jwtService)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
             _appLogger = appLogger;
         }
 
@@ -43,30 +47,14 @@ namespace ApplicationCore.Services
                     _userRepository.Add(user);
                     if (user.ID != null)
                     {
-                        LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
-                        {
-                            CreationDate = DateTime.Now,
-                            LastModificationDate = DateTime.Now,
-                            Points = 0,
-                            UserID = user.ID,
-                            User = user
-                        };
-
-                        user.LoyalityProgramAccount
+                        var jwt = _jwtService.Generate(user.ID);
+                        return new Tuple<UserRegisterResult, string>(UserRegisterResult.Ok, jwt);
                     }
                     else
                     {
                         return new Tuple<UserRegisterResult, string>(UserRegisterResult.Error, null);
                     }
-
-
-
-                    //  user.LoyalityProgramAccount = new LoyalityProgramAccount()
-                    // {
-                    // };
                 }
-                //  _userRepository.Add();
-                //  return await _userRepository.GetUserByEmail(email);
                 return null;
             }
             catch (Exception ex)
@@ -74,6 +62,19 @@ namespace ApplicationCore.Services
                 _appLogger.LogWarning(ex.Message);
                 return null;
             }
+        }
+        public Task<Tuple<UserLoginResult,bool>> CreateUserDetails(string jwt)
+        {
+            var ss = _jwtService.Verify(jwt);
+            //LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
+            //{
+            //    CreationDate = DateTime.Now,
+            //    LastModificationDate = DateTime.Now,
+            //    Points = 0,
+            //    UserID = user.ID,
+            //    User = user
+            //};
+            return null;
         }
 
         public async Task<User> GetUserByGuid(Guid id)
@@ -93,7 +94,13 @@ namespace ApplicationCore.Services
         {
             try
             {
-                return await _userRepository.GetUser(email, password);
+                var user =  await _userRepository.GetUser(email, password);
+                if (user.ID == null)
+                {
+                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
+                }
+
+                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
             }
             catch (Exception ex)
             {

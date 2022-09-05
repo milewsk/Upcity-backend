@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Services.Interfaces;
 using Infrastructure.Data.Dto;
 using Infrastructure.Helpers;
+using Infrastructure.Helpers.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,12 @@ namespace ApplicationCore.Services
     {
         public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDto>> CreatePlaceAsync()
         {
-            await
+            return null;
+        }
+
+        public Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync()
+        {
+            return null;
         }
     }
 }

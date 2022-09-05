@@ -15,7 +15,7 @@ using Infrastructure.Data.Models;
 using System.Net;
 using Infrastructure.Helpers.Enums;
 using System.Net.Http.Headers;
- 
+
 
 namespace upcity.Controllers
 {
@@ -70,10 +70,10 @@ namespace upcity.Controllers
                     return Conflict();
                 }
 
-               // UserDto userDto= new UserDto() { Email = "dsad", Password = "dsadasd" };
-               // User user = new User() { Email = "dsad", Password = "dsadasd" };
+                // UserDto userDto= new UserDto() { Email = "dsad", Password = "dsadasd" };
+                // User user = new User() { Email = "dsad", Password = "dsadasd" };
 
-               //var user1 = MappingHelper.Mapper.Map<UserDto>(user);
+                //var user1 = MappingHelper.Mapper.Map<UserDto>(user);
                 return Ok();
             }
             catch (Exception e)
@@ -88,37 +88,39 @@ namespace upcity.Controllers
         [Route("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
         {
-
             var result = await _userService.CreateUser(userDto.Email, userDto.Password);
             //edit this
             if (result.Item2 != null)
-            { 
-            return Created("created",JsonConvert.SerializeObject(new ResponseSchema(200, "Rejestracja pomyślna", new { email = user.Email })));
+            {
+                //return jwt
+                return Created("created", result.Item2);
             }
 
-            return BadRequest(new ResponseSchema(400, "Taki użytkownik już istnieje", null));
+            return BadRequest();
         }
 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserDto userDto)
         {
-            Tuple<UserLoginResult,User> result = await _userService.GetUser(userDto.Email, userDto.Password);
+            Tuple<UserLoginResult, User> result = await _userService.GetUser(userDto.Email, userDto.Password);
 
-            switch (result.Item1)
+            if (result != null)
             {
-                case UserLoginResult.Ok:
-                    var jwt = _jwtService.Generate(result.Item2.ID);
-                    Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
-                    return Ok(new {jwt = jwt });
-                case UserLoginResult.WrongPassword:
-                    return NotFound(result.Item1.GetDescription());
-                default:
-                    return BadRequest();
-            }   
-            
-            
-            return BadRequest(new { message = "Podany email lub hasło są niepoprawne" });
+                switch (result.Item1)
+                {
+                    case UserLoginResult.Ok:
+                        var jwt = _jwtService.Generate(result.Item2.ID);
+                        Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
+                        return Ok(new { jwt = jwt });
+                    case UserLoginResult.WrongPassword:
+                        return NotFound(result.Item1.GetDescription());
+                    default:
+                        return BadRequest();
+                }
+
+            }
+            return BadRequest(UserLoginResult.Error);
         }
 
         [HttpPost]

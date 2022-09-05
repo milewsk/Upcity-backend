@@ -15,6 +15,7 @@ namespace ApplicationCore.Services.Interfaces
         Task<User> GetUserByGuid(Guid ID);
         //User LoginUser(User user);
         Task<bool> IsEmailExist(string email);
+        Task<Tuple<UserLoginResult, bool>> CreateUserDetails(string jwt);
 
         //bool CheckCrudentials(string email, string password);
     }
