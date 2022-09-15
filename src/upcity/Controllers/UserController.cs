@@ -112,11 +112,13 @@ namespace upcity.Controllers
                     case UserLoginResult.Ok:
                         var jwt = _jwtService.Generate(result.Item2.ID);
                         Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
-                        return Ok(new { jwt = jwt });
+                        return Ok(new { jwt });
                     case UserLoginResult.WrongPassword:
-                        return NotFound(result.Item1.GetDescription());
+                        return NotFound(new { errorMessage = result.Item1.GetDescription() });
+                    case UserLoginResult.UserNotFound:
+                        return NotFound(new { errorMessage = result.Item1.GetDescription() });
                     default:
-                        return BadRequest();
+                        return BadRequest(new { errorMessage = "404 Error" });
                 }
 
             }

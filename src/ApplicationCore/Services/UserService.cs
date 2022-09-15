@@ -63,9 +63,15 @@ namespace ApplicationCore.Services
                 return null;
             }
         }
-        public Task<Tuple<UserLoginResult,bool>> CreateUserDetails(string jwt)
+        public async Task<Tuple<UserLoginResult,bool>> CreateUserDetails(string jwt)
         {
             var ss = _jwtService.Verify(jwt);
+            var user = await GetUserByGuid(Guid.Parse(ss.Payload.Iss)); 
+            if(user.ID != null)
+            
+            {
+                
+            }
             //LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
             //{
             //    CreationDate = DateTime.Now,
@@ -95,7 +101,7 @@ namespace ApplicationCore.Services
             try
             {
                 var user =  await _userRepository.GetUser(email, password);
-                if (user.ID == null)
+                if (user == null)
                 {
                     return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
                 }
