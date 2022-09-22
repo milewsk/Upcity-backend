@@ -13,6 +13,6 @@ namespace ApplicationCore.Repositories.Interfaces
 
         Task<User> GetUser(string email, string password);
         Task<User> GetUserByGuid(Guid id);
-        Task<bool> IsEmailExist(string email);
+        Task<bool> IsUserExistWithEmail(string email);
     }
 }

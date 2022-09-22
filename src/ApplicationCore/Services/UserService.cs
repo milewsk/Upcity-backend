@@ -119,7 +119,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                return await _userRepository.IsEmailExist(email);
+                return await _userRepository.IsUserExistWithEmail(email);
             }
             catch (Exception ex)
             {

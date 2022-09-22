@@ -15,24 +15,34 @@ namespace ApplicationCore.Repositories
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAppLogger<Exception> _appLogger;
 
-        public UserRepository(ApplicationDbContext context) :base(context)
+        public UserRepository(ApplicationDbContext context, IAppLogger<Exception> appLogger) :base(context)
         {
             _context = context;
+            _appLogger = appLogger;
         }
 
         public virtual async Task<User> GetUser(string email, string password)
         {
-            return await _context.Set<User>().Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
         }
 
         public virtual async Task<User> GetUserByGuid(Guid id)
         {
-            return await _context.Set<User>().Where(x => x.ID == id).FirstOrDefaultAsync();
+            return await _context.Users.Where(x => x.ID == id).FirstOrDefaultAsync();
         }
-        public  async Task<bool> IsEmailExist(string email) 
+        public  async Task<bool> IsUserExistWithEmail(string email) 
         {
-            return await _context.Set<User>().Where(x => x.Email == email).AnyAsync();
+            return await _context.Users.Where(x => x.Email == email).AnyAsync();
         }
     }
 }
