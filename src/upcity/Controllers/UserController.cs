@@ -101,8 +101,7 @@ namespace upcity.Controllers
         {
             try
             {
-                Tuple<UserLoginResult, User> result = await _userService.GetUser(userDto.Email, userDto.Password);
-            Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
+                Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
 
                 if (result != null)
                 {

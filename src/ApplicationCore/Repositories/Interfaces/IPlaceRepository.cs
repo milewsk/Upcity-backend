@@ -9,6 +9,7 @@ namespace ApplicationCore.Repositories.Interfaces
 {
     public interface IPlaceRepository : IRepository<Place>
     {
+        Task<List<Place>> GetListAsync();
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
     }
 }

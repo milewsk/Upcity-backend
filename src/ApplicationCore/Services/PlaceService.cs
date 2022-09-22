@@ -11,14 +11,60 @@ namespace ApplicationCore.Services
 {
     public class PlaceService : IPlaceService
     {
+        public async Task<List<PlaceDto>> GetPlacesAsync()
+        {
+            try
+            {
+                var user = await _userRepository.GetUser(email, password);
+                if (user == null)
+                {
+                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
+                }
+
+                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
+        }
         public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDto>> CreatePlaceAsync()
         {
-            return null;
+            try
+            {
+                var user = await _userRepository.GetUser(email, password);
+                if (user == null)
+                {
+                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
+                }
+
+                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+            }
+            catch (Exception ex)
+            {
+                //_appLogger.LogWarning(ex.Message);
+                return null;
+            }
         }
 
         public Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync()
         {
-            return null;
+            try
+            {
+                var user = await _userRepository.GetUser(email, password);
+                if (user == null)
+                {
+                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
+                }
+
+                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+            }
+            catch (Exception ex)
+            {
+                //_appLogger.LogWarning(ex.Message);
+                return null;
+            }
         }
     }
 }

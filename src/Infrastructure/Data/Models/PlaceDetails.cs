@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Models
 {
-    public class PlaceDetails
+    public class PlaceDetails : EntityBase
     {
-        public Guid ID { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastModificationDate { get; set; }
         public string Description { get; set; }
+        //menu?
+
+        //
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
     }

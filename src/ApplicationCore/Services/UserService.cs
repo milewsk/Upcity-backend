@@ -129,11 +129,6 @@ namespace ApplicationCore.Services
             }
         }
 
-        //  private void CreateHashPassowrd(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        //{
-
-        //}
-
         private bool CrudentialsValidator(string email, string password)
         {
             try

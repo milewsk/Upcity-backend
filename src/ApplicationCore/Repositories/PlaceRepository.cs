@@ -28,6 +28,20 @@ namespace ApplicationCore.Repositories
             _appLogger = appLogger;
             
         }
+
+        public async Task<List<Place>> GetListAsync()
+        {
+            try
+            {
+                return await _context.Places.Where(x => x.IsActive == 1).Take(50).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<List<Place>> GetListBySearchStringAsync(string searchedText)
         {
             try
@@ -40,5 +54,20 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
+
+        public async Task<List<Place>> GetListByCategory(PlaceTag tag)
+        {
+            try
+            {
+                return await _context.Places.Where(x => x.PlaceTags.Contains(tag) && x.IsActive == 1).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<PlaceDetailsModel>
     }
 }
