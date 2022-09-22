@@ -11,7 +11,7 @@ namespace Infrastructure.Data.Models
         public Guid ID { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModificationDate { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
         public string Image { get; set; }
