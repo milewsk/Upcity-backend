@@ -45,7 +45,7 @@ namespace upcity.Controllers
 
                 Guid userId = new Guid(token.Issuer);
 
-                var user = await _userService.GetUserByGuid(userId);
+                var user = await _userService.GetUserByGuidAsync(userId);
 
                 return Ok(user);
 
@@ -103,7 +103,7 @@ namespace upcity.Controllers
         [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] UserDto userDto)
         {
-            Tuple<UserLoginResult, User> result = await _userService.GetUser(userDto.Email, userDto.Password);
+            Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
 
             if (result != null)
             {

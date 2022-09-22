@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
 using Infrastructure.Services.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace ApplicationCore.Services
 {
@@ -34,7 +35,7 @@ namespace ApplicationCore.Services
                     return new Tuple<UserRegisterResult, string>(UserRegisterResult.EmailAlreadyTaken, null);
                 }
 
-                if (CheckCrudentials(email, password))
+                if (CrudentialsValidator(email, password))
                 {
                     User user = new User()
                     {
@@ -63,14 +64,14 @@ namespace ApplicationCore.Services
                 return null;
             }
         }
-        public async Task<Tuple<UserLoginResult,bool>> CreateUserDetails(string jwt)
+        public async Task<Tuple<UserLoginResult, bool>> CreateUserDetails(string jwt)
         {
             var ss = _jwtService.Verify(jwt);
-            var user = await GetUserByGuid(Guid.Parse(ss.Payload.Iss)); 
-            if(user.ID != null)
-            
+            var user = await GetUserByGuidAsync(Guid.Parse(ss.Payload.Iss));
+            if (user.ID != null)
+
             {
-                
+
             }
             //LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
             //{
@@ -83,7 +84,7 @@ namespace ApplicationCore.Services
             return null;
         }
 
-        public async Task<User> GetUserByGuid(Guid id)
+        public async Task<User> GetUserByGuidAsync(Guid id)
         {
             try
             {
@@ -96,11 +97,11 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<UserLoginResult, User>> GetUser(string email, string password)
+        public async Task<Tuple<UserLoginResult, User>> GetUserByEmailAndPasswordAsync(string email, string password)
         {
             try
             {
-                var user =  await _userRepository.GetUser(email, password);
+                var user = await _userRepository.GetUser(email, password);
                 if (user == null)
                 {
                     return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
@@ -133,9 +134,28 @@ namespace ApplicationCore.Services
 
         //}
 
-        private bool CheckCrudentials(string email, string password)
+        private bool CrudentialsValidator(string email, string password)
         {
-            return true;
+            try
+            {
+                Regex emailRegex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
+                                                + "@"
+                                                + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$");
+                Regex passwordRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
+
+                if (emailRegex.IsMatch(email) && passwordRegex.IsMatch(password))
+                {
+                    return true;
+                }
+
+                //do zmiany potem 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return false;
+            }
         }
     }
 }
