@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Interfaces;
 using ApplicationCore.Repositories.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Data.Dto.Models;
 using Infrastructure.Data.Models;
 using Infrastructure.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +56,7 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Place>> GetListByCategory(PlaceTag tag)
+        public async Task<List<Place>> GetListByCategoryAsync(PlaceTag tag)
         {
             try
             {
@@ -68,6 +69,32 @@ namespace ApplicationCore.Repositories
             }
         }
 
-      //  public async Task<PlaceDetailsModel>
+        public async Task<PlaceDetails> GetPlaceDetailsAsync(Guid placeID)
+        {
+            try
+            {
+                return await _context.PlacesDetails.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        //do zmiany
+        public async Task<PlaceDetails> GetPlaceMenuAsync(Guid placeID)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                return await _context.PlacesDetails.FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
     }
 }
