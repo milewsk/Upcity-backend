@@ -10,7 +10,7 @@ namespace ApplicationCore.Interfaces
 {
     public interface IRepository<TEntity>  where TEntity : EntityBase
     {
-        Task<TEntity> Get(Guid id);
+        Task<TEntity> GetOne(Guid id);
         Task<IEnumerable<TEntity>> GetAll();
         Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
         void Add(TEntity entity);

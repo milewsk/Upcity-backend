@@ -9,15 +9,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationCore.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IAppLogger<Exception> _appLogger;
+        private readonly ILogger<UserRepository> _appLogger;
 
-        public UserRepository(ApplicationDbContext context, IAppLogger<Exception> appLogger) :base(context)
+        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> appLogger) :base(context, appLogger)
         {
             _context = context;
             _appLogger = appLogger;
@@ -27,11 +28,12 @@ namespace ApplicationCore.Repositories
         {
             try
             {
+                _appLogger.LogError("siema");
                 return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
-                _appLogger.LogWarning(ex.Message);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }

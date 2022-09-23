@@ -7,6 +7,7 @@ using Infrastructure.Services;
 using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +18,8 @@ namespace ApplicationCore.Services
     {
         public static void AddWebServices(IServiceCollection services, IConfiguration configuration)
         {
+            
+            //services.AddSingleton(typeof(ILogger), logger);
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));

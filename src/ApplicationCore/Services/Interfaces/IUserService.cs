@@ -11,7 +11,7 @@ namespace ApplicationCore.Services.Interfaces
     public interface IUserService
     {
         Task<Tuple<UserLoginResult, User>> GetUserByEmailAndPasswordAsync(string email, string password);
-        Task<Tuple<UserRegisterResult, string>> CreateUser(string email, string password);
+        Task<Tuple<UserRegisterResult, string>> RegisterUser(string email, string password);
         Task<User> GetUserByGuidAsync(Guid ID);
         //User LoginUser(User user);
         Task<bool> IsEmailExist(string email);

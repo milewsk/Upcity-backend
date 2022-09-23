@@ -84,7 +84,7 @@ namespace upcity.Controllers
         [Route("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
         {
-            var result = await _userService.CreateUser(userDto.Email, userDto.Password);
+            var result = await _userService.RegisterUser(userDto.Email, userDto.Password);
             //edit this
             if (result.Item2 != null)
             {

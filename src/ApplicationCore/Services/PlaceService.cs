@@ -1,7 +1,10 @@
-﻿using ApplicationCore.Services.Interfaces;
+﻿using ApplicationCore.Repositories.Interfaces;
+using ApplicationCore.Services.Interfaces;
 using Infrastructure.Data.Dto;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
+using Infrastructure.Services.Interfaces;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,21 +14,26 @@ namespace ApplicationCore.Services
 {
     public class PlaceService : IPlaceService
     {
+        private readonly ILogger _appLogger;
+        private readonly IPlaceRepository _placeRepository;
+        private readonly IJwtService _jwtService;
+
+        public PlaceService(IPlaceRepository placeRepository, ILogger appLogger, IJwtService jwtService)
+        {
+            _placeRepository = placeRepository;
+            _jwtService = jwtService;
+            _appLogger = appLogger;
+        }
+
         public async Task<List<PlaceDto>> GetPlacesAsync()
         {
             try
             {
-                var user = await _userRepository.GetUser(email, password);
-                if (user == null)
-                {
-                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
-                }
-
-                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+                return null;
             }
             catch (Exception ex)
             {
-                _appLogger.LogWarning(ex.Message);
+                _appLogger.Error(ex);
                 return null;
             }
         }
@@ -33,17 +41,11 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var user = await _userRepository.GetUser(email, password);
-                if (user == null)
-                {
-                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
-                }
-
-                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+                return null;
             }
             catch (Exception ex)
             {
-                //_appLogger.LogWarning(ex.Message);
+                _appLogger.Error(ex);
                 return null;
             }
         }
@@ -52,17 +54,11 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var user = await _userRepository.GetUser(email, password);
-                if (user == null)
-                {
-                    return new Tuple<UserLoginResult, User>(UserLoginResult.UserNotFound, null);
-                }
-
-                return new Tuple<UserLoginResult, User>(UserLoginResult.Ok, user);
+                return null;
             }
             catch (Exception ex)
             {
-                //_appLogger.LogWarning(ex.Message);
+                _appLogger.Error(ex);
                 return null;
             }
         }

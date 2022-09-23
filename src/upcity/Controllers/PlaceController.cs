@@ -30,11 +30,11 @@ namespace PublicApi.Controllers
             try
             {
 
-                var result = await _placeService.IsEmailExist(email);
-                if (result.c)
-                {
-                    return Conflict();
-                }
+                //var result = await _placeService.(email);
+               // if (result.c)
+             //   {
+           //         return Conflict();
+           //     }
                 return Ok();
             }
             catch (Exception e)

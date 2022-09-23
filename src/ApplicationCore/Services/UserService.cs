@@ -26,7 +26,7 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
-        public async Task<Tuple<UserRegisterResult, string>> CreateUser(string email, string password)
+        public async Task<Tuple<UserRegisterResult, string>> RegisterUser(string email, string password)
         {
             try
             {
@@ -151,6 +151,30 @@ namespace ApplicationCore.Services
                 _appLogger.LogWarning(ex.Message);
                 return false;
             }
+        }
+
+        private async Task<User> CreateUser(string email, string password)
+        {
+            try
+            {
+                User user = new User()
+                {
+                    Email = email,
+                    Password = password,
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                };
+
+               _userRepository.Add(user);
+                return user;
+
+            }
+            catch (Exception ex)
+            {
+                
+                return null;
+            }
+
         }
     }
 }

@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Infrastructure.Data.Models;
 using Infrastructure.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,16 @@ namespace ApplicationCore.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        private readonly IAppLogger<Exception> _appLogger;
+        private readonly ILogger<PlaceRepository> _appLogger;
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
 
-        public PlaceRepository(ApplicationDbContext context, IUserRepository userRepository, IAppLogger<Exception> appLogger, IJwtService jwtService): base(context)
+        public PlaceRepository(ApplicationDbContext context, IUserRepository userRepository, ILogger<PlaceRepository> appLogger, IJwtService jwtService): base(context, appLogger)
         {
             _context = context;
             _userRepository = userRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;
-            
         }
 
         public async Task<List<Place>> GetListAsync()
@@ -37,7 +37,7 @@ namespace ApplicationCore.Repositories
             }
             catch (Exception ex)
             {
-                _appLogger.LogWarning(ex.Message);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }
@@ -50,7 +50,7 @@ namespace ApplicationCore.Repositories
             }
             catch (Exception ex)
             {
-                _appLogger.LogWarning(ex.Message);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }
@@ -63,11 +63,11 @@ namespace ApplicationCore.Repositories
             }
             catch (Exception ex)
             {
-                _appLogger.LogWarning(ex.Message);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }
 
-        public async Task<PlaceDetailsModel>
+      //  public async Task<PlaceDetailsModel>
     }
 }
