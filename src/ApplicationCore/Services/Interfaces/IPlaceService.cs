@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Helpers;
-using Infrastructure.Data.Dto;
+using Common.Dto;
 using System;
 using System.Collections.Generic;
 using System.Text;

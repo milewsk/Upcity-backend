@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Data.Models;
-using Infrastructure.Helpers;
-using Infrastructure.Helpers.Enums;
+using Common.Helpers;
+using Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;

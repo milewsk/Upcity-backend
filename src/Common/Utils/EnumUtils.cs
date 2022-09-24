@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 
-namespace Infrastructure.Utils
+namespace Common.Utils
 {
     public class EnumUtils
     {

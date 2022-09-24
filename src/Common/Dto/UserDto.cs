@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Dto
+namespace Common.Dto
 {
     public class UserDto
     {

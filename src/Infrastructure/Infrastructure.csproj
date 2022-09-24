@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\Dto\Results\" />
+	  <ProjectReference Include="..\Common\Common.csproj" />
 	</ItemGroup>
 
 </Project>

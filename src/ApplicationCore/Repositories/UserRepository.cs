@@ -10,41 +10,78 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Common.Enums;
 
 namespace ApplicationCore.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<UserRepository> _appLogger;
+        private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> appLogger) :base(context, appLogger)
+        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) :base(context, logger)
         {
             _context = context;
-            _appLogger = appLogger;
+            _logger = logger;
         }
 
         public virtual async Task<User> GetUser(string email, string password)
         {
             try
             {
-                _appLogger.LogError("siema");
                 return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
-                _appLogger.LogError(ex.Message);
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public  async Task<UserClaim> GetUserClaimAsync(User user, UserClaimsEnum requiredClaim)
+        {
+            try
+            {
+                return await _context.UserClaims.Where(x => x.UserID == user.ID &&
+                                                                           x.Value == (int)requiredClaim).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
                 return null;
             }
         }
 
         public virtual async Task<User> GetUserByGuid(Guid id)
         {
-            return await _context.Users.Where(x => x.ID == id).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Users.Where(x => x.ID == id).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
         }
         public  async Task<bool> IsUserExistWithEmail(string email) 
         {
             return await _context.Users.Where(x => x.Email == email).AnyAsync();
         }
+
+    //    public async Task AddClaims(User user, List<Claim> claims)
+    //    {
+    //        try
+    //        {
+    //            _appLogger.LogError("siema");
+    //            return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            _appLogger.LogError(ex.Message);
+    //            return null;
+    //        }
+    //    }
     }
 }

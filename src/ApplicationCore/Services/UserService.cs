@@ -6,10 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure.Helpers;
-using Infrastructure.Helpers.Enums;
+using Common.Helpers;
+using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using System.Text.RegularExpressions;
+using System.Security.Claims;
 
 namespace ApplicationCore.Services
 {
@@ -37,6 +38,8 @@ namespace ApplicationCore.Services
 
                 if (CrudentialsValidator(email, password))
                 {
+                   // przekażemy typ usera który chcemy stworzyć
+
                     User user = new User()
                     {
                         Email = email,
@@ -175,6 +178,19 @@ namespace ApplicationCore.Services
                 return null;
             }
 
+        }
+
+        public  ClaimsPrincipal ConvertUserToClaims(User user)
+        {
+            var claims = new List<Claim>(){
+                new Claim(type: "user",value: user.Email)
+
+            };
+
+            //_userRepository.AddClaims(user, claims);
+
+            var identity = new ClaimsIdentity(claims);
+            return new ClaimsPrincipal(identity);
         }
     }
 }

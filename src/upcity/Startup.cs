@@ -2,6 +2,7 @@ using ApplicationCore.Services;
 using AutoMapper;
 using Infrastructure.Data;
 using Infrastructure.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -44,6 +45,8 @@ namespace upcity
             services.AddControllers();
 
             ConfigureCoreServices.AddWebServices(services, Configuration);
+
+
 
             services.AddSwaggerGen(c =>
             {

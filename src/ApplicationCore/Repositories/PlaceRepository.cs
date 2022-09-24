@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Interfaces;
 using ApplicationCore.Repositories.Interfaces;
 using Infrastructure.Data;
-using Infrastructure.Data.Dto.Models;
+using Common.Dto.Models;
 using Infrastructure.Data.Models;
 using Infrastructure.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

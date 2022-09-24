@@ -9,11 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Services.Interfaces;
 using upcity.Helpers;
-using Infrastructure.Helpers;
-using Infrastructure.Data.Dto;
+using Common.Helpers;
+using Common.Dto;
 using Infrastructure.Data.Models;
 using System.Net;
-using Infrastructure.Helpers.Enums;
+using Common.Enums;
 using System.Net.Http;
 
 
@@ -101,6 +101,10 @@ namespace upcity.Controllers
         {
             try
             {
+                if(Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+
+                }
                 Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
 
                 if (result != null)

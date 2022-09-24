@@ -5,6 +5,7 @@ using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
 using Infrastructure.Services;
 using Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace ApplicationCore.Services
         public static void AddWebServices(IServiceCollection services, IConfiguration configuration)
         {
             
-            //services.AddSingleton(typeof(ILogger), logger);
+            //services.AddSingleton(IPasswordHasher<T>, PasswordHasher<T>);
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));

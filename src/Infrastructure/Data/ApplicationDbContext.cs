@@ -18,6 +18,7 @@ namespace Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserDetails> UsersDetails { get; set; } 
+        public DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<PlaceDetails> PlacesDetails { get; set; }
         public DbSet<PlaceTag> PlaceTags { get; set; }
@@ -40,6 +41,7 @@ namespace Infrastructure.Data
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             builder.Entity<User>().HasOne<UserDetails>(u => u.UserDetails).WithOne(ud => ud.User).HasForeignKey<UserDetails>(ud => ud.UserID);
+            builder.Entity<User>().HasMany<UserClaim>(u => u.UserClaims).WithOne(ud => ud.User).HasForeignKey(ud => ud.UserID);
             builder.Entity<User>().HasOne<LoyalityProgramAccount>(u => u.LoyalityProgramAccount).WithOne(ud => ud.User).HasForeignKey<LoyalityProgramAccount>(ud => ud.UserID);
 
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Dto.Models
+namespace Common.Dto.Models
 {
     public class CreateUserModel
     {

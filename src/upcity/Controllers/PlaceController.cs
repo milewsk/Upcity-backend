@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Services.Interfaces;
-using Infrastructure.Data.Dto;
+using Common.Dto;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

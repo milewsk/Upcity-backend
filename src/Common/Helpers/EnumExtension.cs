@@ -1,9 +1,9 @@
-﻿using Infrastructure.Utils;
+﻿using Common.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Helpers
+namespace Common.Helpers
 {
     public static class EnumExtension
     {

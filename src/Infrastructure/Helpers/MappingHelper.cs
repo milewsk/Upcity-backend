@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Infrastructure.Data.Dto;
+using Common.Dto;
 using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;

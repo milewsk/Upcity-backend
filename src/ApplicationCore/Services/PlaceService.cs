@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
-using Infrastructure.Data.Dto;
+using Common.Dto;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
 using Infrastructure.Services.Interfaces;

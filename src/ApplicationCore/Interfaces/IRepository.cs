@@ -4,7 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Ardalis.Specification;
+using Common.Enums;
 using Infrastructure.Data;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace ApplicationCore.Interfaces
 {

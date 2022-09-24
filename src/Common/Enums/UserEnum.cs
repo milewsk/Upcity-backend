@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace Infrastructure.Helpers.Enums
+namespace Common.Enums
 {
 
     public enum UserLoginResult
@@ -22,5 +22,13 @@ namespace Infrastructure.Helpers.Enums
         Error = 2,
         EmailAlreadyTaken = 3,
 
+    }
+
+    public enum UserClaimsEnum
+    {
+        User = 1,
+        Worker = 2,
+        Owner = 4,
+        Admin = 4
     }
 }
