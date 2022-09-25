@@ -15,13 +15,12 @@ using Infrastructure.Data.Models;
 using System.Net;
 using Common.Enums;
 using System.Net.Http;
-
+using PublicApi.Controllers;
 
 namespace upcity.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
@@ -101,10 +100,7 @@ namespace upcity.Controllers
         {
             try
             {
-                if(Request.Headers.TryGetValue("jwt", out var jwtHeader))
-                {
 
-                }
                 Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
 
                 if (result != null)

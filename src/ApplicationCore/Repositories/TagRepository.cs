@@ -2,6 +2,7 @@
 using ApplicationCore.Repositories.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Tags.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+                return await _context.Tags.ToListAsync();
             }
             catch (Exception ex)
             {
