@@ -21,6 +21,7 @@ namespace Infrastructure.Data
         public DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<PlaceDetails> PlacesDetails { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<PlaceTag> PlaceTags { get; set; }
         public DbSet<Coordinates> Coordinates { get; set; }
         public DbSet<Product> Products { get; set; }

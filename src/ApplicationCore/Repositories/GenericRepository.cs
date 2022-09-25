@@ -70,40 +70,6 @@ namespace ApplicationCore.Repositories
         {
             _context.Set<TEntity>().RemoveRange(entities);
             _context.SaveChanges();
-        }
-
-        public virtual async Task<bool> Authorize(HttpRequest request, JwtService jwtSerivce, UserClaimsEnum requiredClaim)
-        {
-            try
-            {
-                if (request.Headers.TryGetValue("jwt", out var jwtHeader))
-                {
-                    var token = jwtSerivce.Verify(jwtHeader.ToString());
-                    Guid parsedGuid = Guid.Parse(token.Payload.Iss);
-                    User user = await _context.Users.Where(x => x.ID == parsedGuid).FirstOrDefaultAsync();
-
-                    if (user == null)
-                    {
-                        return false;
-                    }
-
-                    UserClaim claim = await _context.UserClaims.Where(x => x.UserID == user.ID &&
-                                                                           x.Value == (int)requiredClaim).FirstOrDefaultAsync();
-                    if(claim == null)
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return false;
-            }
-        }
+        }       
     }
 }

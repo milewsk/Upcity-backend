@@ -4,11 +4,12 @@ using System.Text;
 
 namespace Infrastructure.Data.Models
 {
-    public class PlaceTag : EntityBase
+    public class PlaceOpinion : EntityBase
     {
         public Guid PlaceID { get; set; }
         public Place Place { get; set; }
-        public Guid TagID { get; set; }
-        public Tag Tag { get; set; }
+        public string FirstName { get; set; } 
+        public int Rating { get; set; }
+        public string Opinion { get; set; }
     }
 }
