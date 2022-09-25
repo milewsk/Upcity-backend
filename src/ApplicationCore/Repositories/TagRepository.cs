@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationCore.Repositories
 {
@@ -18,6 +19,19 @@ namespace ApplicationCore.Repositories
         {
             _context = context;
             _logger = logger;
+        }
+
+        public async Task<List<Tag>> GetTagListAsync()
+        {
+            try
+            {
+                return await _context.Tags.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
         }
     }
 }

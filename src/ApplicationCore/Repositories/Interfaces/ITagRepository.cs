@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ApplicationCore.Repositories.Interfaces
 {
-    public interface ITagRepository: IRepository<Tag>
+    public interface ITagRepository : IRepository<Tag>
     {
     }
 }

@@ -11,6 +11,7 @@ namespace Infrastructure.Data.Models
         public string Description { get; set; }
         //menu?
 
+        // opinie
         //
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }

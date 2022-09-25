@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Infrastructure.Data.Models
 {
-    public class Coordinates
+    public class Coordinates : EntityBase
     {
-        public Guid ID { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public Place Place { get; set; }
