@@ -16,8 +16,9 @@ namespace PublicApi.Controllers
     {
         private readonly IPlaceService _placeService;
         private readonly IJwtService _jwtService;
+        private readonly IAuthorizationService _authService;
 
-        public PlaceController(IPlaceService userService, IJwtService jwtService)
+        public PlaceController(IPlaceService userService, IJwtService jwtService, IAuthorizationService authService)
         {
             _placeService = userService;
             _jwtService = jwtService;
