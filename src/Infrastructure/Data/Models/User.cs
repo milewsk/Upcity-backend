@@ -14,5 +14,6 @@ namespace Infrastructure.Data.Models
         public ICollection<UserClaim> UserClaims { get; set; }
         public UserDetails UserDetails { get; set; }
         public LoyalityProgramAccount LoyalityProgramAccount { get; set; }
+        
     }
 }

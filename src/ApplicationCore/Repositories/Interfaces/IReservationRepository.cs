@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Repositories.Interfaces
 {
-    public interface ITagRepository : IRepository<Tag>
+    public interface IReservationRepository : IRepository<Reservation>
     {
-        Task<List<Tag>> GetTagListAsync();
-        Task<List<Tag>> GetPlaceTagListAsync(Guid placeID);
+
     }
 }

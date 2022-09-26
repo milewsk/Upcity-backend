@@ -11,35 +11,22 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Repositories
 {
-    public class TagRepository : GenericRepository<Tag>, ITagRepository
+    public class ReservationRepository: GenericRepository<Reservation>, IReservationRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<TagRepository> _logger;
+        private readonly ILogger<ReservationRepository> _logger;
 
-        public TagRepository(ApplicationDbContext context, ILogger<TagRepository> logger) : base(context, logger)
+        public ReservationRepository(ApplicationDbContext context, ILogger<ReservationRepository> logger) : base(context, logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<List<Tag>> GetTagListAsync()
+        public async Task<List<Reservation>> GetUserReservationList(Guid userID)
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return null;
-            }
-        }
-        public async Task<List<Tag>> GetPlaceTagListAsync(Guid placeID)
-        {
-            try
-            {
-                var placeTags = await _context.PlaceTags.Where(x => x.PlaceID == placeID).Select(x => x.TagID).ToListAsync();
-                return await _context.Tags.Where(x => x.IsActive == 1 && placeTags.Contains(x.ID)).ToListAsync();
+                return await _context.Reservations.Where(x => x.TableID != null).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -48,6 +35,18 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        //create and delete with all links to them
+        public async Task<Reservation> GetReservationDetails(Guid reservationID)
+        {
+            try
+            {
+                return await _context.Reservations.Where(x => x.ID == reservationID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
     }
 }

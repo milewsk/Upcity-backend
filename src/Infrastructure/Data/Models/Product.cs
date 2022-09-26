@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Models
 {
-    public class Product
+    public class Product : EntityBase
     {
-        public Guid ID { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastModificationDate { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
