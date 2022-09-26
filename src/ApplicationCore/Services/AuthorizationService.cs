@@ -16,11 +16,11 @@ namespace ApplicationCore.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        private readonly ILogger<Exception> _logger;
+        private readonly ILogger<AuthorizationService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
 
-        public AuthorizationService(IUserRepository userRepository, ILogger<Exception> appLogger, IJwtService jwtService)
+        public AuthorizationService(IUserRepository userRepository, ILogger<AuthorizationService> appLogger, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;

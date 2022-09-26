@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace PublicApi.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    public class PlaceController : ApiControllerBase
+    public class PlaceController : ControllerBase
     {
         private readonly IPlaceService _placeService;
         private readonly IJwtService _jwtService;

@@ -16,11 +16,11 @@ namespace ApplicationCore.Services
 {
     public class UserService : IUserService
     {
-        private readonly IAppLogger<Exception> _appLogger;
+        private readonly IAppLogger<UserService> _appLogger;
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
 
-        public UserService(IUserRepository userRepository, IAppLogger<Exception> appLogger, IJwtService jwtService)
+        public UserService(IUserRepository userRepository, IAppLogger<UserService> appLogger, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;

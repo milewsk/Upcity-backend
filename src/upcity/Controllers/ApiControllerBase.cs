@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PublicApi.Controllers
 {
-    [ApiController]
-    public class ApiControllerBase : ControllerBase
-    {
+ //   [ApiController]
+ //   public class ApiControllerBase : ControllerBase
+  //  {
 
-    }
+  //  }
 }

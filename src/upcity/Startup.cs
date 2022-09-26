@@ -37,7 +37,7 @@ namespace upcity
             services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("UpcityDB"),b => b.MigrationsAssembly("Infrastructure")));
 
-            //services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());});
+            services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.WithOrigins("http://localhost:3000", "https://localhost:44360/").AllowAnyMethod().AllowAnyHeader().AllowCredentials());});
 
             //mapper
             MappingHelper.RegisterMappings();

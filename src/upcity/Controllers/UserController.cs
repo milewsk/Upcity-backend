@@ -19,8 +19,9 @@ using PublicApi.Controllers;
 
 namespace upcity.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ApiControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
@@ -34,6 +35,7 @@ namespace upcity.Controllers
 
         //move to service
         [HttpGet]
+        [Route("check")]
         public async Task<IActionResult> GetUser()
         {
             try

@@ -4,6 +4,7 @@ using Common.Dto;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
 using Infrastructure.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,11 @@ namespace ApplicationCore.Services
 {
     public class PlaceService : IPlaceService
     {
-        private readonly ILogger _appLogger;
+        private readonly ILogger<PlaceService> _appLogger;
         private readonly IPlaceRepository _placeRepository;
         private readonly IJwtService _jwtService;
 
-        public PlaceService(IPlaceRepository placeRepository, ILogger appLogger, IJwtService jwtService)
+        public PlaceService(IPlaceRepository placeRepository, ILogger<PlaceService> appLogger, IJwtService jwtService)
         {
             _placeRepository = placeRepository;
             _jwtService = jwtService;
@@ -33,7 +34,7 @@ namespace ApplicationCore.Services
             }
             catch (Exception ex)
             {
-                _appLogger.Error(ex);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }
@@ -45,7 +46,7 @@ namespace ApplicationCore.Services
             }
             catch (Exception ex)
             {
-                _appLogger.Error(ex);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }
@@ -58,7 +59,7 @@ namespace ApplicationCore.Services
             }
             catch (Exception ex)
             {
-                _appLogger.Error(ex);
+                _appLogger.LogError(ex.Message);
                 return null;
             }
         }

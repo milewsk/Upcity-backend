@@ -22,10 +22,16 @@ namespace ApplicationCore.Services
             
             //services.AddSingleton(IPasswordHasher<T>, PasswordHasher<T>);
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPlaceRepository, PlaceRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPlaceService, PlaceService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
 
             services.AddScoped<IJwtService, JwtService>();
 
