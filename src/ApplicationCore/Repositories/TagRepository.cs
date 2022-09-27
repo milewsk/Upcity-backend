@@ -48,6 +48,19 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<List<Tag>> GetProductTagListAsync(Guid productID)
+        {
+            try
+            {
+                var productTags = await _context.ProductTags.Where(x => x.ProductID == productID).Select(x => x.TagID).ToListAsync();
+                return await _context.Tags.Where(x => x.IsActive == 1 && productTags.Contains(x.ID)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
         //create and delete with all links to them
     }
 }

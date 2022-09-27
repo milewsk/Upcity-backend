@@ -14,8 +14,13 @@ namespace Infrastructure.Data.Models
         public bool HaveDiscount { get; set; }
         public decimal DiscountPrice { get; set; }
         public string DiscountCode { get; set; }
+
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
+
+        public Guid ProductCategoryID { get; set; }
+        public ProductCategory ProductCategory { get; set; }
+
         public IList<ProductTag> ProductTags { get; set; }
     }
 }

@@ -11,5 +11,6 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<List<Tag>> GetTagListAsync();
         Task<List<Tag>> GetPlaceTagListAsync(Guid placeID);
+        Task<List<Tag>> GetProductTagListAsync(Guid productID);
     }
 }
