@@ -112,6 +112,22 @@ namespace upcity.Controllers
                         case UserLoginResult.Ok:
                             var jwt = _jwtService.Generate(result.Item2.ID);
                             Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
+
+                            var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
+                            var userClaim = await _userService.get
+                            if(userDetails == null)
+                            {
+                                return BadRequest(new { errorMessage = "404 Error" });
+                            }
+
+                            UserLoginDto userDto = new UserLoginDto()
+                            {
+                                FirstName = userDetails.FirstName,
+                                Jwt = jwt,
+                                Claim
+                                
+                            } 
+
                             return Ok(new { jwt });
                         case UserLoginResult.WrongPassword:
                             return NotFound(new { errorMessage = result.Item1.GetDescription() });
@@ -135,10 +151,17 @@ namespace upcity.Controllers
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
+            try
+            {
+                Response.Cookies.Delete("jwt");
 
-            Response.Cookies.Delete("jwt");
-
-            return Ok(new { message = "Cookie removed" });
+                return Ok(new { message = "Cookie removed" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
     }

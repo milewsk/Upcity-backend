@@ -28,7 +28,7 @@ namespace Common.Enums
     {
         User = 1,
         Worker = 2,
-        Owner = 4,
+        Owner = 3,
         Admin = 4
     }
 }

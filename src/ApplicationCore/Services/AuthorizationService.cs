@@ -42,8 +42,8 @@ namespace ApplicationCore.Services
                         return false;
                     }
 
-                    UserClaim claim = await _userRepository.GetUserClaimAsync(user, requiredClaim);
-                    if (claim == null)
+                    UserClaim claim = await _userRepository.GetUserClaimAsync(user);
+                    if (claim == null || claim.Value != (int)requiredClaim)
                     {
                         return false;
                     }

@@ -15,7 +15,8 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<User> GetUser(string email, string password);
         Task<User> GetUserByGuid(Guid id);
         Task<bool> IsUserExistWithEmail(string email);
-        Task<UserClaim> GetUserClaimAsync(User user, UserClaimsEnum requiredClaim);
+        Task<UserClaim> GetUserClaimAsync(Guid userID);
+        Task<UserDetails> GetUserDetailsAsync(Guid userID);
         //Task AddClaims(User user,List<Claim> claims);
     }
 }

@@ -20,7 +20,7 @@ namespace ApplicationCore.Repositories
         private readonly ApplicationDbContext _context;
         private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) :base(context, logger)
+        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) : base(context, logger)
         {
             _context = context;
             _logger = logger;
@@ -30,7 +30,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+                return await _context.Users.Include(x => x.UserDetails).Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -39,12 +39,11 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public  async Task<UserClaim> GetUserClaimAsync(User user, UserClaimsEnum requiredClaim)
+        public async Task<UserClaim> GetUserClaimAsync(Guid userID)
         {
             try
             {
-                return await _context.UserClaims.Where(x => x.UserID == user.ID &&
-                                                                           x.Value == (int)requiredClaim).FirstOrDefaultAsync();
+                return await _context.UserClaims.Where(x => x.UserID == userID).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -62,26 +61,48 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
-        public  async Task<bool> IsUserExistWithEmail(string email) 
+        public async Task<bool> IsUserExistWithEmail(string email)
         {
-            return await _context.Users.Where(x => x.Email == email).AnyAsync();
+            try
+            {
+                return await _context.Users.Where(x => x.Email == email).AnyAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
-    //    public async Task AddClaims(User user, List<Claim> claims)
-    //    {
-    //        try
-    //        {
-    //            _appLogger.LogError("siema");
-    //            return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            _appLogger.LogError(ex.Message);
-    //            return null;
-    //        }
-    //    }
+
+        public async Task<UserDetails> GetUserDetailsAsync(Guid userID)
+        {
+            try
+            {
+                return await _context.UsersDetails.Where(x => x.UserID == userID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        //    public async Task AddClaims(User user, List<Claim> claims)
+        //    {
+        //        try
+        //        {
+        //            _appLogger.LogError("siema");
+        //            return await _context.Users.Where(x => x.Email == email && x.Password == password).FirstOrDefaultAsync();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _appLogger.LogError(ex.Message);
+        //            return null;
+        //        }
+        //    }
     }
 }

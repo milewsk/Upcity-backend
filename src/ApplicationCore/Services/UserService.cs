@@ -115,7 +115,45 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
-                return null;
+                throw;
+            }
+        }
+
+        public async Task<UserDetails> GetUserDetailsAsync(Guid userID)
+        {
+            try
+            {
+                var userDetails = await _userRepository.GetUserDetailsAsync(userID);
+                if (userDetails == null)
+                {
+                    return null;
+                }
+
+                return userDetails;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<UserClaim> GetUserClaimAsync(Guid userID)
+        {
+            try
+            {
+                var userClaim = await _userRepository.GetUserClaimAsync(userID);
+                if (userClaim == null)
+                {
+                    return null;
+                }
+
+                return userClaim;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
             }
         }
 
