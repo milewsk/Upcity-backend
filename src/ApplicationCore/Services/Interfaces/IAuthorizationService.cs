@@ -1,5 +1,6 @@
 ﻿using Common.Enums;
 using Infrastructure.Services;
+using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IAuthorizationService
     {
-        Task<bool> Authorize(HttpRequest request, JwtService jwtSerivce, UserClaimsEnum requiredClaim);
+        Task<bool> Authorize(HttpRequest request, IJwtService jwtSerivce, UserClaimsEnum requiredClaim);
     }
 }

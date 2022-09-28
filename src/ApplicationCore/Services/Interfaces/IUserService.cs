@@ -17,9 +17,8 @@ namespace ApplicationCore.Services.Interfaces
         Task<User> GetUserByGuidAsync(Guid ID);
         //User LoginUser(User user);
         Task<bool> IsEmailExist(string email);
-        Task<Tuple<UserLoginResult, bool>> CreateUserDetails(User user);
         Task<UserDetails> GetUserDetailsAsync(Guid userID);
-        Task<UserClaim> GetUserClaimAsync(Guid userID)
+        Task<UserClaim> GetUserClaimAsync(Guid userID);
         //bool CheckCrudentials(string email, string password);
     }
 }

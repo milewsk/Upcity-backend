@@ -5,11 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dto\Results\" />
+    <Compile Remove="Dto\Results\**" />
+    <EmbeddedResource Remove="Dto\Results\**" />
+    <None Remove="Dto\Results\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="3.1.13" />
+    <PackageReference Include="NetTopologySuite.IO.SqlServerBytes" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

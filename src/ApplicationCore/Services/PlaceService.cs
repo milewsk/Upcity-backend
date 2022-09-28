@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
 using Common.Dto;
+using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
 using Infrastructure.Services.Interfaces;
@@ -30,14 +31,30 @@ namespace ApplicationCore.Services
         {
             try
             {
+                var placeList =  await _placeRepository.GetListAsync();
+                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceDto>>(placeList);
+                return placeDto;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<PlaceDto>> GetPlacesCloseAsync()
+        {
+            try
+            {
                 return null;
             }
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
+
         public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDto>> CreatePlaceAsync()
         {
             try

@@ -18,16 +18,14 @@ namespace ApplicationCore.Services
     {
         private readonly ILogger<AuthorizationService> _logger;
         private readonly IUserRepository _userRepository;
-        private readonly IJwtService _jwtService;
 
         public AuthorizationService(IUserRepository userRepository, ILogger<AuthorizationService> appLogger, IJwtService jwtService)
         {
             _userRepository = userRepository;
-            _jwtService = jwtService;
             _logger = appLogger;
         }
 
-        public async Task<bool> Authorize(HttpRequest request, JwtService jwtSerivce, UserClaimsEnum requiredClaim)
+        public async Task<bool> Authorize(HttpRequest request, IJwtService jwtSerivce, UserClaimsEnum requiredClaim)
         {
             try
             {
@@ -42,7 +40,7 @@ namespace ApplicationCore.Services
                         return false;
                     }
 
-                    UserClaim claim = await _userRepository.GetUserClaimAsync(user);
+                    UserClaim claim = await _userRepository.GetUserClaimAsync(user.ID);
                     if (claim == null || claim.Value != (int)requiredClaim)
                     {
                         return false;
@@ -56,7 +54,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return false;
+                throw;
             }
         }
     }

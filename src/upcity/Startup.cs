@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NetTopologySuite.Geometries;
 
 
 namespace upcity
@@ -35,7 +37,7 @@ namespace upcity
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("UpcityDB"),b => b.MigrationsAssembly("Infrastructure")));
+            services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("UpcityDB"), b =>  b.MigrationsAssembly("Infrastructure").UseNetTopologySuite()));
 
             services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.WithOrigins("http://localhost:3000", "https://localhost:44360/").AllowAnyMethod().AllowAnyHeader().AllowCredentials());});
 

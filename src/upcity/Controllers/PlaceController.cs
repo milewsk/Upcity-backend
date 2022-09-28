@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Services.Interfaces;
 using Common.Dto;
+using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace PublicApi.Controllers
         {
             _placeService = userService;
             _jwtService = jwtService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -31,7 +33,7 @@ namespace PublicApi.Controllers
         public async Task<IActionResult> GetPlacesListAsync() {
             try
             {
-
+                _authService.Authorize(Request, _jwtService, UserClaimsEnum.User);
                 //var result = await _placeService.(email);
                // if (result.c)
              //   {
@@ -44,6 +46,28 @@ namespace PublicApi.Controllers
                 return BadRequest();
             }
         }
+
+        [Route("places/{latitude}/{longitude}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceListUserLocationAsync([FromRoute] string latitude, [FromRoute] string longitude)
+        {
+            try
+            {
+
+                var result = _placeService;
+                if (true)
+                {
+                    return Conflict();
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
 
     }
 }

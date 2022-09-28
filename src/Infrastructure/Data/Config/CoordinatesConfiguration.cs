@@ -15,8 +15,7 @@ namespace Infrastructure.Data.Config
             builder.HasKey(b => b.ID);
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
-            builder.Property(b => b.Latitude).IsRequired().HasColumnType("decimal(10,7)");
-            builder.Property(b => b.Longitude).IsRequired().HasColumnType("decimal(10,7)");
+            builder.Property(b => b.Location).IsRequired();
         }
     }
 }
