@@ -10,6 +10,6 @@ namespace Infrastructure.Data.Models
         public Place Place { get; set; }
         public string FirstName { get; set; } 
         public int Rating { get; set; }
-        public string Opinion { get; set; }
+        public string Message { get; set; }
     }
 }

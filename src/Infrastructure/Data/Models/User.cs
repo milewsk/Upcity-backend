@@ -11,7 +11,8 @@ namespace Infrastructure.Data.Models
     {
         public string Email { get; set; }
         public string Password { get; set; }
-        public ICollection<UserClaim> UserClaims { get; set; }
+
+        public UserClaim UserClaim { get; set; }
         public UserDetails UserDetails { get; set; }
         public LoyalityProgramAccount LoyalityProgramAccount { get; set; }
         

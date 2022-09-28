@@ -16,7 +16,6 @@ namespace Infrastructure.Data.Config
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.Name).IsRequired();
             builder.Property(b => b.IsActive).IsRequired().HasDefaultValue(1);
-
         }
     }
 }

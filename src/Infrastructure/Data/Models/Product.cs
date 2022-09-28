@@ -18,8 +18,8 @@ namespace Infrastructure.Data.Models
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
 
-        public Guid ProductCategoryID { get; set; }
         public ProductCategory ProductCategory { get; set; }
+        public Guid ProductCategoryID { get; set; }
 
         public IList<ProductTag> ProductTags { get; set; }
     }

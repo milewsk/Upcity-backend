@@ -6,8 +6,9 @@ namespace Infrastructure.Data.Models
 {
     public class UserClaim : EntityBase
     {
+        public int Value { get; set; }
+
         public Guid UserID { get; set; }
         public User User { get; set; }
-        public int Value { get; set; }
     }
 }

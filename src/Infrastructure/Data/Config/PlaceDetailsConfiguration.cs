@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Infrastructure.Data.Config
 {
-    class PlaceDetailsConfiguration : IEntityTypeConfiguration<PlaceDetails>
+    public class PlaceDetailsConfiguration : IEntityTypeConfiguration<PlaceDetails>
     {
         public void Configure(EntityTypeBuilder<PlaceDetails> builder)
         {

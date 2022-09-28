@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Models
 {
-    public class UserDetails
+    public class UserDetails : EntityBase
     {
-        public Guid ID { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastModificationDate { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
         public string Image { get; set; }
+
         public User User { get; set; }
         public Guid UserID { get; set; }
     }

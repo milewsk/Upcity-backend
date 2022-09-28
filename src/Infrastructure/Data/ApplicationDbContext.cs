@@ -43,7 +43,7 @@ namespace Infrastructure.Data
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             builder.Entity<User>().HasOne<UserDetails>(u => u.UserDetails).WithOne(ud => ud.User).HasForeignKey<UserDetails>(ud => ud.UserID);
-            builder.Entity<User>().HasMany<UserClaim>(u => u.UserClaims).WithOne(ud => ud.User).HasForeignKey(ud => ud.UserID);
+            builder.Entity<User>().HasOne<UserClaim>(u => u.UserClaim).WithOne(uc => uc.User).HasForeignKey<UserClaim>(uc => uc.UserID);
             builder.Entity<User>().HasOne<LoyalityProgramAccount>(u => u.LoyalityProgramAccount).WithOne(ud => ud.User).HasForeignKey<LoyalityProgramAccount>(ud => ud.UserID);
 
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
