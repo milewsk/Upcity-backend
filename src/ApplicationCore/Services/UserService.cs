@@ -11,6 +11,8 @@ using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using System.Text.RegularExpressions;
 using System.Security.Claims;
+using Common.Dto.Models;
+using Common.Dto;
 
 namespace ApplicationCore.Services
 {
@@ -27,47 +29,94 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
-        public async Task<Tuple<UserRegisterResult, string>> RegisterUser(string email, string password)
+        public async Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel)
         {
             try
             {
-                if (await IsEmailExist(email))
+                UserLoginDto result = new UserLoginDto() { };
+                if (await IsEmailExist(userModel.Email))
                 {
-                    return new Tuple<UserRegisterResult, string>(UserRegisterResult.EmailAlreadyTaken, null);
+                    return new Tuple<UserRegisterResult, UserLoginDto>(UserRegisterResult.EmailAlreadyTaken, null);
                 }
 
-                if (CrudentialsValidator(email, password))
+                if (CrudentialsValidator(userModel.Email, userModel.Password))
                 {
-                   // przekażemy typ usera który chcemy stworzyć
-
                     User user = new User()
                     {
-                        Email = email,
-                        Password = password,
+                        Email = userModel.Email,
+                        Password = userModel.Password,
                         CreationDate = DateTime.Now,
                         LastModificationDate = DateTime.Now,
                     };
 
                     _userRepository.Add(user);
+
                     if (user.ID != null)
                     {
                         var jwt = _jwtService.Generate(user.ID);
-                        return new Tuple<UserRegisterResult, string>(UserRegisterResult.Ok, jwt);
+                        UserDetails newUserDetails = new UserDetails()
+                        {
+                            CreationDate = DateTime.Now,
+                            LastModificationDate = DateTime.Now,
+                            FirstName = userModel.FirstName,
+                            Surname = userModel.Surname,
+                            BirthDate = userModel.BirthDate,
+                            Image = userModel.Image,
+                            UserID = user.ID
+                        };
+                        await _userRepository.CreateUserDetailsAsync(newUserDetails);
+
+                        UserClaim newUserClaim = new UserClaim()
+                        {
+                            CreationDate = DateTime.Now,
+                            LastModificationDate = DateTime.Now,
+                            Value = (int)userModel.ClaimValue,
+                            UserID = user.ID,
+                        };
+                        await _userRepository.CreateUserClaimAsync(newUserClaim);
+
+                        LoyalityProgramAccount newAccount = new LoyalityProgramAccount()
+                        {
+                            CreationDate = DateTime.Now,
+                            LastModificationDate = DateTime.Now,
+                            UserID = user.ID,
+                            Points = 0,
+
+                        };
+                        await _userRepository.CreateUserLoyalityAccountAsync(newAccount);
+
+                        var userDetails = await GetUserDetailsAsync(user.ID);
+                        var userClaim = await GetUserClaimAsync(user.ID);
+                        if (userDetails == null || userClaim == null)
+                        {
+                            new Tuple<UserRegisterResult, UserLoginDto>(UserRegisterResult.Error, null);
+                        }
+
+                        result = new UserLoginDto()
+                        {
+                            FirstName = userDetails.FirstName,
+                            Jwt = jwt,
+                            Claim = userClaim.Value
+                        };
+
+                        return new Tuple<UserRegisterResult, UserLoginDto>(UserRegisterResult.Ok, result);
                     }
                     else
                     {
-                        return new Tuple<UserRegisterResult, string>(UserRegisterResult.Error, null);
+                        return new Tuple<UserRegisterResult, UserLoginDto>(UserRegisterResult.Error, null);
                     }
                 }
-                return null;
+
+                return new Tuple<UserRegisterResult, UserLoginDto>(UserRegisterResult.Error, null); ;
             }
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
-                return null;
+                throw;
             }
         }
-        public async Task<Tuple<UserLoginResult, bool>> CreateUserDetails(string jwt)
+
+        public async Task<Tuple<UserLoginResult, bool>> CreateUserLoyalityProgramAccountAsync(string jwt)
         {
             var ss = _jwtService.Verify(jwt);
             var user = await GetUserByGuidAsync(Guid.Parse(ss.Payload.Iss));
@@ -206,19 +255,19 @@ namespace ApplicationCore.Services
                     LastModificationDate = DateTime.Now,
                 };
 
-               _userRepository.Add(user);
+                _userRepository.Add(user);
                 return user;
 
             }
             catch (Exception ex)
             {
-                
+
                 return null;
             }
 
         }
 
-        public  ClaimsPrincipal ConvertUserToClaims(User user)
+        public ClaimsPrincipal ConvertUserToClaims(User user)
         {
             var claims = new List<Claim>(){
                 new Claim(type: "user",value: user.Email)

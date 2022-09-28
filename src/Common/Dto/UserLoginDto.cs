@@ -9,5 +9,6 @@ namespace Common.Dto
         public string Jwt { get; set; } 
 
         public string FirstName { get; set; }
+        public int Claim { get; set; }
     }
 }

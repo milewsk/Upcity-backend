@@ -16,6 +16,7 @@ using System.Net;
 using Common.Enums;
 using System.Net.Http;
 using PublicApi.Controllers;
+using Common.Dto.Models;
 
 namespace upcity.Controllers
 {
@@ -83,13 +84,12 @@ namespace upcity.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> RegisterUser([FromBody] CreateUserModel userModel)
         {
-            var result = await _userService.RegisterUser(userDto.Email, userDto.Password);
-            //edit this
+            var result = await _userService.RegisterUser(userModel);
+
             if (result.Item2 != null)
             {
-                //return jwt
                 return Created("created", result.Item2);
             }
 
@@ -102,7 +102,6 @@ namespace upcity.Controllers
         {
             try
             {
-
                 Tuple<UserLoginResult, User> result = await _userService.GetUserByEmailAndPasswordAsync(userDto.Email, userDto.Password);
 
                 if (result != null)
@@ -114,21 +113,20 @@ namespace upcity.Controllers
                             Response.Cookies.Append("jwt", jwt, new CookieOptions { HttpOnly = true });
 
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
-                            var userClaim = await _userService.get
-                            if(userDetails == null)
+                            var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
+                            if(userDetails == null || userClaim == null)
                             {
                                 return BadRequest(new { errorMessage = "404 Error" });
                             }
 
-                            UserLoginDto userDto = new UserLoginDto()
+                            UserLoginDto data = new UserLoginDto()
                             {
                                 FirstName = userDetails.FirstName,
                                 Jwt = jwt,
-                                Claim
-                                
-                            } 
+                                Claim = userClaim.Value
+                            };
 
-                            return Ok(new { jwt });
+                            return Ok(data);
                         case UserLoginResult.WrongPassword:
                             return NotFound(new { errorMessage = result.Item1.GetDescription() });
                         case UserLoginResult.UserNotFound:

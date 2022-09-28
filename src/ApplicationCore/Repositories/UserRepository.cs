@@ -26,7 +26,7 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
-        public virtual async Task<User> GetUser(string email, string password)
+        public async Task<User> GetUser(string email, string password)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public virtual async Task<User> GetUserByGuid(Guid id)
+        public async Task<User> GetUserByGuid(Guid id)
         {
             try
             {
@@ -91,6 +91,47 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task CreateUserDetailsAsync(UserDetails details)
+        {
+            try
+            {
+                await _context.UsersDetails.AddAsync(details);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreateUserClaimAsync(UserClaim claim)
+        {
+            try
+            {
+                await _context.UserClaims.AddAsync(claim);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreateUserLoyalityAccountAsync(LoyalityProgramAccount account)
+        {
+            try
+            {
+                await _context.LoyalityProgramAccounts.AddAsync(account);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
         //    public async Task AddClaims(User user, List<Claim> claims)
         //    {
         //        try
