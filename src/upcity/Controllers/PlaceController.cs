@@ -33,7 +33,7 @@ namespace PublicApi.Controllers
         public async Task<IActionResult> GetPlacesListAsync() {
             try
             {
-                _authService.Authorize(Request, _jwtService, UserClaimsEnum.User);
+               await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User);
                 //var result = await _placeService.(email);
                // if (result.c)
              //   {

@@ -70,7 +70,7 @@ namespace ApplicationCore.Services
                         {
                             CreationDate = DateTime.Now,
                             LastModificationDate = DateTime.Now,
-                            Value = (int)userModel.ClaimValue,
+                            Value = (int)userModel.Claim,
                             UserID = user.ID,
                         };
                         await _userRepository.CreateUserClaimAsync(newUserClaim);

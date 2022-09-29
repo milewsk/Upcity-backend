@@ -13,6 +13,6 @@ namespace Common.Dto.Models
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
         public string Image { get; set; }
-        public UserClaimsEnum ClaimValue { get; set; }
+        public UserClaimsEnum Claim { get; set; }
     }
 }
