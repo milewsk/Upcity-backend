@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Common.Dto.Models
 {
-    public class PlaceEditModel
+    public class PlaceDetailsResult
     {
-        public int MyProperty { get; set; }
     }
 }

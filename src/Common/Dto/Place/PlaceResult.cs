@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Common.Dto.Place
 {
-    class PlaceResult
+    public class PlaceResult
     {
         public Guid PlaceID { get; set; }
         public string Image { get; set; }
         public decimal? Distance { get; set; }
-        public DayOfWeek OpenningHour { get; set; }
-
+        public string OpengHour { get; set; }
+        public string CloseHour { get; set; }
     }
 }
