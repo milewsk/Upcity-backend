@@ -9,7 +9,7 @@ namespace Infrastructure.Data.Models
     public class Place : EntityBase
     {
         public string Name { get; set; }
-        public int Type { get; set; }
+        public string Image { get; set; }
         public byte IsActive { get; set; }
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }

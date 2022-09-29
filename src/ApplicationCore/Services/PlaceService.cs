@@ -64,7 +64,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -77,7 +77,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
     }
