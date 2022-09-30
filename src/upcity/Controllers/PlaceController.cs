@@ -30,15 +30,19 @@ namespace PublicApi.Controllers
         [Route("places")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetPlacesListAsync() {
+        public async Task<IActionResult> GetPlacesListAsync()
+        {
             try
             {
-               await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User);
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
                 //var result = await _placeService.(email);
-               // if (result.c)
-             //   {
-           //         return Conflict();
-           //     }
+                // if (result.c)
+                //   {
+                //         return Conflict();
+                //     }
                 return Ok();
             }
             catch (Exception e)
