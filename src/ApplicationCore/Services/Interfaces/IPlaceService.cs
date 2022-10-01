@@ -12,7 +12,7 @@ namespace ApplicationCore.Services.Interfaces
     {
         //fajne jeśli chcemy zwrócić odpowiedź co do konkretnego błędu od razu
         //nazwewnictwo sefix - nazwa metody + result , zwracany obiekt + Dto , nazwa kotrolera + nazwa metody + model
-        Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDto>> CreatePlaceAsync();
+        Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync();
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
     }
 }

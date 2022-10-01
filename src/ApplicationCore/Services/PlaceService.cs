@@ -27,12 +27,12 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
-        public async Task<List<PlaceDto>> GetPlacesAsync()
+        public async Task<List<PlaceResult>> GetPlacesAsync()
         {
             try
             {
                 var placeList =  await _placeRepository.GetListAsync();
-                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceDto>>(placeList);
+                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
                 return placeDto;
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceDto>> GetPlacesCloseAsync()
+        public async Task<List<PlaceResult>> GetPlacesCloseAsync()
         {
             try
             {
@@ -55,7 +55,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDto>> CreatePlaceAsync()
+        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync()
         {
             try
             {
