@@ -15,11 +15,6 @@ namespace Infrastructure.Data.Models
         public string PhoneNumber { get; set; }
         public string RegisterFirm { get; set; }
         public string NIP { get; set; }
-        //menu?
-
-        // opinie
-        //
-        public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
 
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }

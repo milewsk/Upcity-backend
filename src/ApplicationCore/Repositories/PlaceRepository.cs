@@ -83,7 +83,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
-                return await _context.PlacesDetails.FirstOrDefaultAsync();
+                PlaceMenu placeMenu =  await _context.PlaceMenus.Where(x => x.PlaceID = placeID);
             }
             catch (Exception ex)
             {
