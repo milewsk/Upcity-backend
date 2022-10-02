@@ -52,7 +52,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -65,7 +65,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -78,7 +78,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -93,7 +93,52 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
-                return null;
+                throw;
+            }
+        }
+
+        public async Task CreatePlaceAsync(Place newPlace)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                await _context.AddAsync(newPlace);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreatePlaceDetails(PlaceDetails newPlaceDetails)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                await _context.AddAsync(newPlaceDetails);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                await _context.AddRangeAsync(openingHoursList);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
             }
         }
     }

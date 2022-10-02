@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Common.Dto.Place
 {
-    public class PlaceResult
+    public class PlaceShortcutResult
     {
         public Guid PlaceID { get; set; }
         public string Image { get; set; }

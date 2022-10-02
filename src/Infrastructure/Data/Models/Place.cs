@@ -11,10 +11,21 @@ namespace Infrastructure.Data.Models
         public string Name { get; set; }
         public string Image { get; set; }
         public byte IsActive { get; set; }
+
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }
+        public PlaceMenu PlaceMenu { get; set; }
+
+
         public ICollection<Table> Tables { get; set; }
-        public ICollection<Product> Products { get; set; }
+        //public ICollection<Product> Products { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
+
+        public Place(string name, string image, byte isActive)
+        {
+            Name = name;
+            Image = image;
+            IsActive = isActive;
+        }
     }
 }

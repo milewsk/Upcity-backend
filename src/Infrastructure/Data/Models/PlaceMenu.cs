@@ -4,13 +4,11 @@ using System.Text;
 
 namespace Infrastructure.Data.Models
 {
-   public class PlaceOpeningHours : EntityBase
+    public class PlaceMenu : EntityBase
     {
-        public byte DayOfWeek { get; set; }
-        public TimeSpan Opens { get; set; }
-        public TimeSpan Closes { get; set; }
-
         public Guid PlaceID { get; set; }
         public Place Place { get; set; }
+
+        public ICollection<PlaceMenuCategory> PlaceMenuCategories { get; set; }
     }
 }

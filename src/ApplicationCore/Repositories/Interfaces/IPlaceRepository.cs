@@ -11,5 +11,9 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<List<Place>> GetListAsync();
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
+        Task<PlaceDetails> GetPlaceMenuAsync(Guid placeID);
+        Task CreatePlaceAsync(Place newPlace);
+        Task CreatePlaceDetailsAsync(PlaceDetails newPlaceDetails);
+        Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
     }
 }

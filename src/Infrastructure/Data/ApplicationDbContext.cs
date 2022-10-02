@@ -20,13 +20,19 @@ namespace Infrastructure.Data
         public DbSet<UserDetails> UsersDetails { get; set; } 
         public DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<LoyalityProgramAccount> LoyalityProgramAccounts { get; set; }
+
         public DbSet<Place> Places { get; set; }
         public DbSet<PlaceDetails> PlacesDetails { get; set; }
+        public DbSet<PlaceMenu> PlaceMenus { get; set; }
+        public DbSet<PlaceMenuCategory> PlaceMenuCategories { get; set; }
+
         public DbSet<Tag> Tags { get; set; }
         public DbSet<PlaceTag> PlaceTags { get; set; }
         public DbSet<Coordinates> Coordinates { get; set; }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductTag> ProductTags { get; set; }
+
         public DbSet<Table> Tables { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
@@ -47,8 +53,11 @@ namespace Infrastructure.Data
             builder.Entity<User>().HasOne<LoyalityProgramAccount>(u => u.LoyalityProgramAccount).WithOne(ud => ud.User).HasForeignKey<LoyalityProgramAccount>(ud => ud.UserID);
 
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
-            builder.Entity<Place>().HasOne(pd => pd.PlaceDetails).WithOne(c => c.Place).HasForeignKey<PlaceDetails>(c => c.PlaceID);
-            builder.Entity<Place>().HasMany<Product>(p => p.Products).WithOne(pr => pr.Place).HasForeignKey(pr => pr.PlaceID);
+            builder.Entity<Place>().HasOne(p => p.PlaceDetails).WithOne(pd => pd.Place).HasForeignKey<PlaceDetails>(pd => pd.PlaceID);
+            builder.Entity<Place>().HasOne(p => p.PlaceMenu).WithOne(pm => pm.Place).HasForeignKey<PlaceMenu>(pm => pm.PlaceID);
+
+            builder.Entity<PlaceMenu>().HasMany(pm => pm.PlaceMenuCategories).WithOne(pmc => pmc.PlaceMenu).HasForeignKey<PlaceMenu>(c => c.PlaceID);
+            builder.Entity<PlaceMenuCategory>().HasMany<Product>(p => p.Products).WithOne(pr => pr.PlaceMenuCategory).HasForeignKey(pr => pr.PlaceMenuCategoryID);
             builder.Entity<Place>().HasMany<Table>(p => p.Tables).WithOne(t => t.Place).HasForeignKey(t => t.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Tables_Places_PlaceID");
 
             builder.Entity<PlaceTag>().HasKey(pt => pt.ID);

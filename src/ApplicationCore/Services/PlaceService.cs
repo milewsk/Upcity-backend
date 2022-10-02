@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
 using Common.Dto;
+using Common.Dto.Models;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
@@ -55,10 +56,13 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync()
+        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync(CreatePlaceModel model)
         {
             try
             {
+                Place newPlace = new Place(model.Name, model.Image, 1);
+                await _placeRepository.CreatePlaceAsync(newPlace);
+
                 return null;
             }
             catch (Exception ex)

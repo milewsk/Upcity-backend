@@ -15,8 +15,8 @@ namespace Infrastructure.Data.Models
         public decimal DiscountPrice { get; set; }
         public string DiscountCode { get; set; }
 
-        public Place Place { get; set; }
-        public Guid PlaceID { get; set; }
+        public PlaceMenuCategory PlaceMenuCategory { get; set; }
+        public Guid PlaceMenuCategoryID { get; set; }
 
         public ProductCategory ProductCategory { get; set; }
         public Guid ProductCategoryID { get; set; }

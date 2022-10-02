@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Services.Interfaces;
 using Common.Dto;
+using Common.Dto.Models;
 using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -72,6 +73,25 @@ namespace PublicApi.Controllers
             }
         }
 
+        [Route("place/create")]
+        [HttpGet]
+        public async Task<IActionResult> CreatePlaceAsync([FromBody] CreatePlaceModel placeModel)
+        {
+            try
+            {
 
+                var result = _placeService.CreatePlaceAsync();
+                if (true)
+                {
+                    return Conflict();
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }

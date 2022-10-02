@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Infrastructure.Data.Models
 {
-    public class ProductCategory : EntityBase
+    public class PlaceMenuCategory: EntityBase
     {
-        public string Name { get; set; }
+        public Guid PlaceMenuID { get; set; }
+        public PlaceMenu PlaceMenu { get; set; }
+
         public ICollection<Product> Products { get; set; }
     }
 }
