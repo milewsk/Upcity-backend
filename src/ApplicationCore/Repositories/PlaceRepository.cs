@@ -17,16 +17,11 @@ namespace ApplicationCore.Repositories
     public class PlaceRepository : GenericRepository<Place>, IPlaceRepository
     {
         private readonly ApplicationDbContext _context;
-
         private readonly ILogger<PlaceRepository> _appLogger;
-        private readonly IUserRepository _userRepository;
-        private readonly IJwtService _jwtService;
 
-        public PlaceRepository(ApplicationDbContext context, IUserRepository userRepository, ILogger<PlaceRepository> appLogger, IJwtService jwtService): base(context, appLogger)
+        public PlaceRepository(ApplicationDbContext context, ILogger<PlaceRepository> appLogger): base(context, appLogger)
         {
             _context = context;
-            _userRepository = userRepository;
-            _jwtService = jwtService;
             _appLogger = appLogger;
         }
 
@@ -83,7 +78,7 @@ namespace ApplicationCore.Repositories
         }
 
         //do zmiany
-        public async Task<PlaceDetails> GetPlaceMenuAsync(Guid placeID)
+        public async Task<PlaceMenu> GetPlaceMenuAsync(Guid placeID)
         {
             try
             {
@@ -133,6 +128,21 @@ namespace ApplicationCore.Repositories
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 await _context.AddRangeAsync(openingHoursList);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreatePlaceTagsAsync(List<PlaceTag> placeTags)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                await _context.AddRangeAsync(placeTags);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

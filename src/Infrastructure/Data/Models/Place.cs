@@ -18,6 +18,7 @@ namespace Infrastructure.Data.Models
 
 
         public ICollection<Table> Tables { get; set; }
+        public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
         //public ICollection<Product> Products { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
 

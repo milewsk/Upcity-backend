@@ -23,6 +23,7 @@ namespace Infrastructure.Data
 
         public DbSet<Place> Places { get; set; }
         public DbSet<PlaceDetails> PlacesDetails { get; set; }
+        public DbSet<PlaceOpinion> PlaceOpinions { get; set; }
         public DbSet<PlaceMenu> PlaceMenus { get; set; }
         public DbSet<PlaceMenuCategory> PlaceMenuCategories { get; set; }
 
@@ -55,8 +56,9 @@ namespace Infrastructure.Data
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
             builder.Entity<Place>().HasOne(p => p.PlaceDetails).WithOne(pd => pd.Place).HasForeignKey<PlaceDetails>(pd => pd.PlaceID);
             builder.Entity<Place>().HasOne(p => p.PlaceMenu).WithOne(pm => pm.Place).HasForeignKey<PlaceMenu>(pm => pm.PlaceID);
+            builder.Entity<Place>().HasMany<PlaceOpinion>(p => p.PlaceOpinions).WithOne(po => po.Place).HasForeignKey(po => po.PlaceID);
 
-            builder.Entity<PlaceMenu>().HasMany(pm => pm.PlaceMenuCategories).WithOne(pmc => pmc.PlaceMenu).HasForeignKey<PlaceMenu>(c => c.PlaceID);
+            builder.Entity<PlaceMenu>().HasMany<PlaceMenuCategory>(pm => pm.PlaceMenuCategories).WithOne(pmc => pmc.PlaceMenu).HasForeignKey(pmc => pmc.PlaceMenuID);
             builder.Entity<PlaceMenuCategory>().HasMany<Product>(p => p.Products).WithOne(pr => pr.PlaceMenuCategory).HasForeignKey(pr => pr.PlaceMenuCategoryID);
             builder.Entity<Place>().HasMany<Table>(p => p.Tables).WithOne(t => t.Place).HasForeignKey(t => t.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Tables_Places_PlaceID");
 

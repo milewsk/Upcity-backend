@@ -19,6 +19,8 @@ namespace Infrastructure.Data.Models
 
         // opinie
         //
+        public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
+
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
     }
