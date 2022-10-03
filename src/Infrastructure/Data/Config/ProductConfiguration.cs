@@ -16,8 +16,6 @@ namespace Infrastructure.Data.Config
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.Price).IsRequired().HasColumnType("decimal(6,2)");
             builder.Property(b => b.DiscountPrice).HasColumnType("decimal(6,2)");
-            builder.Property(b => b.ProductCategoryID).IsRequired();
-            builder.Property(b => b.PlaceID).IsRequired();
         }
     }
 }

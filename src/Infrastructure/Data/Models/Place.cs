@@ -24,6 +24,8 @@ namespace Infrastructure.Data.Models
 
         public Place(string name, string image, byte isActive)
         {
+            CreationDate = DateTime.Now;
+            LastModificationDate = DateTime.Now;
             Name = name;
             Image = image;
             IsActive = isActive;

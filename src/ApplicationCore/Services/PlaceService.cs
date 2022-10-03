@@ -63,7 +63,34 @@ namespace ApplicationCore.Services
                 Place newPlace = new Place(model.Name, model.Image, 1);
                 await _placeRepository.CreatePlaceAsync(newPlace);
 
+                if(newPlace.ID == null)
+                {
+                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                }
+
+                PlaceDetails newPlaceDetails = new PlaceDetails()
+                {
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                    PlaceID = newPlace.ID,
+                    Description = model.Description,
+                    Address = model.Address,
+                    City = model.City,
+                    PostalCode = model.PostalCode,
+                    NIP = model.NIP,
+                    PhoneNumber = model.PhoneNumber,
+                    RegisterFirm = model.RegisterFirm,
+                };
+
+                await _placeRepository.CreatePlaceDetailsAsync(newPlaceDetails);
+
+                if(newPlaceDetails.ID == null)
+                {
+                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                }
                 return null;
+
+
             }
             catch (Exception ex)
             {

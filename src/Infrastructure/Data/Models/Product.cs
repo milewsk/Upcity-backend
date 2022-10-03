@@ -17,10 +17,6 @@ namespace Infrastructure.Data.Models
 
         public PlaceMenuCategory PlaceMenuCategory { get; set; }
         public Guid PlaceMenuCategoryID { get; set; }
-
-        public ProductCategory ProductCategory { get; set; }
-        public Guid ProductCategoryID { get; set; }
-
         public IList<ProductTag> ProductTags { get; set; }
     }
 }

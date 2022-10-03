@@ -83,7 +83,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
-                PlaceMenu placeMenu =  await _context.PlaceMenus.Where(x => x.PlaceID = placeID);
+               return await _context.PlaceMenus.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task CreatePlaceDetails(PlaceDetails newPlaceDetails)
+        public async Task CreatePlaceDetailsAsync(PlaceDetails newPlaceDetails)
         {
             try
             {

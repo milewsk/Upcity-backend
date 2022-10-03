@@ -26,8 +26,15 @@ namespace ApplicationCore.Repositories
         public async Task<List<Product>> GetPlaceProductListAsync(Guid placeID)
         {
             try
-            { 
-                return await _context.Products.Where(x => x.PlaceID == placeID).ToListAsync();
+            {
+                var query = await (from place in _context.Places
+                             join placeMenu in _context.PlaceMenus on place.ID equals placeMenu.PlaceID
+                             join placeMenuCategory in _context.PlaceMenuCategories on placeMenu.ID equals placeMenuCategory.PlaceMenuID
+                             join product in _context.Products on placeMenuCategory.ID equals product.PlaceMenuCategoryID
+                             where place.ID == placeID
+                             select product).ToListAsync();
+                                                      
+                return query;
             }
             catch (Exception ex)
             {

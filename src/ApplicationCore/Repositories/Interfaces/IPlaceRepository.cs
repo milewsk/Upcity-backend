@@ -11,7 +11,7 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<List<Place>> GetListAsync();
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
-        Task<PlaceDetails> GetPlaceMenuAsync(Guid placeID);
+        Task<PlaceMenu> GetPlaceMenuAsync(Guid placeID);
         Task<List<Place>> GetListByCategoryAsync(PlaceTag tag);
         Task CreatePlaceAsync(Place newPlace);
         Task CreatePlaceDetailsAsync(PlaceDetails newPlaceDetails);

@@ -18,5 +18,6 @@ namespace Infrastructure.Data.Models
 
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }
+
     }
 }

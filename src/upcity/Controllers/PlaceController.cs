@@ -80,7 +80,7 @@ namespace PublicApi.Controllers
             try
             {
 
-                var result = _placeService.CreatePlaceAsync();
+                var result = await _placeService.CreatePlaceAsync(placeModel);
                 if (true)
                 {
                     return Conflict();
