@@ -47,7 +47,7 @@ namespace ApplicationCore.Services
             try
             {
                 double[] cords = { Convert.ToDouble(latitude), Convert.ToDouble(longitude) };
-                var placeList = await _placeRepository.GetListNearLocationAsync();
+                var placeList = await _placeRepository.GetListNearLocationAsync(cords);
                 var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
                 return placeDto;
             }

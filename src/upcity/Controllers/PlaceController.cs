@@ -39,19 +39,14 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                //var result = await _placeService.(email);
-                // if (result.c)
-                //   {
-                //         return Conflict();
-                //     }
-
 
                 var result = await _placeService.GetPlacesAsync();
-                return Ok();
+                return Ok(result);
             }
             catch (Exception e)
             {
                 return BadRequest();
+                throw;
             }
         }
 
@@ -83,13 +78,13 @@ namespace PublicApi.Controllers
         {
             try
             {
-
-                var result = await _placeService.CreatePlaceAsync(placeModel);
-                if (true)
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
-                    return Conflict();
+                    return Unauthorized();
                 }
-                return Ok();
+                var result = await _placeService.CreatePlaceAsync(placeModel);
+                
+                return Ok(result);
             }
             catch (Exception e)
             {

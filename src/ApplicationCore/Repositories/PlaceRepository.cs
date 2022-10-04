@@ -30,7 +30,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && x.Coordinates.Location.Coordinates).Take(50).ToListAsync();
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1).Take(50).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -45,16 +45,15 @@ namespace ApplicationCore.Repositories
             {
                 //long = x lat = y
                 GeometryFactory geometryFactory = new GeometryFactory();
+                Coordinate userGeo = new Coordinate
+                {
+                    X = cords[1],
+                    Y = cords[0]
+                };
+                
+                var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
 
-                Coordinate userGeo = new Coordinate();
-                userGeo.X = cords[1];
-                userGeo.Y = cords[0];
-
-                Point point = new Point(userGeo);
-
-                var polygon = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000,));
-
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && x.Coordinates.Location).Take(50).ToListAsync();
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).Take(50).ToListAsync();
             }
             catch (Exception ex)
             {
