@@ -15,5 +15,7 @@ namespace ApplicationCore.Services.Interfaces
         //nazwewnictwo sefix - nazwa metody + result , zwracany obiekt + Dto , nazwa kotrolera + nazwa metody + model
         Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync(CreatePlaceModel model);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
+        Task<List<PlaceResult>> GetPlacesAsync();
+        Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string laatitude, string longitude);
     }
 }

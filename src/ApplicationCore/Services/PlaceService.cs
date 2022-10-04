@@ -42,7 +42,22 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-
+        public async Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude)
+        {
+            try
+            {
+                double[] cords = { Convert.ToDouble(latitude), Convert.ToDouble(longitude) };
+                var placeList = await _placeRepository.GetListNearLocationAsync();
+                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+                return placeDto;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
         public async Task<List<PlaceResult>> GetPlacesCloseAsync()
         {
             try

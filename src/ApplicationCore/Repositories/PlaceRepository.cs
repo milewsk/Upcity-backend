@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NetTopologySuite.Geometries;
 
 namespace ApplicationCore.Repositories
 {
@@ -19,7 +20,7 @@ namespace ApplicationCore.Repositories
         private readonly ApplicationDbContext _context;
         private readonly ILogger<PlaceRepository> _appLogger;
 
-        public PlaceRepository(ApplicationDbContext context, ILogger<PlaceRepository> appLogger): base(context, appLogger)
+        public PlaceRepository(ApplicationDbContext context, ILogger<PlaceRepository> appLogger) : base(context, appLogger)
         {
             _context = context;
             _appLogger = appLogger;
@@ -29,7 +30,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Places.Where(x => x.IsActive == 1).Take(50).ToListAsync();
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && x.Coordinates.Location.Coordinates).Take(50).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -38,11 +39,40 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<List<Place>> GetListNearLocationAsync(double[] cords)
+        {
+            try
+            {
+                //long = x lat = y
+                GeometryFactory geometryFactory = new GeometryFactory();
+
+                Coordinate userGeo = new Coordinate();
+                userGeo.X = cords[1];
+                userGeo.Y = cords[0];
+
+                Point point = new Point(userGeo);
+
+                var polygon = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000,));
+
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && x.Coordinates.Location).Take(50).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        private double MeterToDegree(double meters, double latitude)
+        {
+            return meters / (111.32 * 1000 * Math.Cos(latitude * (Math.PI / 180)));
+        }
+
         public async Task<List<Place>> GetListBySearchStringAsync(string searchedText)
         {
             try
             {
-                return await _context.Places.Where(x => x.Name == searchedText && x.IsActive == 1).ToListAsync();  
+                return await _context.Places.Where(x => x.Name == searchedText && x.IsActive == 1).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -83,7 +113,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
-               return await _context.PlaceMenus.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+                return await _context.PlaceMenus.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

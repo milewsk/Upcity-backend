@@ -44,6 +44,9 @@ namespace PublicApi.Controllers
                 //   {
                 //         return Conflict();
                 //     }
+
+
+                var result = await _placeService.GetPlacesAsync();
                 return Ok();
             }
             catch (Exception e)
@@ -52,18 +55,19 @@ namespace PublicApi.Controllers
             }
         }
 
+        //jeśli udostępnił swoją lokalizację
         [Route("places/{latitude}/{longitude}")]
         [HttpGet]
         public async Task<IActionResult> GetPlaceListUserLocationAsync([FromRoute] string latitude, [FromRoute] string longitude)
         {
             try
             {
-
-                var result = _placeService;
-                if (true)
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
-                    return Conflict();
+                    return Unauthorized();
                 }
+                var result = _placeService;
+
                 return Ok();
             }
             catch (Exception e)

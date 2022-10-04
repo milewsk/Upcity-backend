@@ -10,6 +10,7 @@ namespace ApplicationCore.Repositories.Interfaces
     public interface IPlaceRepository : IRepository<Place>
     {
         Task<List<Place>> GetListAsync();
+        Task<List<Place>> GetListNearLocationAsync(double[] cords);
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
         Task<PlaceMenu> GetPlaceMenuAsync(Guid placeID);
         Task<List<Place>> GetListByCategoryAsync(PlaceTag tag);
