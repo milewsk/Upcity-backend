@@ -19,5 +19,7 @@ namespace ApplicationCore.Services.Interfaces
         Task<List<PlaceResult>> GetPlacesAsync();
         Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string laatitude, string longitude);
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
+
+        Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
     }
 }

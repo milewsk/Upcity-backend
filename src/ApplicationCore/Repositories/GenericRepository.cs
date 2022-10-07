@@ -43,29 +43,101 @@ namespace ApplicationCore.Repositories
 
         public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            try
+            {
+                return await _context.Set<TEntity>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }     
+        
+        public virtual async Task<IEnumerable<TEntity>> GetAll(params Expression<Func<TEntity, object>>[] includes)
+        {
+            try
+            {
+                IQueryable<TEntity> list = _context.Set<TEntity>();
+
+                if(includes != null)
+                {
+                    foreach(var include in includes)
+                    {
+                        list.Include(include);
+                    }
+                }
+                return await list.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
         }
 
         public virtual async Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _context.Set<TEntity>().Where(predicate).ToListAsync();
+            try
+            {
+                return await _context.Set<TEntity>().Where(predicate).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+
         }
 
-        public virtual async void Add(TEntity entity)
+        public virtual async Task<bool> AddAsync(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Set<TEntity>().AddAsync(entity);
+                await _context.SaveChangesAsync();
+
+                if(entity.ID != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+
         }
         public virtual async void AddRange(IEnumerable<TEntity> entities)
         {
             await _context.Set<TEntity>().AddRangeAsync(entities);
             await _context.SaveChangesAsync();
         }
-        public virtual void Remove(TEntity entity)
+
+        public virtual async Task<bool> Remove(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
-            _context.SaveChanges();
+            try
+            {
+                _context.Set<TEntity>().Remove(entity);
+                _context.SaveChanges();
+
+                if (entity == null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
         }
+
         public virtual void RemoveRange(IEnumerable<TEntity> entities)
         {
             _context.Set<TEntity>().RemoveRange(entities);
