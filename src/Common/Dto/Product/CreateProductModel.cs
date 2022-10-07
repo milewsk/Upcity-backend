@@ -12,5 +12,6 @@ namespace Common.Dto.Models
 
         public Guid CategoryID { get; set; }
         public List<Guid> TagsID { get; set; }
+
     }
 }

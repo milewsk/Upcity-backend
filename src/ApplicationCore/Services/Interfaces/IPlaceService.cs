@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Helpers.Enums;
 using Common.Dto.Models;
+using Common.Dto.Place;
 
 namespace ApplicationCore.Services.Interfaces
 {
@@ -17,5 +18,6 @@ namespace ApplicationCore.Services.Interfaces
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
         Task<List<PlaceResult>> GetPlacesAsync();
         Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string laatitude, string longitude);
+        Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
     }
 }

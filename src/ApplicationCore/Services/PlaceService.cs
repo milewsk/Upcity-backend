@@ -2,6 +2,7 @@
 using ApplicationCore.Services.Interfaces;
 using Common.Dto;
 using Common.Dto.Models;
+using Common.Dto.Place;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
@@ -103,9 +104,25 @@ namespace ApplicationCore.Services
                 {
                     return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
                 }
-                return null;
 
+                List<PlaceTag> placeTags = new List<PlaceTag>();
 
+                foreach(var placeTagID in model.TagIDs)
+                {
+                    PlaceTag newPlaceTag = new PlaceTag()
+                    {
+                        CreationDate = DateTime.Now,
+                        LastModificationDate = DateTime.Now,
+                        PlaceID = newPlace.ID,
+                        TagID = placeTagID,
+                    };
+
+                    placeTags.Add(newPlaceTag);
+                }
+
+                await _placeRepository.CreatePlaceTagsAsync(placeTags);
+
+                return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, null);
             }
             catch (Exception ex)
             {
@@ -115,6 +132,17 @@ namespace ApplicationCore.Services
         }
 
         public Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync()
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }  public Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID)
         {
             try
             {

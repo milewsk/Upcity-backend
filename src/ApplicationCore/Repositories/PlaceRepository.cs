@@ -71,7 +71,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Places.Where(x => x.Name == searchedText && x.IsActive == 1).ToListAsync();
+                return await _context.Places.Where(x => EF.Functions.Like(x.Name, $"%{searchedText}%") && x.IsActive == 1).ToListAsync();
             }
             catch (Exception ex)
             {

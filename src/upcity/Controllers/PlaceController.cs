@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Services.Interfaces;
 using Common.Dto;
 using Common.Dto.Models;
+using Common.Dto.Place;
 using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -84,6 +85,50 @@ namespace PublicApi.Controllers
                 }
                 var result = await _placeService.CreatePlaceAsync(placeModel);
                 
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("place/{placeID}/menu")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceMenuAsync([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(Guid.Parse(placeID));
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("place/{placeID}/menu/product/add")]
+        [HttpPost]
+        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(Guid.Parse(placeID));
+
                 return Ok(result);
             }
             catch (Exception e)
