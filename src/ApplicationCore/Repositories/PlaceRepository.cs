@@ -47,10 +47,10 @@ namespace ApplicationCore.Repositories
                 GeometryFactory geometryFactory = new GeometryFactory();
                 Coordinate userGeo = new Coordinate
                 {
-                    X = cords[1],
-                    Y = cords[0]
+                    X = cords[0],
+                    Y = cords[1]
                 };
-                
+
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
 
                 return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).Take(50).ToListAsync();
@@ -71,7 +71,11 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Places.Where(x => EF.Functions.Like(x.Name, $"%{searchedText}%") && x.IsActive == 1).ToListAsync();
+                return await _context.Places.Include(x => x.PlaceDetails)
+                                            .Where(x => (EF.Functions.Like(x.Name, $"%{searchedText}%")
+                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%") 
+                                                        || EF.Functions.Like(x.PlaceDetails.Address, $"%{searchedText}%"))
+                                                        && x.IsActive == 1).ToListAsync();
             }
             catch (Exception ex)
             {

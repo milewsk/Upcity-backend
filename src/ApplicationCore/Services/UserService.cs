@@ -49,7 +49,7 @@ namespace ApplicationCore.Services
                         LastModificationDate = DateTime.Now,
                     };
 
-                    _userRepository.Add(user);
+                    await _userRepository.AddAsync(user);
 
                     if (user.ID != null)
                     {
@@ -255,7 +255,7 @@ namespace ApplicationCore.Services
                     LastModificationDate = DateTime.Now,
                 };
 
-                _userRepository.Add(user);
+               await _userRepository.AddAsync(user);
                 return user;
 
             }

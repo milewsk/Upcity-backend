@@ -17,7 +17,8 @@ namespace ApplicationCore.Services.Interfaces
         Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync(CreatePlaceModel model);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
         Task<List<PlaceResult>> GetPlacesAsync();
-        Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string laatitude, string longitude);
+        Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude);
+        Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString);
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
 
         Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);

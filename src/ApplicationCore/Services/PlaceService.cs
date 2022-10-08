@@ -43,14 +43,16 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+
         public async Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude)
         {
             try
             {
-                double[] cords = { Convert.ToDouble(latitude), Convert.ToDouble(longitude) };
+                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
                 var placeList = await _placeRepository.GetListNearLocationAsync(cords);
-                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
-                return placeDto;
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
             }
             catch (Exception ex)
             {
@@ -59,11 +61,14 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceResult>> GetPlacesCloseAsync()
+        public async Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString)
         {
             try
             {
-                return null;
+                var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
             }
             catch (Exception ex)
             {
@@ -121,6 +126,8 @@ namespace ApplicationCore.Services
                 }
 
                 await _placeRepository.CreatePlaceTagsAsync(placeTags);
+
+                //create place menu
 
                 return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, null);
             }

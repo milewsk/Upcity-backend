@@ -44,7 +44,12 @@ namespace PublicApi.Controllers
                 }
 
                 var result = await _placeService.GetPlacesAsync();
-                return Ok(result);
+                if (result.Count != 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie znaleziono żadnych miejsc" });
             }
             catch (Exception e)
             {
@@ -64,7 +69,33 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = _placeService;
+                var result = await _placeService.GetPlacesNearUserLocationAsync(latitude, longitude);
+
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("places/search/{searchString}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                var result = _placeService.GetPlacesListBySearchStringAsync(searchString);
 
                 return Ok();
             }
@@ -156,7 +187,7 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
 
-                PlaceMenuResult result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
+                bool result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
 
                 return Ok(result);
             }
