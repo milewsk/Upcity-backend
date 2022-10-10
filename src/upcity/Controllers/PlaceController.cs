@@ -58,7 +58,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        //jeśli udostępnił swoją lokalizację
+        //lokalizacja
         [Route("places/{latitude}/{longitude}")]
         [HttpGet]
         public async Task<IActionResult> GetPlaceListUserLocationAsync([FromRoute] string latitude, [FromRoute] string longitude)
@@ -70,6 +70,33 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
                 var result = await _placeService.GetPlacesNearUserLocationAsync(latitude, longitude);
+
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        //
+        [Route("places/{latitude}/{longitude}/{categoryID}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string categoryID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, categoryID);
 
                 if (result.Count > 0)
                 {

@@ -53,7 +53,35 @@ namespace ApplicationCore.Repositories
 
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
 
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).Take(50).ToListAsync();
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<Place>> GetPlacesByCategoryAsync(double[] cords, Guid categoryID)
+        {
+            try
+            {
+                List<Place> list = await GetListNearLocationAsync(cords);
+
+                List<Place> result = new List<Place>();
+
+                foreach(var item in list)
+                {
+                    foreach(var cat in item.PlaceTags)
+                    {
+                        if(cat.ID == categoryID)
+                        {
+                            result.Add(item);
+                        }
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {

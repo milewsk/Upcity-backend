@@ -18,6 +18,7 @@ namespace ApplicationCore.Services.Interfaces
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
         Task<List<PlaceResult>> GetPlacesAsync();
         Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude);
+        Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID);
         Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString);
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
 
