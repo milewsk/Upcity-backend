@@ -60,6 +60,23 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+        
+        public async Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
+        {
+            try
+            {
+                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
+                var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, Guid.Parse(categoryID));
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
 
         public async Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString)
         {
