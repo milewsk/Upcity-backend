@@ -16,9 +16,9 @@ namespace ApplicationCore.Interfaces
         Task<TEntity> GetOne(Guid id);
         Task<IEnumerable<TEntity>> GetAll();
         Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
-        void Add(TEntity entity);
+        Task<bool> AddAsync(TEntity entity);
         void AddRange(IEnumerable<TEntity> entities);
-        void Remove(TEntity entity);
+        Task<bool> Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
     }
 }

@@ -33,7 +33,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var placeList =  await _placeRepository.GetListAsync();
+                var placeList = await _placeRepository.GetListAsync();
                 var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
                 return placeDto;
             }
@@ -43,14 +43,16 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+
         public async Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude)
         {
             try
             {
-                double[] cords = { Convert.ToDouble(latitude), Convert.ToDouble(longitude) };
+                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
                 var placeList = await _placeRepository.GetListNearLocationAsync(cords);
-                var placeDto = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
-                return placeDto;
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
             }
             catch (Exception ex)
             {
@@ -59,11 +61,31 @@ namespace ApplicationCore.Services
             }
         }
         
-        public async Task<List<PlaceResult>> GetPlacesCloseAsync()
+        public async Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
         {
             try
             {
-                return null;
+                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
+                var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, Guid.Parse(categoryID));
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString)
+        {
+            try
+            {
+                var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
             }
             catch (Exception ex)
             {
@@ -79,7 +101,7 @@ namespace ApplicationCore.Services
                 Place newPlace = new Place(model.Name, model.Image, 1);
                 await _placeRepository.CreatePlaceAsync(newPlace);
 
-                if(newPlace.ID == null)
+                if (newPlace.ID == null)
                 {
                     return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
                 }
@@ -100,14 +122,14 @@ namespace ApplicationCore.Services
 
                 await _placeRepository.CreatePlaceDetailsAsync(newPlaceDetails);
 
-                if(newPlaceDetails.ID == null)
+                if (newPlaceDetails.ID == null)
                 {
                     return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
                 }
 
                 List<PlaceTag> placeTags = new List<PlaceTag>();
 
-                foreach(var placeTagID in model.TagIDs)
+                foreach (var placeTagID in model.TagIDs)
                 {
                     PlaceTag newPlaceTag = new PlaceTag()
                     {
@@ -121,6 +143,8 @@ namespace ApplicationCore.Services
                 }
 
                 await _placeRepository.CreatePlaceTagsAsync(placeTags);
+
+                //create place menu
 
                 return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, null);
             }
@@ -142,7 +166,20 @@ namespace ApplicationCore.Services
                 _appLogger.LogError(ex.Message);
                 throw;
             }
-        }  public Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID)
+        }
+        public Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID)
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        public Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)
         {
             try
             {

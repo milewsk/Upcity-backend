@@ -47,13 +47,41 @@ namespace ApplicationCore.Repositories
                 GeometryFactory geometryFactory = new GeometryFactory();
                 Coordinate userGeo = new Coordinate
                 {
-                    X = cords[1],
-                    Y = cords[0]
+                    X = cords[0],
+                    Y = cords[1]
                 };
-                
+
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
 
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).Take(50).ToListAsync();
+                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<Place>> GetPlacesByCategoryAsync(double[] cords, Guid categoryID)
+        {
+            try
+            {
+                List<Place> list = await GetListNearLocationAsync(cords);
+
+                List<Place> result = new List<Place>();
+
+                foreach(var item in list)
+                {
+                    foreach(var cat in item.PlaceTags)
+                    {
+                        if(cat.ID == categoryID)
+                        {
+                            result.Add(item);
+                        }
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -71,7 +99,11 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Places.Where(x => EF.Functions.Like(x.Name, $"%{searchedText}%") && x.IsActive == 1).ToListAsync();
+                return await _context.Places.Include(x => x.PlaceDetails)
+                                            .Where(x => (EF.Functions.Like(x.Name, $"%{searchedText}%")
+                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%") 
+                                                        || EF.Functions.Like(x.PlaceDetails.Address, $"%{searchedText}%"))
+                                                        && x.IsActive == 1).ToListAsync();
             }
             catch (Exception ex)
             {

@@ -18,12 +18,14 @@ namespace PublicApi.Controllers
     public class PlaceController : ControllerBase
     {
         private readonly IPlaceService _placeService;
+        private readonly IProductService _productService;
         private readonly IJwtService _jwtService;
         private readonly IAuthorizationService _authService;
 
-        public PlaceController(IPlaceService userService, IJwtService jwtService, IAuthorizationService authService)
+        public PlaceController(IPlaceService userService, IProductService productService, IJwtService jwtService, IAuthorizationService authService)
         {
             _placeService = userService;
+            _productService = productService;
             _jwtService = jwtService;
             _authService = authService;
         }
@@ -42,7 +44,12 @@ namespace PublicApi.Controllers
                 }
 
                 var result = await _placeService.GetPlacesAsync();
-                return Ok(result);
+                if (result.Count != 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie znaleziono żadnych miejsc" });
             }
             catch (Exception e)
             {
@@ -51,7 +58,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        //jeśli udostępnił swoją lokalizację
+        //lokalizacja
         [Route("places/{latitude}/{longitude}")]
         [HttpGet]
         public async Task<IActionResult> GetPlaceListUserLocationAsync([FromRoute] string latitude, [FromRoute] string longitude)
@@ -62,7 +69,60 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = _placeService;
+                var result = await _placeService.GetPlacesNearUserLocationAsync(latitude, longitude);
+
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        //
+        [Route("places/{latitude}/{longitude}/{categoryID}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string categoryID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, categoryID);
+
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("places/search/{searchString}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                var result = _placeService.GetPlacesListBySearchStringAsync(searchString);
 
                 return Ok();
             }
@@ -84,7 +144,7 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
                 var result = await _placeService.CreatePlaceAsync(placeModel);
-                
+
                 return Ok(result);
             }
             catch (Exception e)
@@ -116,7 +176,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("place/{placeID}/menu/product/add")]
+        [Route("place/menu/product/add")]
         [HttpPost]
         public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
         {
@@ -127,7 +187,34 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
 
-                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(Guid.Parse(placeID));
+                var result = await _productService.CreateProductAsync(productModel);
+
+                if (result == true)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(false);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("place/menu/category/add")]
+        [HttpPost]
+        public async Task<IActionResult> CreatePlaceMenuCategoryAsync([FromBody] CreatePlaceMenuCategoryModel categoryModel)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                bool result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
 
                 return Ok(result);
             }
