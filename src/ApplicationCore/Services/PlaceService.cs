@@ -173,7 +173,7 @@ namespace ApplicationCore.Services
                 };
 
 
-                return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, result);
+                return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.Ok, result);
             }
             catch (Exception ex)
             {

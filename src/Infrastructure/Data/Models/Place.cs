@@ -22,6 +22,7 @@ namespace Infrastructure.Data.Models
         //public ICollection<Product> Products { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
 
+
         public Place(string name, string image, byte isActive)
         {
             CreationDate = DateTime.Now;
