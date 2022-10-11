@@ -23,14 +23,14 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
-        public async Task<List<ProductResult>> GetProductListAsync(List<PlaceMenuCategory> categiries)
+        public async Task<List<ProductResult>> GetProductListForCategoryAsync(PlaceMenuCategory category)
         {
             try
             {
-                var productList = await _productRepository.CreateProductAsync(productModel);
+                List<Product> productList = await _productRepository.GetProductListByCategoryAsync(category.ID);
+                List<ProductResult> productResults = MappingHelper.Mapper.Map<List<Product>, List<ProductResult>>(productList);
 
-
-                return null;
+                return productResults;
             }
             catch (Exception ex)
             {

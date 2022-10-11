@@ -41,13 +41,29 @@ namespace ApplicationCore.Repositories
                 _logger.LogError(ex.Message);
                 throw;
             }
+        } 
+
+        public async Task<List<Product>> GetProductListByCategoryAsync(Guid categoryID)
+        {
+            try
+            {
+                List<Product> query = await _context.Products.Where(x => x.PlaceMenuCategoryID == categoryID).ToListAsync();
+                                                      
+                return query;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> RemoveProductAsync(Guid productID)
         {
             try
             {
-                var product = await _context.Products.Where(x => x.ID == productID).FirstOrDefaultAsync();
+                Product product = await _context.Products.Where(x => x.ID == productID).FirstOrDefaultAsync();
+
                 if(product == null)
                 {
                     return false;

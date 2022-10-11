@@ -124,7 +124,7 @@ namespace PublicApi.Controllers
                 }
                 var result = _placeService.GetPlacesListBySearchStringAsync(searchString);
 
-                return Ok();
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -134,15 +134,15 @@ namespace PublicApi.Controllers
         }
 
         [Route("place/create")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> CreatePlaceAsync([FromBody] CreatePlaceModel placeModel)
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
                 var result = await _placeService.CreatePlaceAsync(placeModel);
 
                 return Ok(result);

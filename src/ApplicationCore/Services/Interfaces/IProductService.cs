@@ -10,7 +10,7 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<List<ProductResult>> GetProductListAsync(List<PlaceMenuCategory> categiries);
+        Task<List<ProductResult>> GetProductListForCategoryAsync(PlaceMenuCategory category);
 
         Task<bool> CreateProductAsync(CreateProductModel productModel);
     }

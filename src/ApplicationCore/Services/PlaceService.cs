@@ -78,12 +78,12 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceResult>> GetPlacesListBySearchStringAsync(string searchString)
+        public async Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString)
         {
             try
             {
                 var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
-                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceShortcutResult>>(placeList);
 
                 return placeResults;
             }
