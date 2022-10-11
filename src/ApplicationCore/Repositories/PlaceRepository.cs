@@ -211,6 +211,20 @@ namespace ApplicationCore.Repositories
                 _appLogger.LogError(ex.Message);
                 throw;
             }
+        } 
+        public async Task CreatePlaceMenuAsync(PlaceMenu placeMenu)
+        {
+            try
+            {
+                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
+                await _context.AddAsync(placeMenu);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
         }
     }
 }

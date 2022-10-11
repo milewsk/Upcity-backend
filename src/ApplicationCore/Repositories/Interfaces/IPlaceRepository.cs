@@ -20,5 +20,6 @@ namespace ApplicationCore.Repositories.Interfaces
         Task CreatePlaceDetailsAsync(PlaceDetails newPlaceDetails);
         Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
         Task CreatePlaceTagsAsync(List<PlaceTag> placeTags);
+        Task CreatePlaceMenuAsync(PlaceMenu placeMenu);
     }
 }

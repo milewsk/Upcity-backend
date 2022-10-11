@@ -94,18 +94,20 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceResult>> CreatePlaceAsync(CreatePlaceModel model)
+        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>> CreatePlaceAsync(CreatePlaceModel model)
         {
             try
             {
+                // create Place
                 Place newPlace = new Place(model.Name, model.Image, 1);
                 await _placeRepository.CreatePlaceAsync(newPlace);
 
                 if (newPlace.ID == null)
                 {
-                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
                 }
 
+                // create Place Details
                 PlaceDetails newPlaceDetails = new PlaceDetails()
                 {
                     CreationDate = DateTime.Now,
@@ -124,9 +126,10 @@ namespace ApplicationCore.Services
 
                 if (newPlaceDetails.ID == null)
                 {
-                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
                 }
 
+                // create Place Tags
                 List<PlaceTag> placeTags = new List<PlaceTag>();
 
                 foreach (var placeTagID in model.TagIDs)
@@ -144,9 +147,33 @@ namespace ApplicationCore.Services
 
                 await _placeRepository.CreatePlaceTagsAsync(placeTags);
 
-                //create place menu
+                // create Place Menu
+                PlaceMenu newPlaceMenu = new PlaceMenu()
+                {
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                    PlaceID = newPlace.ID
+                };
 
-                return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, null);
+                await _placeRepository.CreatePlaceMenuAsync(newPlaceMenu);
+
+                if (newPlaceMenu.ID == null)
+                {
+                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                }
+
+                // create PLace
+
+                //basicly we want to return result to redirect to place details
+
+
+                var result = new PlaceDetailsResult()
+                {
+
+                };
+
+
+                return new Tuple<PlaceCreatePlaceStatusResult, PlaceResult>(PlaceCreatePlaceStatusResult.Ok, result);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
 using Common.Dto.Models;
+using Common.Dto.Product;
+using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,6 +21,22 @@ namespace ApplicationCore.Services
         {
             _productRepository = productRepository;
             _appLogger = appLogger;
+        }
+
+        public async Task<List<ProductResult>> GetProductListAsync(List<PlaceMenuCategory> categiries)
+        {
+            try
+            {
+                var productList = await _productRepository.CreateProductAsync(productModel);
+
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> CreateProductAsync(CreateProductModel productModel)
