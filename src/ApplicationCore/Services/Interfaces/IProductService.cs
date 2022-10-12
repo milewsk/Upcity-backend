@@ -13,5 +13,6 @@ namespace ApplicationCore.Services.Interfaces
         Task<List<ProductResult>> GetProductListForCategoryAsync(PlaceMenuCategory category);
 
         Task<bool> CreateProductAsync(CreateProductModel productModel);
+        Task<bool> DeleteProduct(Guid productID);
     }
 }

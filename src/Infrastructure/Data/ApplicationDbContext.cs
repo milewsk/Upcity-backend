@@ -52,11 +52,13 @@ namespace Infrastructure.Data
             builder.Entity<User>().HasOne<UserDetails>(u => u.UserDetails).WithOne(ud => ud.User).HasForeignKey<UserDetails>(ud => ud.UserID);
             builder.Entity<User>().HasOne<UserClaim>(u => u.UserClaim).WithOne(uc => uc.User).HasForeignKey<UserClaim>(uc => uc.UserID);
             builder.Entity<User>().HasOne<LoyalityProgramAccount>(u => u.LoyalityProgramAccount).WithOne(ud => ud.User).HasForeignKey<LoyalityProgramAccount>(ud => ud.UserID);
+            builder.Entity<User>().HasMany<Reservation>(u => u.Reservations).WithOne(r => r.User).HasForeignKey(r => r.UserID);
 
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
             builder.Entity<Place>().HasOne(p => p.PlaceDetails).WithOne(pd => pd.Place).HasForeignKey<PlaceDetails>(pd => pd.PlaceID);
             builder.Entity<Place>().HasOne(p => p.PlaceMenu).WithOne(pm => pm.Place).HasForeignKey<PlaceMenu>(pm => pm.PlaceID);
             builder.Entity<Place>().HasMany<PlaceOpinion>(p => p.PlaceOpinions).WithOne(po => po.Place).HasForeignKey(po => po.PlaceID);
+            
 
             builder.Entity<PlaceMenu>().HasMany<PlaceMenuCategory>(pm => pm.PlaceMenuCategories).WithOne(pmc => pmc.PlaceMenu).HasForeignKey(pmc => pmc.PlaceMenuID);
             builder.Entity<PlaceMenuCategory>().HasMany<Product>(p => p.Products).WithOne(pr => pr.PlaceMenuCategory).HasForeignKey(pr => pr.PlaceMenuCategoryID);

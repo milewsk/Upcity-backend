@@ -14,4 +14,10 @@ namespace Common.Enums
         Sobota = 6,
         Niedziela = 7
     }
+
+    public enum TagType
+    {
+        Place = 1,
+        Product = 2
+    }
 }

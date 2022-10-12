@@ -9,7 +9,8 @@ namespace ApplicationCore.Repositories.Interfaces
 {
     public interface ITagRepository : IRepository<Tag>
     {
-        Task<List<Tag>> GetTagListAsync();
+        Task<List<Tag>> GetAllPlaceTagsAsync();
+        Task<List<Tag>> GetAllProductTagsAsync();
         Task<List<Tag>> GetPlaceTagListAsync(Guid placeID);
         Task<List<Tag>> GetProductTagListAsync(Guid productID);
     }

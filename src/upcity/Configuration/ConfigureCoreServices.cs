@@ -32,6 +32,7 @@ namespace ApplicationCore.Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPlaceService, PlaceService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
 
             services.AddScoped<IJwtService, JwtService>();

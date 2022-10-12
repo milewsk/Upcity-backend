@@ -43,7 +43,7 @@ namespace ApplicationCore.Repositories
             }
         } 
 
-        public async Task<List<Product>> GetProductListByCategoryAsync(Guid categoryID)
+        public async Task<List<Product>> GetProductListByMenuCategoryAsync(Guid categoryID)
         {
             try
             {

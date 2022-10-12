@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Repositories
 {
-    public class ReservationRepository: GenericRepository<Reservation>, IReservationRepository
+    public class ReservationRepository : GenericRepository<Reservation>, IReservationRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ReservationRepository> _logger;
@@ -26,6 +26,8 @@ namespace ApplicationCore.Repositories
         {
             try
             {
+                var userReservations = await _context.User
+
                 return await _context.Reservations.Where(x => x.TableID != null).ToListAsync();
             }
             catch (Exception ex)
@@ -35,7 +37,7 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<Reservation> GetReservationDetails(Guid reservationID)
+        public async Task<Reservation> GetReservationAsync(Guid reservationID)
         {
             try
             {
@@ -44,7 +46,21 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
+            }
+        }
+
+        public async Task CreateReservationAsync(Reservation reservation)
+        {
+            try
+            {
+                await _context.Reservations.AddAsync(reservation);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
             }
         }
 

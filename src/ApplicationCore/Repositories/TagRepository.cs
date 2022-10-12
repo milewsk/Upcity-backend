@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
+using Common.Enums;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,24 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
-        public async Task<List<Tag>> GetTagListAsync()
+        public async Task<List<Tag>> GetAllPlaceTagsAsync()
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1).ToListAsync();
+                return await _context.Tags.Where(x => x.IsActive == 1 &&  x.Type == TagType.Place).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }  
+
+        public async Task<List<Tag>> GetAllProductTagsAsync()
+        {
+            try
+            {
+                return await _context.Tags.Where(x => x.IsActive == 1 &&  x.Type == TagType.Product).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -34,6 +48,7 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
+
         public async Task<List<Tag>> GetPlaceTagListAsync(Guid placeID)
         {
             try

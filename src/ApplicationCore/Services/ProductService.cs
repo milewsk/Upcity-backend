@@ -23,11 +23,12 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
+        //done
         public async Task<List<ProductResult>> GetProductListForCategoryAsync(PlaceMenuCategory category)
         {
             try
             {
-                List<Product> productList = await _productRepository.GetProductListByCategoryAsync(category.ID);
+                List<Product> productList = await _productRepository.GetProductListByMenuCategoryAsync(category.ID);
                 List<ProductResult> productResults = MappingHelper.Mapper.Map<List<Product>, List<ProductResult>>(productList);
 
                 return productResults;
@@ -39,6 +40,7 @@ namespace ApplicationCore.Services
             }
         }
 
+        //done
         public async Task<bool> CreateProductAsync(CreateProductModel productModel)
         {
             try
@@ -53,11 +55,17 @@ namespace ApplicationCore.Services
             }
         }
 
+        //done
         public async Task<bool> DeleteProduct(Guid productID)
         {
             try
             {
                 var productToDelete = await _productRepository.GetOne(productID);
+                if(productToDelete.ID == null)
+                {
+                    return false;
+                }
+
                 var result = await _productRepository.Remove(productToDelete);
                 return result;
             }
