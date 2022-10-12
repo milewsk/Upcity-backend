@@ -8,7 +8,7 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IReservationService
     {
-        Task<bool> CreateReservationAsync();
+        Task<bool> CreateReservationAsync(CreateReservationModel model);
 
         Task<bool> CancelReservationAsync();
 

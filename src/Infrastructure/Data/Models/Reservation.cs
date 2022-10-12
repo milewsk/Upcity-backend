@@ -11,5 +11,8 @@ namespace Infrastructure.Data.Models
         public DateTime EndTime { get; set; }
         public Table Table { get; set; }
         public Guid TableID { get; set; }
+
+        public User User { get; set; }
+        public Guid UserID { get; set; }
     }
 }
