@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Common.Dto.Models
 {
+    //idk if we wanna add discount 
     public class CreateProductModel
     {
         public string Name { get; set; }

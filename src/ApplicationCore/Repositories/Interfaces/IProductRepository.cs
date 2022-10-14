@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Interfaces;
 using Common.Dto.Models;
+using Common.Dto.Product;
 using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,8 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<List<Product>> GetPlaceProductListAsync(Guid placeID);
         Task<List<Product>> GetProductListByMenuCategoryAsync(Guid categoryID);
         Task<bool> RemoveProductAsync(Guid productID);
-        Task<bool> CreateProductAsync(CreateProductModel model);
-
+        Task<bool> CreateProductAsync(Product model);
+        Task<bool> SetDiscountAsync(ProductSetDiscountModel model);
+        Task<bool> EditProductAsync();
     }
 }
