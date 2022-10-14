@@ -109,6 +109,7 @@ namespace ApplicationCore.Services
             }
         }
         
+        // we are assuming in discount price
         public async Task<bool> EditProductAsync(EditProductModel model)
         {
             try
@@ -120,13 +121,6 @@ namespace ApplicationCore.Services
                 }
 
                  MappingHelper.Mapper.Map(model, productToEdit);
-
-                productToEdit.Name = model.Name;
-                productToEdit.Price = model.Price;
-                productToEdit.Description = model.Description;
-                productToEdit.LastModificationDate = DateTime.Now;
-                productToEdit.HaveDiscount = true;
-                productToEdit.DiscountPrice = model.DiscountPrice.HasValue ? model.DiscountPrice.Value : model.Price;
 
                 var result = await _productRepository.EditProductAsync(productToEdit);
                 return result;

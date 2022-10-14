@@ -178,7 +178,6 @@ namespace PublicApi.Controllers
 
         [Route("place/menu/product/add")]
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
         {
             try

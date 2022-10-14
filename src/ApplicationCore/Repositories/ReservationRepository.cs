@@ -26,7 +26,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                var userReservations = await _context.
+               // var userReservations = await _context
 
                 return await _context.Reservations.Where(x => x.TableID != null).ToListAsync();
             }
