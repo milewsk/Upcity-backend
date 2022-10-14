@@ -11,6 +11,6 @@ namespace Common.Dto.Product
         public decimal Price { get; set; }
         public string Description { get; set; }
         public bool HaveDiscount { get; set; }
-        public decimal? DiscountPrice { get; set; }
+        public decimal DiscountPrice { get; set; }
     }
 }

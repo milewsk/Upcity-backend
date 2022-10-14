@@ -99,7 +99,36 @@ namespace ApplicationCore.Services
                 var productToEdit = await _productRepository.GetOne(model.ProductID);
                 
 
-                var result = await _productRepository.SetDiscountAsync(model);
+                var result = await _productRepository.SetDiscountAsync(productToEdit);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
+        public async Task<bool> EditProductAsync(EditProductModel model)
+        {
+            try
+            {                
+                var productToEdit = await _productRepository.GetOne(model.ProductID);
+                if (productToEdit == null)
+                {
+                    return false;
+                }
+
+                 MappingHelper.Mapper.Map(model, productToEdit);
+
+                productToEdit.Name = model.Name;
+                productToEdit.Price = model.Price;
+                productToEdit.Description = model.Description;
+                productToEdit.LastModificationDate = DateTime.Now;
+                productToEdit.HaveDiscount = true;
+                productToEdit.DiscountPrice = model.DiscountPrice.HasValue ? model.DiscountPrice.Value : model.Price;
+
+                var result = await _productRepository.EditProductAsync(productToEdit);
                 return result;
             }
             catch (Exception ex)

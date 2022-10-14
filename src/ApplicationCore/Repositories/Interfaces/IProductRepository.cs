@@ -15,7 +15,8 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<List<Product>> GetProductListByMenuCategoryAsync(Guid categoryID);
         Task<bool> RemoveProductAsync(Guid productID);
         Task<bool> CreateProductAsync(Product model);
+        //ten discount średnio potrzebny
         Task<bool> SetDiscountAsync(ProductSetDiscountModel model);
-        Task<bool> EditProductAsync();
+        Task<bool> EditProductAsync(Product product);
     }
 }

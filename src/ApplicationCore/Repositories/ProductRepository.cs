@@ -57,6 +57,21 @@ namespace ApplicationCore.Repositories
                 _logger.LogError(ex.Message);
                 throw;
             }
+        } 
+        
+        public async Task<bool> EditProductAsync(Product model)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> RemoveProductAsync(Guid productID)
