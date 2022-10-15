@@ -37,7 +37,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -50,19 +50,19 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
-        }     
-        
+        }
+
         public virtual async Task<IEnumerable<TEntity>> GetAll(params Expression<Func<TEntity, object>>[] includes)
         {
             try
             {
                 IQueryable<TEntity> list = _context.Set<TEntity>();
 
-                if(includes != null)
+                if (includes != null)
                 {
-                    foreach(var include in includes)
+                    foreach (var include in includes)
                     {
                         list.Include(include);
                     }
@@ -85,9 +85,8 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
-
         }
 
         public virtual async Task<bool> AddAsync(TEntity entity)
@@ -97,7 +96,7 @@ namespace ApplicationCore.Repositories
                 await _context.Set<TEntity>().AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                if(entity.ID != null)
+                if (entity.ID != null)
                 {
                     return true;
                 }
@@ -107,7 +106,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return false;
+                throw;
             }
 
         }
@@ -122,7 +121,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 _context.Set<TEntity>().Remove(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 if (entity == null)
                 {
@@ -134,7 +133,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return false;
+                throw;
             }
         }
 
@@ -142,6 +141,6 @@ namespace ApplicationCore.Repositories
         {
             _context.Set<TEntity>().RemoveRange(entities);
             _context.SaveChanges();
-        }       
+        }
     }
 }

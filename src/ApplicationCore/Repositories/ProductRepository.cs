@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using Common.Dto.Models;
+using Common.Dto.Product;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -80,8 +81,33 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
+        
+        public async Task<bool> SetDiscountAsync(ProductSetDiscountModel model)
+        {
+            try
+            {
+                Product productToEdit = await _context.Products.Where(x => x.ID == model.ProductID).FirstOrDefaultAsync();
+                if (productToEdit == null)
+                {
+                    return false;
+                }
 
-        public async Task<bool> CreateProductAsync(CreateProductModel model)
+                productToEdit.HaveDiscount = true;
+                productToEdit.DiscountPrice = model.DiscountPrice;
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        //done 
+        public async Task<bool> CreateProductAsync(Product model)
         {
             try
             {
