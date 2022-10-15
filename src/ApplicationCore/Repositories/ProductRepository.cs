@@ -3,6 +3,7 @@ using Common.Dto.Models;
 using Common.Dto.Product;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -95,6 +96,31 @@ namespace ApplicationCore.Repositories
                 productToEdit.HaveDiscount = true;
                 productToEdit.DiscountPrice = model.DiscountPrice;
 
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
+        public async Task<bool> EditProductAsync(Product product)
+        {
+            try
+            {
+                var productToEdit = await GetOne(product.ID);
+
+                if(productToEdit.ID == null)
+                {
+                    return false;
+                }
+
+                MappingHelper.Mapper.Map(product, productToEdit);
+                productToEdit.LastModificationDate = DateTime.Now;
+                
                 await _context.SaveChangesAsync();
 
                 return true;

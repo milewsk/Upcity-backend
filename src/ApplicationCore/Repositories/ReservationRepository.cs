@@ -26,7 +26,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Reservations.Where(x => x.UserID == userID).ToListAsync();
+                return await _context.Reservations.Where(x => x.UserID == userID).OrderBy(x => x.StartTime).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -34,6 +34,20 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
+
+        public async Task<List<Reservation>> GetAllActiveUserReservationsAsync(Guid userID)
+        {
+            try
+            {
+                return await _context.Reservations.Where(x => x.UserID == userID && x.StartTime > DateTime.Now).OrderBy(x => x.StartTime).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
 
         public async Task<Reservation> GetReservationAsync(Guid reservationID)
         {

@@ -16,6 +16,6 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<bool> RemoveProductAsync(Guid productID);
         Task<bool> CreateProductAsync(Product model);
         Task<bool> SetDiscountAsync(ProductSetDiscountModel model);
-        Task<bool> EditProductAsync();
+        Task<bool> EditProductAsync(Product product);
     }
 }

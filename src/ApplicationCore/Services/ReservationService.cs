@@ -30,12 +30,58 @@ namespace ApplicationCore.Services
 
                 await _reservationRepository.CreateReservationAsync(newReservation);
 
-                if(newReservation.ID == null)
+                if (newReservation.ID == null)
                 {
                     return false;
                 }
 
                 return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> CancelReservationAsync()
+        {
+            try
+            {
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<ReservationResult>> GetActiveUserReservationsAsync(Guid userID)
+        {
+            try
+            {
+                List<Reservation> result = await _reservationRepository.GetAllActiveUserReservationsAsync(userID);
+                List<ReservationResult> reservationResults = MappingHelper.Mapper.Map<List<Reservation>, List<ReservationResult>>(result);
+
+                return reservationResults;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
+        public async Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID)
+        {
+            try
+            {
+                List<Reservation> result = await _reservationRepository.GetUserReservationListAsync(userID);
+                List<ReservationResult> reservationResults = MappingHelper.Mapper.Map<List<Reservation>, List<ReservationResult>>(result);
+
+                return reservationResults;
             }
             catch (Exception ex)
             {
