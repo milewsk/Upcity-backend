@@ -9,7 +9,9 @@ namespace ApplicationCore.Repositories.Interfaces
 {
     public interface IReservationRepository : IRepository<Reservation>
     {
-        Task GetReservationAsync(Guid reservationID);
-        Task<bool> CreateReservationAsync(Reservation reservation);
+        Task<List<Reservation>> GetUserReservationListAsync(Guid userID);
+        Task<Reservation> GetReservationAsync(Guid reservationID);
+        Task CreateReservationAsync(Reservation reservation);
+
     }
 }

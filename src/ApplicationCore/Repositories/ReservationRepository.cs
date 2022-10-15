@@ -22,13 +22,11 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
-        public async Task<List<Reservation>> GetUserReservationList(Guid userID)
+        public async Task<List<Reservation>> GetUserReservationListAsync(Guid userID)
         {
             try
             {
-                var userReservations = await _context.
-
-                return await _context.Reservations.Where(x => x.TableID != null).ToListAsync();
+                return await _context.Reservations.Where(x => x.UserID == userID).ToListAsync();
             }
             catch (Exception ex)
             {

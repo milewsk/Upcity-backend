@@ -1,4 +1,5 @@
 ﻿using Common.Dto.Reservation;
+using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IReservationService
     {
-        Task<bool> CreateReservationAsync(CreateReservationModel model);
+        Task<bool> CreateReservationAsync(Reservation reservation);
 
         Task<bool> CancelReservationAsync();
 

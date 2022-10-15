@@ -112,8 +112,8 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("places/search/{searchString}")]
         [HttpGet]
+        [Route("places/search/{searchString}")]
         public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
         {
             try

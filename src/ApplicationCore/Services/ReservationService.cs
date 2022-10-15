@@ -28,10 +28,14 @@ namespace ApplicationCore.Services
             {
                 Reservation newReservation = MappingHelper.Mapper.Map<CreateReservationModel, Reservation>(model);
 
+                await _reservationRepository.CreateReservationAsync(newReservation);
 
-                var result = await _reservationRepository.CreateReservationAsync();
+                if(newReservation.ID == null)
+                {
+                    return false;
+                }
 
-                return placeResults;
+                return true;
             }
             catch (Exception ex)
             {
