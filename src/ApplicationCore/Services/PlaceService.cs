@@ -60,7 +60,7 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-        
+
         public async Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
         {
             try
@@ -83,7 +83,24 @@ namespace ApplicationCore.Services
             try
             {
                 var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
-                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceShortcutResult>>(placeList);
+
+                List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
+                foreach (Place place in placeList)
+                {
+                    PlaceShortcutResult result = new PlaceShortcutResult()
+                    {
+                        Name = place.Name,
+                        Distance = 10,
+                        OpeningHour = "10:30",
+                        CloseHour = "19:30",
+                        Image = "sda",
+                        PlaceID = place.ID
+
+                    };
+
+                    placeResults.Add(result);
+                }
+        //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
 
                 return placeResults;
             }

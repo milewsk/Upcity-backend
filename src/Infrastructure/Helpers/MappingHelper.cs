@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Dto;
+using Common.Dto.Place;
 using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Infrastructure.Helpers
             MapperConfig = new MapperConfiguration(cfg => {
 
                 cfg.CreateMap<UserDto, User>();
+
+              //  cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>();
             });
         }
     }

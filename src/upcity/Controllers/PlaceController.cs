@@ -113,7 +113,7 @@ namespace PublicApi.Controllers
         }
 
         [HttpGet]
-        [Route("places/search/{searchString}")]
+        [Route("search/{searchString}")]
         public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
         {
             try
@@ -122,7 +122,12 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = _placeService.GetPlacesListBySearchStringAsync(searchString);
+                var result = await _placeService.GetPlacesListBySearchStringAsync(searchString);
+
+                if(result.Count == 0)
+                {
+                  return  Unauthorized();
+                }
 
                 return Ok(result);
             }

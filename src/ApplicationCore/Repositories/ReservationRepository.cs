@@ -62,12 +62,14 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task CreateReservationAsync(Reservation reservation)
+        public async Task<bool> CreateReservationAsync(Reservation reservation)
         {
             try
             {
                 await _context.Reservations.AddAsync(reservation);
                 await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception ex)
             {
