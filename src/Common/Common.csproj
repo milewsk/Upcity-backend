@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dto\Models\**" />
     <Compile Remove="Dto\Results\**" />
+    <EmbeddedResource Remove="Dto\Models\**" />
     <EmbeddedResource Remove="Dto\Results\**" />
+    <None Remove="Dto\Models\**" />
     <None Remove="Dto\Results\**" />
   </ItemGroup>
 
@@ -14,10 +17,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="3.1.13" />
     <PackageReference Include="NetTopologySuite.IO.SqlServerBytes" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Dto\Models\" />
   </ItemGroup>
 
 </Project>

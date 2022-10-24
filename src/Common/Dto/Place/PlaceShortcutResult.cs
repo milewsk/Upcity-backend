@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common.Utils;
+using NetTopologySuite.Geometries;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,5 +14,6 @@ namespace Common.Dto.Place
         public decimal? Distance { get; set; }
         public string OpeningHour { get; set; }
         public string CloseHour { get; set; }
+        public Coords Coords { get; set; }
     }
 }

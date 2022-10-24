@@ -3,6 +3,7 @@ using ApplicationCore.Services.Interfaces;
 using Common.Dto;
 using Common.Dto.Models;
 using Common.Dto.Place;
+using Common.Utils;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
@@ -60,6 +61,41 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+        public async Task<List<PlaceResult>> GetPlacesNearLocationAsync(string latitude, string longitude)
+        {
+            try
+            {
+                Coords cords = new Coords() { Y = Convert.ToDouble(longitude), X = Convert.ToDouble(latitude) };
+
+                List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
+                foreach (Place place in placeList)
+                {
+                    PlaceShortcutResult result = new PlaceShortcutResult()
+                    {
+                        Name = place.Name,
+                        Distance = 10,
+                        OpeningHour = "10:30",
+                        CloseHour = "19:30",
+                        Image = "sda",
+                        PlaceID = place.ID
+
+                    };
+
+                    placeResults.Add(result);
+                }
+                //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
+
+                var placeList = await _placeRepository.GetListNearLocationAsync(cords);
+                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+
+                return placeResults;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
 
         public async Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
         {
@@ -100,7 +136,7 @@ namespace ApplicationCore.Services
 
                     placeResults.Add(result);
                 }
-        //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
+                //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
 
                 return placeResults;
             }
