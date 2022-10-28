@@ -25,7 +25,9 @@ namespace Infrastructure.Helpers
 
                 cfg.CreateMap<UserDto, User>();
 
-              //  cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>();
+                //  cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>();
+
+                //cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>().ForMember(dest =>  ,);
             });
         }
     }

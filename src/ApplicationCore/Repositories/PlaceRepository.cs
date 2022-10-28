@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NetTopologySuite.Geometries;
+using Common.Utils;
 
 namespace ApplicationCore.Repositories
 {
@@ -39,7 +40,8 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Place>> GetListNearLocationAsync(double[] cords)
+        //done
+        public async Task<List<Place>> GetListNearLocationAsync(Coords cords)
         {
             try
             {
@@ -47,13 +49,17 @@ namespace ApplicationCore.Repositories
                 GeometryFactory geometryFactory = new GeometryFactory();
                 Coordinate userGeo = new Coordinate
                 {
-                    X = cords[0],
-                    Y = cords[1]
+                    X = cords.X,
+                    Y = cords.Y
                 };
 
-                var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
+                var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, userGeo.Y));
 
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
+                return await _context.Places
+                            .Include(x => x.Coordinates)
+                            .Include(x => x.PlaceOpeningHours)
+                            .Include(x => x.PlaceTags)
+                            .Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -62,7 +68,8 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Place>> GetPlacesByCategoryAsync(double[] cords, Guid categoryID)
+        //done
+        public async Task<List<Place>> GetPlacesByCategoryAsync(Coords cords, Guid categoryID)
         {
             try
             {
@@ -71,7 +78,7 @@ namespace ApplicationCore.Repositories
                 List<Place> result = new List<Place>();
 
                 foreach(var item in list)
-                {
+                {                  
                     foreach(var cat in item.PlaceTags)
                     {
                         if(cat.ID == categoryID)
@@ -90,11 +97,13 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        //done
         private double MeterToDegree(double meters, double latitude)
         {
             return meters / (111.32 * 1000 * Math.Cos(latitude * (Math.PI / 180)));
         }
 
+        //done
         public async Task<List<Place>> GetListBySearchStringAsync(string searchedText)
         {
             try

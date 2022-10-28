@@ -27,25 +27,38 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1 &&  x.Type == TagType.Place).ToListAsync();
+                return await _context.Tags.Where(x => x.IsActive == 1 && x.Type == TagType.Place).ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
-        }  
+        }
 
         public async Task<List<Tag>> GetAllProductTagsAsync()
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1 &&  x.Type == TagType.Product).ToListAsync();
+                return await _context.Tags.Where(x => x.IsActive == 1 && x.Type == TagType.Product).ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
+            }
+        } 
+        
+        public async Task<List<Tag>> GetListByIDsAsync(List<Guid> tagIDs)
+        {
+            try
+            {
+                return await _context.Tags.Where(x => x.IsActive == 1 && tagIDs.Contains(x.ID)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
             }
         }
 
@@ -59,7 +72,7 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -73,9 +86,42 @@ namespace ApplicationCore.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return null;
+                throw;
             }
         }
         //create and delete with all links to them
+        public async Task<bool> AddProductTagAsync(IEnumerable<ProductTag> list)
+        {
+            try
+            {
+                await _context.ProductTags.AddRangeAsync(list);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> AddPlaceTagAsync(IEnumerable<PlaceTag> list)
+        {
+            try
+            {
+                await _context.PlaceTags.AddRangeAsync(list);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
     }
 }

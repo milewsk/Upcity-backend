@@ -9,6 +9,8 @@ using Infrastructure.Helpers;
 using Infrastructure.Helpers.Enums;
 using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Operation.Distance;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -45,48 +47,35 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude)
-        {
-            try
-            {
-                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
-                var placeList = await _placeRepository.GetListNearLocationAsync(cords);
-                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
-
-                return placeResults;
-            }
-            catch (Exception ex)
-            {
-                _appLogger.LogError(ex.Message);
-                throw;
-            }
-        }
-        public async Task<List<PlaceResult>> GetPlacesNearLocationAsync(string latitude, string longitude)
+        public async Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude)
         {
             try
             {
                 Coords cords = new Coords() { Y = Convert.ToDouble(longitude), X = Convert.ToDouble(latitude) };
 
                 List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
+
+                var placeList = await _placeRepository.GetListNearLocationAsync(cords);
                 foreach (Place place in placeList)
                 {
+                    // count distance
+                    var distance = CalculateDistance(latitude, longitude, place.Coordinates);
+                    //coords
+                    var placeCords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.X };
+
                     PlaceShortcutResult result = new PlaceShortcutResult()
                     {
                         Name = place.Name,
-                        Distance = 10,
-                        OpeningHour = "10:30",
-                        CloseHour = "19:30",
-                        Image = "sda",
-                        PlaceID = place.ID
-
+                        Distance = distance,
+                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
+                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        Image = place.Image,
+                        PlaceID = place.ID,
+                        Coords = placeCords,
                     };
 
                     placeResults.Add(result);
                 }
-                //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
-
-                var placeList = await _placeRepository.GetListNearLocationAsync(cords);
-                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
 
                 return placeResults;
             }
@@ -101,7 +90,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                double[] cords = { Convert.ToDouble(longitude), Convert.ToDouble(latitude) };
+                Coords cords = new Coords() { Y = Convert.ToDouble(latitude), X = Convert.ToDouble(longitude) };
                 var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, Guid.Parse(categoryID));
                 var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
 
@@ -114,23 +103,36 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString)
+        public async Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude)
         {
             try
             {
                 var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
 
+                GeometryFactory geometryFactory = new GeometryFactory();
+                Coordinate userGeo = new Coordinate
+                {
+                    X = Convert.ToDouble(longitude),
+                    Y = Convert.ToDouble(latitude)
+                };
+
+                var userPoint = geometryFactory.CreatePoint(userGeo);
+
+
                 List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
                 foreach (Place place in placeList)
                 {
+
+                    var distance = place.Coordinates.Location.Distance(userPoint);
                     PlaceShortcutResult result = new PlaceShortcutResult()
                     {
                         Name = place.Name,
-                        Distance = 10,
-                        OpeningHour = "10:30",
-                        CloseHour = "19:30",
-                        Image = "sda",
-                        PlaceID = place.ID
+                        Distance = distance,
+                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
+                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        Image = place.Image,
+                        PlaceID = place.ID,
+                        Coords = { X = place.Coordinates.Location.X, Y = place.Coordinates.Location.Y },
 
                     };
 
@@ -151,7 +153,6 @@ namespace ApplicationCore.Services
         {
             try
             {
-                // create Place
                 Place newPlace = new Place(model.Name, model.Image, 1);
                 await _placeRepository.CreatePlaceAsync(newPlace);
 
@@ -227,6 +228,30 @@ namespace ApplicationCore.Services
 
 
                 return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        private double CalculateDistance(string latitude, string longitude, Infrastructure.Data.Models.Coordinates placeCoordinates)
+        {
+            try
+            {
+                GeometryFactory geometryFactory = new GeometryFactory();
+                Coordinate userGeo = new Coordinate
+                {
+                    X = Convert.ToDouble(longitude),
+                    Y = Convert.ToDouble(latitude)
+                };
+
+                var userPoint = geometryFactory.CreatePoint(userGeo);
+
+                var distance = placeCoordinates.Location.Distance(userPoint);
+
+                return distance;
             }
             catch (Exception ex)
             {

@@ -32,7 +32,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Set<TEntity>().FindAsync(id);
+                return await _context.Set<TEntity>().Where(x => x.ID == id).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -141,6 +141,11 @@ namespace ApplicationCore.Repositories
         {
             _context.Set<TEntity>().RemoveRange(entities);
             _context.SaveChanges();
+        }
+
+        public virtual Task SaveChangesAsync()
+        {
+           return  _context.SaveChangesAsync();
         }
     }
 }

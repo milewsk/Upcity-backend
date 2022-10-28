@@ -11,7 +11,12 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<List<Tag>> GetAllPlaceTagsAsync();
         Task<List<Tag>> GetAllProductTagsAsync();
+        Task<List<Tag>> GetListByIDsAsync(List<Guid> tagIDs);
         Task<List<Tag>> GetPlaceTagListAsync(Guid placeID);
         Task<List<Tag>> GetProductTagListAsync(Guid productID);
+
+
+        Task<bool> AddProductTagAsync(IEnumerable<ProductTag> list);
+        Task<bool> AddPlaceTagAsync(IEnumerable<PlaceTag> list);
     }
 }

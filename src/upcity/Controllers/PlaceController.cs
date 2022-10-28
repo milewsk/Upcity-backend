@@ -30,34 +30,6 @@ namespace PublicApi.Controllers
             _authService = authService;
         }
 
-        [HttpGet]
-        [Route("places")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetPlacesListAsync()
-        {
-            try
-            {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
-
-                var result = await _placeService.GetPlacesAsync();
-                if (result.Count != 0)
-                {
-                    return Ok(result);
-                }
-
-                return BadRequest(new { errorMessage = "Nie znaleziono żadnych miejsc" });
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
         //lokalizacja
         [Route("list/{latitude}/{longitude}")]
         [HttpGet]
@@ -69,7 +41,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesNearUserLocationAsync(latitude, longitude);
+                var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude);
 
                 if (result.Count > 0)
                 {
@@ -85,7 +57,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        //
+        //duplikacja z tym wyżej
         [Route("places/{latitude}/{longitude}/{categoryID}")]
         [HttpGet]
         public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string categoryID)
@@ -112,9 +84,10 @@ namespace PublicApi.Controllers
             }
         }
 
+        //done
         [HttpGet]
-        [Route("search/{searchString}")]
-        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
+        [Route("search/{searchString}/{latitude}/{longitude}")]
+        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString, [FromRoute] string latitude, [FromRoute] string longitude)
         {
             try
             {
@@ -122,33 +95,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesListBySearchStringAsync(searchString);
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
-        [HttpGet]
-        [Route("list/{longitude}/{latitude}")]
-        public async Task<IActionResult> GetPlaceListBasedOnPossitionAsync([FromRoute] string searchString)
-        {
-            try
-            {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
-                var result = await _placeService.GetPlacesListBySearchStringAsync(searchString);
-
-                if (result.Count == 0)
-                {
-                    return Unauthorized();
-                }
+                var result = await _placeService.GetPlacesListBySearchStringAsync(searchString, latitude, longitude);
 
                 return Ok(result);
             }

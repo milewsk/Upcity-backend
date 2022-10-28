@@ -11,7 +11,7 @@ namespace Common.Dto.Place
         public Guid PlaceID { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
-        public decimal? Distance { get; set; }
+        public double? Distance { get; set; }
         public string OpeningHour { get; set; }
         public string CloseHour { get; set; }
         public Coords Coords { get; set; }
