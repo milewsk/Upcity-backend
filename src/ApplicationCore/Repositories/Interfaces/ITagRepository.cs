@@ -18,5 +18,10 @@ namespace ApplicationCore.Repositories.Interfaces
 
         Task<bool> AddProductTagAsync(IEnumerable<ProductTag> list);
         Task<bool> AddPlaceTagAsync(IEnumerable<PlaceTag> list);
+        Task<bool> RemoveTagBoundsAsync(Tag tag);
+
+        Task<List<Guid>> FindNotCreatedProductTags(Product product, List<Guid> tagIDs);
+        Task<List<Guid>> FindNotCreatedPlaceTags(Place place, List<Guid> tagIDs);
+
     }
 }

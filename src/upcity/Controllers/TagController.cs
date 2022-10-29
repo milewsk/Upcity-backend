@@ -48,5 +48,32 @@ namespace PublicApi.Controllers
                 throw;
             }
         }
+
+        // i want to implement that but i don't know if i would have time
+        //usuń rekordy placeTag/productTag po dezaktywacji Taga
+
+        [Route("delete/{tagID}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteTag([FromRoute] string tagID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                Guid tagGuid = Guid.Parse(tagID);
+
+                bool result = await _tagService.DeleteTagAsync(tagGuid);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }

@@ -11,8 +11,7 @@ namespace ApplicationCore.Services.Interfaces
     {
         Task<bool> CreateTagAsync(CreateTagModel model);
         Task<bool> DeleteTagAsync(Guid tagID);
-        Task<bool> CreatePlaceTags(Guid placeID, List<Guid> tagIDs);
+        Task<bool> CreatePlaceTagsAsync(Place place, List<Guid> tagIDs);
         Task<bool> CreateProductTagsAsync(Product product, List<Guid> tagIDs);
-        Task<bool> ActivateTagAsync(Guid tagID);
     }
 }

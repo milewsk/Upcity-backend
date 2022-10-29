@@ -34,7 +34,6 @@ namespace ApplicationCore.Services
                     LastModificationDate = DateTime.Now,
                     Name = model.Name,
                     Color = model.Color,
-                    IsActive = 1,
                 };
 
                 var result = await _tagRepository.AddAsync(newTag);
@@ -54,11 +53,11 @@ namespace ApplicationCore.Services
             {
                 var tag = await _tagRepository.GetOne(tagID);
 
+                await _tagRepository.RemoveTagBoundsAsync(tag);
+
                 if (tag != null)
                 {
-                    tag.LastModificationDate = DateTime.Now;
-                    tag.IsActive = 0;
-
+                    await _tagRepository.Remove(tag);
                     await _tagRepository.SaveChangesAsync();
 
                     return true;
@@ -73,13 +72,43 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<bool> CreatePlaceTags(Guid placeID, List<Guid> tagIDs)
+        public async Task<bool> CreatePlaceTagsAsync(Place place, List<Guid> tagIDs)
         {
             try
             {
+                List<PlaceTag> productTagList = new List<PlaceTag>();
+                var tagList = await _tagRepository.GetListByIDsAsync(tagIDs);
+
+                if (tagList.Count == 0)
+                {
+                    return false;
+                }
+
+                var listIDs = await _tagRepository.FindNotCreatedPlaceTags(place, tagIDs);
 
 
-                return true;
+                if (listIDs.Count == 0)
+                {
+                    return true;
+                }
+
+                //we asume that every tag here is active
+                foreach (var id in listIDs)
+                {
+                    PlaceTag productTag = new PlaceTag()
+                    {
+                        CreationDate = DateTime.Now,
+                        LastModificationDate = DateTime.Now,
+                        PlaceID = place.ID,
+                        TagID = id
+                    };
+
+                    productTagList.Add(productTag);
+                }
+
+                var result = await _tagRepository.AddPlaceTagAsync(productTagList);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -100,15 +129,23 @@ namespace ApplicationCore.Services
                     return false;
                 }
 
+                var listIDs = await _tagRepository.FindNotCreatedProductTags(product, tagIDs);
+
+
+                if (listIDs.Count == 0)
+                {
+                    return true;
+                }
+
                 //we asume that every tag here is active
-                foreach (var tag in tagList)
+                foreach (var id in listIDs)
                 {
                     ProductTag productTag = new ProductTag()
                     {
                         CreationDate = DateTime.Now,
                         LastModificationDate = DateTime.Now,
                         ProductID = product.ID,
-                        TagID = tag.ID
+                        TagID = id
                     };
 
                     productTagList.Add(productTag);
@@ -125,29 +162,5 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<bool> ActivateTagAsync(Guid tagID)
-        {
-            try
-            {
-                var tag = await _tagRepository.GetOne(tagID);
-
-                if (tag != null)
-                {
-                    tag.LastModificationDate = DateTime.Now;
-                    tag.IsActive = 1;
-
-                    await _tagRepository.SaveChangesAsync();
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                _appLogger.LogError(ex.Message);
-                throw;
-            }
-        }
     }
 }

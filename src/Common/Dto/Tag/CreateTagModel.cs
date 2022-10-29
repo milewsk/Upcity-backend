@@ -8,7 +8,6 @@ namespace Common.Dto.Tag
     public class CreateTagModel
     {
         public string Name { get; set; }
-
         public string Color { get; set; }
         public TagType Type { get; set; }
     }

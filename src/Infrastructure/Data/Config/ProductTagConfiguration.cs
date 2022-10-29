@@ -7,14 +7,15 @@ using System.Text;
 
 namespace Infrastructure.Data.Config
 {
-    public class TagConfiguration : IEntityTypeConfiguration<Tag>
+    class ProductTagConfiguration : IEntityTypeConfiguration<ProductTag>
     {
-        public void Configure(EntityTypeBuilder<Tag> builder)
+        public void Configure(EntityTypeBuilder<ProductTag> builder)
         {
             builder.HasKey(b => b.ID);
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
-            builder.Property(b => b.Color).IsRequired().HasDefaultValue("#fff");
+            builder.Property(b => b.ProductID).IsRequired();
+            builder.Property(b => b.TagID).IsRequired();
         }
     }
 }

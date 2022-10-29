@@ -52,6 +52,7 @@ namespace ApplicationCore.Services
                     Name = productModel.Name,
                     Price = productModel.Price,
                     Description = productModel.Description,
+                    PlaceMenuCategoryID = productModel.CategoryID,
                 };
 
                 var result = await _productRepository.CreateProductAsync(newProduct);
@@ -76,7 +77,7 @@ namespace ApplicationCore.Services
             try
             {
                 var productToDelete = await _productRepository.GetOne(productID);
-                
+
                 if (productToDelete.ID == null)
                 {
                     return false;
@@ -90,14 +91,14 @@ namespace ApplicationCore.Services
                 _appLogger.LogError(ex.Message);
                 throw;
             }
-        }  
-        
+        }
+
         public async Task<bool> SetDiscountAsync(ProductSetDiscountModel model)
         {
             try
             {
                 var productToEdit = await _productRepository.GetOne(model.ProductID);
-                
+
 
                 var result = await _productRepository.SetDiscountAsync(model);
                 return result;

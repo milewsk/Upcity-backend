@@ -142,18 +142,8 @@ namespace ApplicationCore.Repositories
                     return false;
                 }
 
-                Product newProduct = new Product()
-                {
-                    CreationDate = DateTime.Now,
-                    LastModificationDate = DateTime.Now,
-                    Name = model.Name,
-                    Price = model.Price,
-                    Description = model.Description,
-                };
-
-                var product = await _context.Products.AddAsync(newProduct);
+                var product = await _context.Products.AddAsync(model);
                 await _context.SaveChangesAsync();
-
 
                 if (product == null)
                 {

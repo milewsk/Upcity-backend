@@ -149,33 +149,6 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("place/menu/product/add")]
-        [HttpPost]
-        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
-        {
-            try
-            {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
-
-                var result = await _productService.CreateProductAsync(productModel);
-
-                if (result == true)
-                {
-                    return Ok(result);
-                }
-
-                return BadRequest(false);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
         [Route("place/menu/category/add")]
         [HttpPost]
         public async Task<IActionResult> CreatePlaceMenuCategoryAsync([FromBody] CreatePlaceMenuCategoryModel categoryModel)

@@ -27,7 +27,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1 && x.Type == TagType.Place).ToListAsync();
+                return await _context.Tags.Where(x =>  x.Type == TagType.Place).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -40,20 +40,20 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1 && x.Type == TagType.Product).ToListAsync();
+                return await _context.Tags.Where(x => x.Type == TagType.Product).ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 throw;
             }
-        } 
-        
+        }
+
         public async Task<List<Tag>> GetListByIDsAsync(List<Guid> tagIDs)
         {
             try
             {
-                return await _context.Tags.Where(x => x.IsActive == 1 && tagIDs.Contains(x.ID)).ToListAsync();
+                return await _context.Tags.Where(x => tagIDs.Contains(x.ID)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 var placeTags = await _context.PlaceTags.Where(x => x.PlaceID == placeID).Select(x => x.TagID).ToListAsync();
-                return await _context.Tags.Where(x => x.IsActive == 1 && placeTags.Contains(x.ID)).ToListAsync();
+                return await _context.Tags.Where(x => placeTags.Contains(x.ID)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 var productTags = await _context.ProductTags.Where(x => x.ProductID == productID).Select(x => x.TagID).ToListAsync();
-                return await _context.Tags.Where(x => x.IsActive == 1 && productTags.Contains(x.ID)).ToListAsync();
+                return await _context.Tags.Where(x => productTags.Contains(x.ID)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -107,6 +107,31 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<bool> RemoveTagBoundsAsync(Tag tag)
+        {
+            try
+            {
+                if (tag.Type == TagType.Place)
+                {
+                    var list = await _context.PlaceTags.Where(x => x.TagID == tag.ID).ToListAsync();
+                    _context.RemoveRange(list);
+                }
+                else
+                {
+                    var list = await _context.ProductTags.Where(x => x.TagID == tag.ID).ToListAsync();
+                    _context.RemoveRange(list);
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task<bool> AddPlaceTagAsync(IEnumerable<PlaceTag> list)
         {
             try
@@ -116,6 +141,54 @@ namespace ApplicationCore.Repositories
                 await _context.SaveChangesAsync();
 
                 return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<Guid>> FindNotCreatedProductTagsAsync(Product product, List<Guid> tagIDs)
+        {
+            try
+            {
+                var result = new List<Guid>();
+
+                foreach (var id in tagIDs)
+                {
+                    bool isExist = await _context.ProductTags.Where(x => id == x.TagID && product.ID == x.ProductID).AnyAsync();
+                    if (!isExist)
+                    {
+                        result.Add(id);
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<Guid>> FindNotCreatedPlaceTagsAsync(Place place, List<Guid> tagIDs)
+        {
+            try
+            {
+                var result = new List<Guid>();
+
+                foreach (var id in tagIDs)
+                {
+                    bool isExist = await _context.PlaceTags.Where(x => id == x.TagID && place.ID == x.PlaceID).AnyAsync();
+                    if (!isExist)
+                    {
+                        result.Add(id);
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {

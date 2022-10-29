@@ -1,4 +1,6 @@
 ﻿using ApplicationCore.Services.Interfaces;
+using Common.Dto.Models;
+using Common.Enums;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,6 +25,33 @@ namespace PublicApi.Controllers
             _productService = productService;
             _jwtService = jwtService;
             _authService = authService;
+        }
+
+        [Route("add")]
+        [HttpPost]
+        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _productService.CreateProductAsync(productModel);
+
+                if (result == true)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(false);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
         }
     }
 }
