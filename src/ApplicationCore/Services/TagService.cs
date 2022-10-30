@@ -84,7 +84,7 @@ namespace ApplicationCore.Services
                     return false;
                 }
 
-                var listIDs = await _tagRepository.FindNotCreatedPlaceTags(place, tagIDs);
+                var listIDs = await _tagRepository.FindNotCreatedPlaceTagsAsync(place, tagIDs);
 
 
                 if (listIDs.Count == 0)
@@ -129,7 +129,7 @@ namespace ApplicationCore.Services
                     return false;
                 }
 
-                var listIDs = await _tagRepository.FindNotCreatedProductTags(product, tagIDs);
+                var listIDs = await _tagRepository.FindNotCreatedProductTagsAsync(product, tagIDs);
 
 
                 if (listIDs.Count == 0)

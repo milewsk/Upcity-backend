@@ -27,7 +27,11 @@ namespace Infrastructure.Helpers
 
                 //  cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>();
 
-                //cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>().ForMember(dest =>  ,);
+                cfg.CreateMap<Place, PlaceShortcutResult>()
+                        .ForMember(dest => dest.CloseHour , opt => opt.MapFrom(src => src.PlaceOpeningHours.Closes.ToString()))
+                        .ForMember(dest => dest.OpeningHour, opt => opt.MapFrom(src => src.PlaceOpeningHours.Opens.ToString()))
+                        .ForMember(dest => dest.OpeningHour, opt => opt.MapFrom(src => src.PlaceOpeningHours.Opens.ToString()))
+                        ;
             });
         }
     }

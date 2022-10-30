@@ -86,15 +86,38 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
+        public async Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
         {
             try
             {
-                Coords cords = new Coords() { Y = Convert.ToDouble(latitude), X = Convert.ToDouble(longitude) };
+                Coords cords = new Coords() { Y = Convert.ToDouble(longitude), X = Convert.ToDouble(latitude) };
+
+                List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
+
                 var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, Guid.Parse(categoryID));
-                var placeResults = MappingHelper.Mapper.Map<List<Place>, List<PlaceResult>>(placeList);
+                foreach (Place place in placeList)
+                {
+                    // count distance
+                    var distance = CalculateDistance(latitude, longitude, place.Coordinates);
+                    //coords
+                    var placeCords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.X };
+
+                    PlaceShortcutResult result = new PlaceShortcutResult()
+                    {
+                        Name = place.Name,
+                        Distance = distance,
+                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
+                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        Image = place.Image,
+                        PlaceID = place.ID,
+                        Coords = placeCords,
+                    };
+
+                    placeResults.Add(result);
+                }
 
                 return placeResults;
+               
             }
             catch (Exception ex)
             {
@@ -138,7 +161,6 @@ namespace ApplicationCore.Services
 
                     placeResults.Add(result);
                 }
-                //        var placeResults = MappingHelper.Mapper.Map<List<PlaceShortcutResult>>(placeList);
 
                 return placeResults;
             }

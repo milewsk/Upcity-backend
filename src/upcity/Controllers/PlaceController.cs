@@ -58,9 +58,9 @@ namespace PublicApi.Controllers
         }
 
         //duplikacja z tym wyżej
-        [Route("places/{latitude}/{longitude}/{categoryID}")]
+        [Route("places/{latitude}/{longitude}/{tagID}")]
         [HttpGet]
-        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string categoryID)
+        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string tagID)
         {
             try
             {
@@ -68,14 +68,10 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, categoryID);
+                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID);
 
-                if (result.Count > 0)
-                {
+
                     return Ok(result);
-                }
-
-                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
             }
             catch (Exception e)
             {

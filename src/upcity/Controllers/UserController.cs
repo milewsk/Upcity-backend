@@ -26,12 +26,13 @@ namespace upcity.Controllers
     {
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
+        private readonly IAuthorizationService _authService;
 
-        public UserController(IUserService userService, IJwtService jwtService)
+        public UserController(IUserService userService, IJwtService jwtService, IAuthorizationService authorizationService)
         {
             _userService = userService;
             _jwtService = jwtService;
-
+            _authService = authorizationService;
         }
 
         //move to service
@@ -162,5 +163,29 @@ namespace upcity.Controllers
             }
         }
 
+        [Route("loyalityCard")]
+        [HttpGet]
+        public async Task<IActionResult> GetLoyalityCardInfo([FromRoute] string email)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                var isEmailAlreadyTaken = await _userService.IsEmailExist(email);
+                if (isEmailAlreadyTaken)
+                {
+                    return Conflict();
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }

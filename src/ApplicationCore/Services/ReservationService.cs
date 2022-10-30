@@ -3,6 +3,8 @@ using ApplicationCore.Services.Interfaces;
 using Common.Dto.Reservation;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
+using Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,12 @@ namespace ApplicationCore.Services
     {
         private readonly ILogger<ReservationService> _appLogger;
         private readonly IReservationRepository _reservationRepository;
+        private readonly IUserRepository _userRepository;
 
-        public ReservationService(IReservationRepository reservationRepository, ILogger<ReservationService> appLogger)
+        public ReservationService(IReservationRepository reservationRepository, IUserRepository userRepository, ILogger<ReservationService> appLogger)
         {
             _reservationRepository = reservationRepository;
+            _userRepository = userRepository;
             _appLogger = appLogger;
         }
 
@@ -74,14 +78,34 @@ namespace ApplicationCore.Services
             }
         }
         
-        public async Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID)
+        public async Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce)
         {
             try
             {
-                List<Reservation> result = await _reservationRepository.GetUserReservationListAsync(userID);
-                List<ReservationResult> reservationResults = MappingHelper.Mapper.Map<List<Reservation>, List<ReservationResult>>(result);
+                List<ReservationShortcutResult> result = new List<ReservationShortcutResult>();
 
-                return reservationResults;
+                //we want to get user based on request
+                if (request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = jwtSerivce.Verify(jwtHeader.ToString());
+                    Guid parsedGuid = Guid.Parse(token.Payload.Iss);
+                    User user = await _userRepository.GetUserByGuid(parsedGuid);
+
+                    List<Reservation> reservations = await _reservationRepository.GetUserReservationListAsync(user.ID);
+                    foreach(var reservation in reservations)
+                    {
+                        ReservationShortcutResult item = new ReservationShortcutResult()
+                        {
+                            ReservationID = reservation.ID,
+                            ReservationDate = reservation.StartTime.Date.ToShortDateString(),
+                            StartHour = reservation.StartTime.Date.ToShortTimeString(),
+                            SeatCount = reservation.Table.ChairsAmount,
+                            IsActive = DateTime.Now >= reservation.StartTime.Date ? 0 : 1,
+                            PlaceName = reservation.Table.Place.Name
+                        };
+                    }
+                }
+                return result;
             }
             catch (Exception ex)
             {

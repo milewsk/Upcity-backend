@@ -53,6 +53,7 @@ namespace ApplicationCore.Repositories
                     Y = cords.Y
                 };
 
+                //20km
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, userGeo.Y));
 
                 return await _context.Places
