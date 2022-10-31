@@ -193,13 +193,14 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
+        public async Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
         {
             try
             {
-                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 await _context.AddRangeAsync(openingHoursList);
                 await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception ex)
             {

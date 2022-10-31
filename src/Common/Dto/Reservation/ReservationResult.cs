@@ -10,9 +10,8 @@ namespace Common.Dto.Reservation
         public string PlaceName { get; set; }
         public int SeatsCount { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-
-
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public bool IsActive { get; set; }
     }
 }

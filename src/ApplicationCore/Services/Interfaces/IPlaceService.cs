@@ -12,16 +12,17 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IPlaceService
     {
-        Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>> CreatePlaceAsync(CreatePlaceModel model);
+        Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreatePlaceAsync(CreatePlaceModel model);
+        Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList);
+        Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
 
         Task<List<PlaceResult>> GetPlacesAsync();
         Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID);
         Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude);
         Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude);
-
-
+   
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
-        Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
+  
     }
 }

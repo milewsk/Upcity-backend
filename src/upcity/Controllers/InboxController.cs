@@ -10,7 +10,7 @@ namespace PublicApi.Controllers
 {
     public class InboxController : ControllerBase
     {
-        private readonly I _reservationService;
+        private readonly IReservationService _reservationService;
         private readonly IProductService _productService;
         private readonly IJwtService _jwtService;
         private readonly IAuthorizationService _authService;

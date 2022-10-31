@@ -19,7 +19,7 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<List<Place>> GetPlacesByCategoryAsync(Coords coords, Guid categoryID);
         Task CreatePlaceAsync(Place newPlace);
         Task CreatePlaceDetailsAsync(PlaceDetails newPlaceDetails);
-        Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
+        Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
         Task CreatePlaceTagsAsync(List<PlaceTag> placeTags);
         Task CreatePlaceMenuAsync(PlaceMenu placeMenu);
     }

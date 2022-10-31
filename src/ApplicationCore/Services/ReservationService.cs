@@ -48,10 +48,12 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<bool> CancelReservationAsync()
+        public async Task<bool> CancelReservationAsync(Guid reservationID)
         {
             try
             {
+                var reservation = await _reservationRepository.GetOne(reservationID);
+                await _reservationRepository.Remove(reservation);
 
                 return true;
             }
@@ -103,8 +105,34 @@ namespace ApplicationCore.Services
                             IsActive = DateTime.Now >= reservation.StartTime.Date ? 0 : 1,
                             PlaceName = reservation.Table.Place.Name
                         };
+
+                        result.Add(item);
                     }
                 }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<ReservationResult> GetReservationDetailsAsync(Guid reservationID)
+        {
+            try
+            {
+                Reservation reservation = await _reservationRepository.GetReservationAsync(reservationID);
+                ReservationResult result = new ReservationResult()
+                {
+                    PlaceID = reservation.Table.PlaceID,
+                    PlaceName = reservation.Table.Place.Name,
+                    SeatsCount = reservation.Table.ChairsAmount,
+                    EndTime = reservation.EndTime.Date.ToShortTimeString(),
+                    StartTime = reservation.StartTime.Date.ToShortTimeString(),
+                    IsActive = reservation.StartTime > DateTime.Now
+                };
+
                 return result;
             }
             catch (Exception ex)

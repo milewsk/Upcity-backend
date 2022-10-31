@@ -171,7 +171,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>> CreatePlaceAsync(CreatePlaceModel model)
+        public async Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreatePlaceAsync(CreatePlaceModel model)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace ApplicationCore.Services
 
                 if (newPlace.ID == null)
                 {
-                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                    return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
                 }
 
                 // create Place Details
@@ -202,7 +202,7 @@ namespace ApplicationCore.Services
 
                 if (newPlaceDetails.ID == null)
                 {
-                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                    return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
                 }
 
                 // create Place Tags
@@ -235,21 +235,10 @@ namespace ApplicationCore.Services
 
                 if (newPlaceMenu.ID == null)
                 {
-                    return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.IncorrectData, null);
+                    return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
                 }
 
-                // create PLace
-
-                //basicly we want to return result to redirect to place details
-
-
-                var result = new PlaceDetailsResult()
-                {
-
-                };
-
-
-                return new Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>(PlaceCreatePlaceStatusResult.Ok, result);
+                return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.Ok, true);
             }
             catch (Exception ex)
             {
@@ -306,6 +295,38 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+
+
+        public async Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList)
+        {
+            try
+            {
+                List<PlaceOpeningHours> placeOpeningHours = new List<PlaceOpeningHours>();
+
+                foreach(var item in modelList.Items)
+                {
+                    //var itemToAdd = new PlaceOpeningHours()
+                    //{
+                    //    PlaceID = Guid.Parse(modelList.PlaceID),
+                    //    CreationDate = DateTime.Now,
+                    //    LastModificationDate = DateTime.Now,
+                    //    Opens = item.OpenTime,
+                    //    Closes = item.CloseTime,
+                    //    DayOfWeek = item.DayOfWeek
+                    //};
+
+                    //placeOpeningHours.Add(itemToAdd);
+                }
+
+                return await _placeRepository.CreatePlaceOpeningHoursAsync(placeOpeningHours); ;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
         public Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)
         {
             try

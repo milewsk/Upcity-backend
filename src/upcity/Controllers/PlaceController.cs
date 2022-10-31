@@ -68,10 +68,10 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
+
                 var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID);
 
-
-                    return Ok(result);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -115,6 +115,33 @@ namespace PublicApi.Controllers
                 var result = await _placeService.CreatePlaceAsync(placeModel);
 
                 return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("openingHours/create")]
+        [HttpPost]
+        public async Task<IActionResult> CreateOpeningHours([FromBody] CreateOpeningHoursModelList modelList)
+        {
+            try
+            {
+
+                var res = modelList;
+
+                var date = new DateTime(1970, 01, 01).AddMilliseconds(double.Parse(res.Items[0].OpenTime)).ToLocalTime();
+
+                DateTime x = date;
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
+                // var result = await _placeService.CreatePlaceAsync(placeModel);
+
+                return Ok(x);
             }
             catch (Exception e)
             {

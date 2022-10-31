@@ -79,7 +79,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _reservationService.GetDetails(reservationID);
+                var result = await _reservationService.GetReservationDetailsAsync(reservationID);
 
                 return Ok(result);
             }
@@ -101,17 +101,7 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
 
-                List<ReservationShortcutResult> result  = new List<ReservationShortcutResult>();
-
-                //we want to get user based on request
-                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
-                {
-                    var token = _jwtService.Verify(jwtHeader.ToString());
-                    Guid parsedGuid = Guid.Parse(token.Payload.Iss);
-
-                    User user = await _userRepository.GetUserByGuid(parsedGuid);
-                     result = await _reservationService.GetUserReservationListAsync(Request, _jwtService);
-                }
+                var result = await _reservationService.GetUserReservationListAsync(Request, _jwtService);
 
                 return Ok(result);
             }

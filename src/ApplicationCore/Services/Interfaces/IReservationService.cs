@@ -15,5 +15,7 @@ namespace ApplicationCore.Services.Interfaces
         Task<bool> CancelReservationAsync(Guid reservationID);
         Task<List<ReservationResult>> GetActiveUserReservationsAsync(Guid userID);
         Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce);
+        Task<ReservationResult> GetReservationDetailsAsync(Guid reservationID);
+
     }
 }
