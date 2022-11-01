@@ -27,8 +27,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 return await _context.Reservations
-                    .Include(x => x.Table)
-                        .ThenInclude(z => z.Place)
+                    .Include(x => x.Place)
                     .Where(x => x.UserID == userID).OrderBy(x => x.StartTime).ToListAsync();
             }
             catch (Exception ex)

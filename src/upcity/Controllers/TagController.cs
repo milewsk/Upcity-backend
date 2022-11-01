@@ -15,14 +15,13 @@ namespace PublicApi.Controllers
     public class TagController : ControllerBase
     {
         private readonly ITagService _tagService;
-        private readonly IProductService _productService;
+
         private readonly IJwtService _jwtService;
         private readonly IAuthorizationService _authService;
 
-        public TagController(ITagService tagService, IProductService productService, IJwtService jwtService, IAuthorizationService authService)
+        public TagController(ITagService tagService, IJwtService jwtService, IAuthorizationService authService)
         {
             _tagService = tagService;
-            _productService = productService;
             _jwtService = jwtService;
             _authService = authService;
         }
@@ -33,10 +32,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
 
                 bool result = await _tagService.CreateTagAsync(tagModel);
 

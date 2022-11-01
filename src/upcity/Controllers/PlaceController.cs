@@ -43,12 +43,8 @@ namespace PublicApi.Controllers
                 }
                 var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude);
 
-                if (result.Count > 0)
-                {
-                    return Ok(result);
-                }
 
-                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -60,7 +56,7 @@ namespace PublicApi.Controllers
         //duplikacja z tym wyżej
         [Route("places/{latitude}/{longitude}/{tagID}")]
         [HttpGet]
-        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string tagID)
+        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] Guid tagID)
         {
             try
             {
@@ -139,9 +135,9 @@ namespace PublicApi.Controllers
                 //{
                 //    return Unauthorized();
                 //}
-                // var result = await _placeService.CreatePlaceAsync(placeModel);
+                var result = await _placeService.CreateOpeningHoursAsync(modelList);
 
-                return Ok(x);
+                return Ok(true);
             }
             catch (Exception e)
             {

@@ -101,9 +101,9 @@ namespace ApplicationCore.Services
                             ReservationID = reservation.ID,
                             ReservationDate = reservation.StartTime.Date.ToShortDateString(),
                             StartHour = reservation.StartTime.Date.ToShortTimeString(),
-                            SeatCount = reservation.Table.ChairsAmount,
+                            SeatCount = reservation.SeatNumber,
                             IsActive = DateTime.Now >= reservation.StartTime.Date ? 0 : 1,
-                            PlaceName = reservation.Table.Place.Name
+                            PlaceName = reservation.Place.Name
                         };
 
                         result.Add(item);
@@ -125,9 +125,9 @@ namespace ApplicationCore.Services
                 Reservation reservation = await _reservationRepository.GetReservationAsync(reservationID);
                 ReservationResult result = new ReservationResult()
                 {
-                    PlaceID = reservation.Table.PlaceID,
-                    PlaceName = reservation.Table.Place.Name,
-                    SeatsCount = reservation.Table.ChairsAmount,
+                    PlaceID = reservation.PlaceID,
+                    PlaceName = reservation.Place.Name,
+                    SeatsCount = reservation.SeatNumber,
                     EndTime = reservation.EndTime.Date.ToShortTimeString(),
                     StartTime = reservation.StartTime.Date.ToShortTimeString(),
                     IsActive = reservation.StartTime > DateTime.Now

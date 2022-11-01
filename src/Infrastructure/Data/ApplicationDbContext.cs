@@ -26,6 +26,7 @@ namespace Infrastructure.Data
         public DbSet<PlaceOpinion> PlaceOpinions { get; set; }
         public DbSet<PlaceMenu> PlaceMenus { get; set; }
         public DbSet<PlaceMenuCategory> PlaceMenuCategories { get; set; }
+        public DbSet<PlaceOpeningHours> PlaceOpeningHours { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
         public DbSet<PlaceTag> PlaceTags { get; set; }
@@ -34,7 +35,7 @@ namespace Infrastructure.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductTag> ProductTags { get; set; }
 
-        public DbSet<Table> Tables { get; set; }
+
         public DbSet<Reservation> Reservations { get; set; }
 
 
@@ -62,15 +63,14 @@ namespace Infrastructure.Data
 
             builder.Entity<PlaceMenu>().HasMany<PlaceMenuCategory>(pm => pm.PlaceMenuCategories).WithOne(pmc => pmc.PlaceMenu).HasForeignKey(pmc => pmc.PlaceMenuID);
             builder.Entity<PlaceMenuCategory>().HasMany<Product>(p => p.Products).WithOne(pr => pr.PlaceMenuCategory).HasForeignKey(pr => pr.PlaceMenuCategoryID);
-            builder.Entity<Place>().HasMany<Table>(p => p.Tables).WithOne(t => t.Place).HasForeignKey(t => t.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Tables_Places_PlaceID");
+            builder.Entity<Place>().HasMany<Reservation>(p => p.Reservations).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Reservation_Places_PlaceID");
+            builder.Entity<Place>().HasMany<PlaceOpeningHours>(p => p.PlaceOpeningHours).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_OpeningHours_Places_PlaceID");
 
             builder.Entity<PlaceTag>().HasKey(pt => pt.ID);
             builder.Entity<PlaceTag>().HasOne<Place>(pt => pt.Place).WithMany(p => p.PlaceTags).HasForeignKey(pt => pt.PlaceID);
 
             builder.Entity<ProductTag>().HasKey(pt => pt.ID);
             builder.Entity<ProductTag>().HasOne<Product>(pt => pt.Product).WithMany(p => p.ProductTags).HasForeignKey(pt => pt.ProductID);
-
-            builder.Entity<Table>().HasMany<Reservation>(t => t.Reservations).WithOne(r => r.Table).HasForeignKey(r => r.TableID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Reservation_Tables_TableID");
         }
     }
 }

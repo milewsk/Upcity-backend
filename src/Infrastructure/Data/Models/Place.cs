@@ -15,10 +15,10 @@ namespace Infrastructure.Data.Models
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }
         public PlaceMenu PlaceMenu { get; set; }
-        public PlaceOpeningHours PlaceOpeningHours { get; set; }
+        public ICollection<PlaceOpeningHours> PlaceOpeningHours { get; set; }
 
 
-        public ICollection<Table> Tables { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
         public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
 

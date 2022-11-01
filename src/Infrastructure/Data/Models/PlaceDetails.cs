@@ -15,6 +15,7 @@ namespace Infrastructure.Data.Models
         public string PhoneNumber { get; set; }
         public string RegisterFirm { get; set; }
         public string NIP { get; set; }
+        public int MaxSeatNumber { get; set; }
 
         public Place Place { get; set; }
         public Guid PlaceID { get; set; }

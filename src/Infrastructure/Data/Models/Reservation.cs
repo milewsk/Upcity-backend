@@ -9,8 +9,10 @@ namespace Infrastructure.Data.Models
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public Table Table { get; set; }
-        public Guid TableID { get; set; }
+        public int SeatNumber { get; set; }
+
+        public Place Place { get; set; }
+        public Guid PlaceID { get; set; }
 
         public User User { get; set; }
         public Guid UserID { get; set; }

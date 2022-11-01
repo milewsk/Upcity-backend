@@ -40,27 +40,38 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        //done
         public async Task<List<Place>> GetListNearLocationAsync(Coords cords)
         {
             try
             {
                 //long = x lat = y
                 GeometryFactory geometryFactory = new GeometryFactory();
-                Coordinate userGeo = new Coordinate
+                Coordinate userGeo = new Coordinate()
                 {
                     X = cords.X,
                     Y = cords.Y
                 };
-
+                
+                
                 //20km
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, userGeo.Y));
 
-                return await _context.Places
+                List<Place> result = new List<Place>();
+                var list = await _context.Places
                             .Include(x => x.Coordinates)
                             .Include(x => x.PlaceOpeningHours)
                             .Include(x => x.PlaceTags)
-                            .Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
+                            .Where(x => x.IsActive == 1).ToListAsync();
+
+                foreach(var item in list)
+                {
+                    if (circle.Covers(item.Coordinates.Location))
+                    {
+                        result.Add(item);
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -69,7 +80,6 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        //done
         public async Task<List<Place>> GetPlacesByCategoryAsync(Coords cords, Guid categoryID)
         {
             try
@@ -110,6 +120,7 @@ namespace ApplicationCore.Repositories
             try
             {
                 return await _context.Places.Include(x => x.PlaceDetails)
+                                            .Include(x => x.Coordinates)
                                             .Where(x => (EF.Functions.Like(x.Name, $"%{searchedText}%")
                                                         || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%") 
                                                         || EF.Functions.Like(x.PlaceDetails.Address, $"%{searchedText}%"))
@@ -140,6 +151,19 @@ namespace ApplicationCore.Repositories
             try
             {
                 return await _context.PlacesDetails.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
+        public async Task<PlaceOpeningHours> GetPlaceOpeningHourAsync(Place place, DayOfWeek day)
+        {
+            try
+            {
+                return await _context.PlaceOpeningHours.Where(x => x.PlaceID == place.ID && x.DayOfWeek == day).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -193,11 +217,26 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task CreatePlaceCoordinatesAsync(Infrastructure.Data.Models.Coordinates coords)
+        {
+            try
+            {
+                var xty = coords.Location.Boundary;
+                await _context.Coordinates.AddAsync(coords);
+                await _context.SaveChangesAsync();                
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
         public async Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
         {
             try
             {
-                await _context.AddRangeAsync(openingHoursList);
+                await _context.PlaceOpeningHours.AddRangeAsync(openingHoursList);
                 await _context.SaveChangesAsync();
 
                 return true;

@@ -4,15 +4,17 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221101095427_mig_0_5")]
+    partial class mig_0_5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<Point>("Location")
                         .IsRequired()
-                        .HasColumnType("geometry");
+                        .HasColumnType("geography");
 
                     b.Property<Guid>("PlaceID")
                         .HasColumnType("uniqueidentifier");
@@ -140,9 +142,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<int>("MaxSeatNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("NIP")
                         .HasColumnType("nvarchar(max)");
@@ -253,7 +252,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("PlaceID");
+                    b.HasIndex("PlaceID")
+                        .IsUnique();
 
                     b.ToTable("PlaceOpeningHours");
                 });
@@ -625,10 +625,9 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Infrastructure.Data.Models.PlaceOpeningHours", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
-                        .WithMany("PlaceOpeningHours")
-                        .HasForeignKey("PlaceID")
-                        .HasConstraintName("FK_OpeningHours_Places_PlaceID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithOne("PlaceOpeningHours")
+                        .HasForeignKey("Infrastructure.Data.Models.PlaceOpeningHours", "PlaceID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

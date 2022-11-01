@@ -6,7 +6,7 @@ namespace Common.Dto.Place
 {
     public class CreateOpeningHoursModelList
     {
-        public string PlaceID { get; set; }
+        public Guid PlaceID { get; set; }
         public IList<CreateOpeningHoursModel> Items { get; set; }
     }
 

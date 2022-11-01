@@ -15,6 +15,7 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
         Task<PlaceMenu> GetPlaceMenuAsync(Guid placeID);
         Task<List<Place>> GetListByCategoryAsync(PlaceTag tag);
+        Task<PlaceOpeningHours> GetPlaceOpeningHourAsync( Place place,DayOfWeek day);
 
         Task<List<Place>> GetPlacesByCategoryAsync(Coords coords, Guid categoryID);
         Task CreatePlaceAsync(Place newPlace);
@@ -22,5 +23,6 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
         Task CreatePlaceTagsAsync(List<PlaceTag> placeTags);
         Task CreatePlaceMenuAsync(PlaceMenu placeMenu);
+        Task CreatePlaceCoordinatesAsync(Infrastructure.Data.Models.Coordinates coords);
     }
 }

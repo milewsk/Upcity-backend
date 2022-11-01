@@ -14,6 +14,7 @@ namespace Common.Dto.Place
         public double? Distance { get; set; }
         public string OpeningHour { get; set; }
         public string CloseHour { get; set; }
+        public bool IsOpen { get; set; }
         public Coords Coords { get; set; }
     }
 }

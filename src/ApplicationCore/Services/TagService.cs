@@ -34,6 +34,7 @@ namespace ApplicationCore.Services
                     LastModificationDate = DateTime.Now,
                     Name = model.Name,
                     Color = model.Color,
+                    Type = model.Type,
                 };
 
                 var result = await _tagRepository.AddAsync(newTag);

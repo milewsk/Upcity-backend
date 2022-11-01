@@ -34,6 +34,7 @@ namespace ApplicationCore.Services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<ITagService, TagService>();
 
             services.AddScoped<IJwtService, JwtService>();
 

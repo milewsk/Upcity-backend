@@ -14,6 +14,7 @@ using NetTopologySuite.Operation.Distance;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,24 +52,44 @@ namespace ApplicationCore.Services
         {
             try
             {
-                Coords cords = new Coords() { Y = Convert.ToDouble(longitude), X = Convert.ToDouble(latitude) };
+                NumberFormatInfo provider = new NumberFormatInfo
+                {
+                    NumberDecimalSeparator = ".",
+                    NumberGroupSeparator = ","
+                };
+
+                Coords cords = new Coords()
+                {
+                    Y = double.Parse(latitude, provider),
+                    X = double.Parse(longitude, provider)
+                };
 
                 List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
 
                 var placeList = await _placeRepository.GetListNearLocationAsync(cords);
+
+                if (placeList == null)
+                {
+                    return null;
+                }
+
                 foreach (Place place in placeList)
                 {
+                    // opening day
+                    DayOfWeek day = DateTime.Now.DayOfWeek;
+                    var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
                     // count distance
                     var distance = CalculateDistance(latitude, longitude, place.Coordinates);
                     //coords
-                    var placeCords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.X };
+                    var placeCords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y };
 
                     PlaceShortcutResult result = new PlaceShortcutResult()
                     {
                         Name = place.Name,
                         Distance = distance,
-                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
-                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        OpeningHour = openingHours != null ? $"{openingHours.Opens.Hours}:{openingHours.Opens.Minutes}" : "-",
+                        CloseHour = openingHours != null ? $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}" : "-",
+                        IsOpen = openingHours != null,
                         Image = place.Image,
                         PlaceID = place.ID,
                         Coords = placeCords,
@@ -86,17 +107,30 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID)
+        public async Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, Guid tagID)
         {
             try
             {
-                Coords cords = new Coords() { Y = Convert.ToDouble(longitude), X = Convert.ToDouble(latitude) };
+                NumberFormatInfo provider = new NumberFormatInfo
+                {
+                    NumberDecimalSeparator = ".",
+                    NumberGroupSeparator = ","
+                };
+
+                Coords cords = new Coords()
+                {
+                    Y = double.Parse(latitude, provider),
+                    X = double.Parse(longitude, provider)
+                };
 
                 List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
 
-                var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, Guid.Parse(categoryID));
+                var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, tagID);
                 foreach (Place place in placeList)
                 {
+                    // opening day
+                    DayOfWeek day = DateTime.Now.DayOfWeek;
+                    var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
                     // count distance
                     var distance = CalculateDistance(latitude, longitude, place.Coordinates);
                     //coords
@@ -106,8 +140,9 @@ namespace ApplicationCore.Services
                     {
                         Name = place.Name,
                         Distance = distance,
-                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
-                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        OpeningHour = openingHours != null ? $"{openingHours.Opens.Hours}:{openingHours.Opens.Minutes}" : "-",
+                        CloseHour = openingHours != null ? $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}" : "-",
+                        IsOpen = openingHours != null,
                         Image = place.Image,
                         PlaceID = place.ID,
                         Coords = placeCords,
@@ -117,7 +152,7 @@ namespace ApplicationCore.Services
                 }
 
                 return placeResults;
-               
+
             }
             catch (Exception ex)
             {
@@ -132,31 +167,45 @@ namespace ApplicationCore.Services
             {
                 var placeList = await _placeRepository.GetListBySearchStringAsync(searchString);
 
-                GeometryFactory geometryFactory = new GeometryFactory();
-                Coordinate userGeo = new Coordinate
-                {
-                    X = Convert.ToDouble(longitude),
-                    Y = Convert.ToDouble(latitude)
-                };
+                GeometryFactory geometryFactory = new GeometryFactory() { };
 
+                NumberFormatInfo provider = new NumberFormatInfo();
+                provider.NumberDecimalSeparator = ".";
+                provider.NumberGroupSeparator = ",";
+
+                var userGeo = new Coordinate() { };
+                userGeo.X = double.Parse(longitude, provider);
+                userGeo.Y = double.Parse(latitude, provider);
                 var userPoint = geometryFactory.CreatePoint(userGeo);
 
 
                 List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
                 foreach (Place place in placeList)
                 {
+                    DayOfWeek day = DateTime.Now.DayOfWeek;
+                    var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
+                    bool showHours = false;
+                    var openHourString = "-";
+                    var closeHourString = "-";
+
+                    if (openingHours != null)
+                    {
+                        showHours = true;
+                        openHourString = $"{openingHours.Opens.Hours}:{openingHours.Opens.Minutes}";
+                        closeHourString = $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}";
+                    }
 
                     var distance = place.Coordinates.Location.Distance(userPoint);
                     PlaceShortcutResult result = new PlaceShortcutResult()
                     {
                         Name = place.Name,
-                        Distance = distance,
-                        OpeningHour = $"{place.PlaceOpeningHours.Opens.Hours}:{place.PlaceOpeningHours.Opens.Minutes}",
-                        CloseHour = $"{place.PlaceOpeningHours.Closes.Hours}:{place.PlaceOpeningHours.Closes.Minutes}",
+                        Distance = Math.Truncate(distance * 100) / 100,
+                        OpeningHour = openHourString,
+                        CloseHour = closeHourString,
+                        IsOpen = showHours,
                         Image = place.Image,
                         PlaceID = place.ID,
-                        Coords = { X = place.Coordinates.Location.X, Y = place.Coordinates.Location.Y },
-
+                        Coords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y }
                     };
 
                     placeResults.Add(result);
@@ -196,11 +245,29 @@ namespace ApplicationCore.Services
                     NIP = model.NIP,
                     PhoneNumber = model.PhoneNumber,
                     RegisterFirm = model.RegisterFirm,
+                    MaxSeatNumber = model.MaxSeatNumber
                 };
 
                 await _placeRepository.CreatePlaceDetailsAsync(newPlaceDetails);
 
                 if (newPlaceDetails.ID == null)
+                {
+                    return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
+                }
+
+                //create Coordinates 
+
+                Infrastructure.Data.Models.Coordinates coords = new Infrastructure.Data.Models.Coordinates()
+                {
+                    Location = new Point(model.Longitude, model.Latitude),
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                    PlaceID = newPlace.ID
+                };
+
+                await _placeRepository.CreatePlaceCoordinatesAsync(coords);
+
+                if (coords.ID == null)
                 {
                     return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
                 }
@@ -251,12 +318,15 @@ namespace ApplicationCore.Services
         {
             try
             {
+                NumberFormatInfo provider = new NumberFormatInfo();
+                provider.NumberDecimalSeparator = ".";
+                provider.NumberGroupSeparator = ",";
+
                 GeometryFactory geometryFactory = new GeometryFactory();
-                Coordinate userGeo = new Coordinate
-                {
-                    X = Convert.ToDouble(longitude),
-                    Y = Convert.ToDouble(latitude)
-                };
+                var userGeo = new Coordinate() { };
+                userGeo.X = double.Parse(longitude, provider);
+                userGeo.Y = double.Parse(latitude, provider);
+
 
                 var userPoint = geometryFactory.CreatePoint(userGeo);
 
@@ -303,7 +373,7 @@ namespace ApplicationCore.Services
             {
                 List<PlaceOpeningHours> placeOpeningHours = new List<PlaceOpeningHours>();
 
-                foreach(var item in modelList.Items)
+                foreach (var item in modelList.Items)
                 {
                     //var itemToAdd = new PlaceOpeningHours()
                     //{
@@ -326,7 +396,7 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-        
+
         public Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)
         {
             try
