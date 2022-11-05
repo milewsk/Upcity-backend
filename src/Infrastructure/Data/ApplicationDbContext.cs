@@ -20,6 +20,7 @@ namespace Infrastructure.Data
         public DbSet<UserDetails> UsersDetails { get; set; } 
         public DbSet<UserClaim> UserClaims { get; set; }
         public DbSet<LoyalityProgramAccount> LoyalityProgramAccounts { get; set; }
+        public DbSet<UserLike> UserLikes { get; set; }
 
         public DbSet<Place> Places { get; set; }
         public DbSet<PlaceDetails> PlacesDetails { get; set; }
@@ -71,6 +72,9 @@ namespace Infrastructure.Data
 
             builder.Entity<ProductTag>().HasKey(pt => pt.ID);
             builder.Entity<ProductTag>().HasOne<Product>(pt => pt.Product).WithMany(p => p.ProductTags).HasForeignKey(pt => pt.ProductID);
+
+            builder.Entity<UserLike>().HasKey(pt => pt.ID);
+            builder.Entity<UserLike>().HasOne<User>(ul => ul.User).WithMany(u => u.UserLikes).HasForeignKey(ul => ul.UserID);
         }
     }
 }
