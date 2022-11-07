@@ -3,6 +3,7 @@ using ApplicationCore.Services.Interfaces;
 using Common.Dto;
 using Common.Dto.Models;
 using Common.Dto.Place;
+using Common.Dto.Product;
 using Common.Utils;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
@@ -402,6 +403,43 @@ namespace ApplicationCore.Services
             try
             {
                 return null;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<PlaceDetailsResult> GetPlaceDetailsAsync(Guid placeID)
+        {
+            try
+            {
+                var place = await _placeRepository.GetPlaceDetailsAsync(placeID);
+                List<PlaceCategoryResult> categoryResults = new List<PlaceCategoryResult>();
+                foreach (var category in place.PlaceMenu.PlaceMenuCategories)
+                {
+                    List<ProductResult> productResults = new List<ProductResult>();
+                    foreach (var product in category.Products)
+                    {
+                        ProductResult prodResult = new ProductResult() { Name = product.Name, Description = product.Description, DiscountPrice = product.DiscountPrice, Price = product.Price };
+                        productResults.Add(prodResult);
+                    }
+
+                    PlaceCategoryResult item = new PlaceCategoryResult() { Name = category.Name, ProductResults = productResults };
+                    categoryResults.Add(item);
+                }
+
+                PlaceDetailsResult result = new PlaceDetailsResult()
+                {
+                    PlaceID = place.ID,
+                    PlaceMenuResult = new PlaceMenuResult()
+                    {
+                        PlaceCategoryResults = categoryResults
+                    }
+                };
+
+                return result;
             }
             catch (Exception ex)
             {

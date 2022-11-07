@@ -189,5 +189,27 @@ namespace PublicApi.Controllers
                 throw;
             }
         }
+
+        [Route("details/{placeID}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDetails([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _placeService.GetPlaceDetailsAsync(Guid.Parse(placeID));
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }

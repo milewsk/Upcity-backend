@@ -51,8 +51,8 @@ namespace ApplicationCore.Repositories
                     X = cords.X,
                     Y = cords.Y
                 };
-                
-                
+
+
                 //20km
                 var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, userGeo.Y));
 
@@ -63,7 +63,7 @@ namespace ApplicationCore.Repositories
                             .Include(x => x.PlaceTags)
                             .Where(x => x.IsActive == 1).ToListAsync();
 
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     if (circle.Covers(item.Coordinates.Location))
                     {
@@ -88,11 +88,11 @@ namespace ApplicationCore.Repositories
 
                 List<Place> result = new List<Place>();
 
-                foreach(var item in list)
-                {                  
-                    foreach(var cat in item.PlaceTags)
+                foreach (var item in list)
+                {
+                    foreach (var cat in item.PlaceTags)
                     {
-                        if(cat.ID == categoryID)
+                        if (cat.ID == categoryID)
                         {
                             result.Add(item);
                         }
@@ -122,7 +122,7 @@ namespace ApplicationCore.Repositories
                 return await _context.Places.Include(x => x.PlaceDetails)
                                             .Include(x => x.Coordinates)
                                             .Where(x => (EF.Functions.Like(x.Name, $"%{searchedText}%")
-                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%") 
+                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%")
                                                         || EF.Functions.Like(x.PlaceDetails.Address, $"%{searchedText}%"))
                                                         && x.IsActive == 1).ToListAsync();
             }
@@ -146,19 +146,6 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<PlaceDetails> GetPlaceDetailsAsync(Guid placeID)
-        {
-            try
-            {
-                return await _context.PlacesDetails.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                _appLogger.LogError(ex.Message);
-                throw;
-            }
-        }
-        
         public async Task<PlaceOpeningHours> GetPlaceOpeningHourAsync(Place place, DayOfWeek day)
         {
             try
@@ -179,6 +166,26 @@ namespace ApplicationCore.Repositories
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 return await _context.PlaceMenus.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<Place> GetPlaceDetailsAsync(Guid placeID)
+        {
+            try
+            {
+                var result = await _context.Places
+                              .Include(x => x.PlaceDetails)
+                              .Include(x => x.PlaceOpeningHours)
+                              .Include(x => x.PlaceOpinions)
+                              .Include(x => x.PlaceMenu).ThenInclude(x => x.PlaceMenuCategories).ThenInclude(x => x.Products)
+                              .Where(x => x.ID == placeID).FirstOrDefaultAsync();
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -223,7 +230,7 @@ namespace ApplicationCore.Repositories
             {
                 var xty = coords.Location.Boundary;
                 await _context.Coordinates.AddAsync(coords);
-                await _context.SaveChangesAsync();                
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -231,7 +238,7 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
-        
+
         public async Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
         {
             try
@@ -261,7 +268,7 @@ namespace ApplicationCore.Repositories
                 _appLogger.LogError(ex.Message);
                 throw;
             }
-        } 
+        }
         public async Task CreatePlaceMenuAsync(PlaceMenu placeMenu)
         {
             try

@@ -11,6 +11,7 @@ namespace ApplicationCore.Repositories.Interfaces
     public interface IPlaceRepository : IRepository<Place>
     {
         Task<List<Place>> GetListAsync();
+        Task<Place> GetPlaceDetailsAsync(Guid placeID);
         Task<List<Place>> GetListNearLocationAsync(Coords coords);
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
         Task<PlaceMenu> GetPlaceMenuAsync(Guid placeID);

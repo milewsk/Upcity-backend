@@ -7,6 +7,7 @@ namespace Common.Dto.Models
 {
     public class PlaceDetailsResult
     {
+        public Guid PlaceID { get; set; }
         //Place
         public PlaceResult PlaceResult { get; set; }
         //OpenHours
