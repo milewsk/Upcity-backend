@@ -25,11 +25,17 @@ namespace ApplicationCore.Services
     {
         private readonly ILogger<PlaceService> _appLogger;
         private readonly IPlaceRepository _placeRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUserLikeRepository _userLikeRepository;
         private readonly IJwtService _jwtService;
 
-        public PlaceService(IPlaceRepository placeRepository, ILogger<PlaceService> appLogger, IJwtService jwtService)
+        public PlaceService(IPlaceRepository placeRepository, IUserRepository userRepository,
+            IUserLikeRepository userLikeRepository,
+            ILogger<PlaceService> appLogger, IJwtService jwtService)
         {
             _placeRepository = placeRepository;
+            _userRepository = userRepository;
+            _userLikeRepository = userLikeRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;
         }
@@ -398,11 +404,11 @@ namespace ApplicationCore.Services
             }
         }
 
-        public Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)
+        public async Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)
         {
             try
             {
-                return null;
+                return true;
             }
             catch (Exception ex)
             {
@@ -411,11 +417,14 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<PlaceDetailsResult> GetPlaceDetailsAsync(Guid placeID)
+        public async Task<PlaceDetailsResult> GetPlaceDetailsAsync(Guid placeID, Guid userID)
         {
             try
             {
                 var place = await _placeRepository.GetPlaceDetailsAsync(placeID);
+
+                var placeDetails = MappingHelper.Mapper.Map<PlaceDetails, PlaceResult>(place.PlaceDetails);
+
                 List<PlaceCategoryResult> categoryResults = new List<PlaceCategoryResult>();
                 foreach (var category in place.PlaceMenu.PlaceMenuCategories)
                 {
@@ -430,16 +439,110 @@ namespace ApplicationCore.Services
                     categoryResults.Add(item);
                 }
 
+                List<OpeningTime> openingTimes = new List<OpeningTime>();
+
+                foreach (var time in place.PlaceOpeningHours)
+                {
+                    OpeningTime item = new OpeningTime()
+                    {
+                        OpenTime = $"{time.Opens.Hours}-{time.Opens.Minutes}",
+                        CloseTime = $"{time.Closes.Hours}-{time.Closes.Minutes}",
+                        Day = time.DayOfWeek,
+
+                    };
+                    openingTimes.Add(item);
+                }
+
                 PlaceDetailsResult result = new PlaceDetailsResult()
                 {
                     PlaceID = place.ID,
+                    PlaceResult = placeDetails,
                     PlaceMenuResult = new PlaceMenuResult()
                     {
                         PlaceCategoryResults = categoryResults
+                    },
+                    PlaceOpeningHours = new PlaceOpeningHoursModel()
+                    {
+                        OpeningTimes = openingTimes
                     }
                 };
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<PlaceShortcutResult>> GetFavouritePlaceListAsync(Guid userID)
+        {
+            try
+            {
+                var placeList = await _placeRepository.GetLikedListAsync(userID);
+
+                List<PlaceShortcutResult> placeResults = new List<PlaceShortcutResult>();
+                foreach (Place place in placeList)
+                {
+                    DayOfWeek day = DateTime.Now.DayOfWeek;
+                    var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
+                    bool showHours = false;
+                    var openHourString = "-";
+                    var closeHourString = "-";
+
+                    if (openingHours != null)
+                    {
+                        showHours = true;
+                        openHourString = $"{openingHours.Opens.Hours}:{openingHours.Opens.Minutes}";
+                        closeHourString = $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}";
+                    }
+
+                    PlaceShortcutResult result = new PlaceShortcutResult()
+                    {
+                        Name = place.Name,
+                        Distance = null,
+                        OpeningHour = openHourString,
+                        CloseHour = closeHourString,
+                        IsOpen = showHours,
+                        Image = place.Image,
+                        PlaceID = place.ID,
+                        Coords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y }
+                    };
+
+                    placeResults.Add(result);
+                }
+
+                return placeResults;
+
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+        public async Task<bool> AddToFavouriteAsync(Guid placeID, Guid userID)
+        {
+            try
+            {
+                User user = await _userRepository.GetUserByGuid(userID);
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                bool isExistingAlready = await _userLikeRepository.CheckExistance(userID, placeID);
+                if (isExistingAlready)
+                {
+                    return await _userLikeRepository.RemoveUserLikeAsync(userID, placeID);
+                }
+                else
+                {
+                    return await _userLikeRepository.AddUserLikeAsync(userID, placeID);
+                }
+
             }
             catch (Exception ex)
             {

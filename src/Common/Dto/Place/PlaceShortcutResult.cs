@@ -15,6 +15,7 @@ namespace Common.Dto.Place
         public string OpeningHour { get; set; }
         public string CloseHour { get; set; }
         public bool IsOpen { get; set; }
+        public bool IsLiked { get; set; }
         public Coords Coords { get; set; }
     }
 }

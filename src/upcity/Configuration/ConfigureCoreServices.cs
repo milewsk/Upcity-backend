@@ -22,6 +22,7 @@ namespace ApplicationCore.Services
             
             //services.AddSingleton(IPasswordHasher<T>, PasswordHasher<T>);
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserLikeRepository, UserLikeRepository>();
             services.AddScoped<IPlaceRepository, PlaceRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();

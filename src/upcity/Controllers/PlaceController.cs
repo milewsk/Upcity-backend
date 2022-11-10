@@ -64,8 +64,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-
-                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID);
+                    var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID);
 
                 return Ok(result);
             }
@@ -200,10 +199,74 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlaceDetailsAsync(Guid.Parse(placeID), userID);
+                    return Ok(result);
+                }
 
-                var result = await _placeService.GetPlaceDetailsAsync(Guid.Parse(placeID));
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
 
-                return Ok(result);
+        [Route("favourite/{placeID}")]
+        [HttpPost]
+        public async Task<IActionResult> AddToFavourite([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss); 
+                    var result = await _placeService.AddToFavouriteAsync(Guid.Parse(placeID), userID);
+                    return Ok(result);
+                }
+                return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("/places/favourite")]
+        [HttpGet]
+        public async Task<IActionResult> GetFavouritePlaceList()
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetFavouritePlaceListAsync(userID);
+                    return Ok(result);
+                }
+                return BadRequest();
+
             }
             catch (Exception e)
             {

@@ -283,5 +283,19 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
+
+        public async Task<List<Place>> GetLikedListAsync(Guid userID)
+        {
+            try
+            {
+                var result = await _context.UserLikes.Include(x => x.Place).Where(x => x.UserID == userID).Select(x => x.Place).ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
     }
 }
