@@ -15,5 +15,6 @@ namespace Common.Dto.Place
         public string RegisterFirm { get; set; }
         public string NIP { get; set; }
         public int MaxSeatNumber { get; set; }
+        public bool? IsLiked[get set];
     }
 }

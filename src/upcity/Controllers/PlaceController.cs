@@ -41,10 +41,16 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude);
 
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude, userID);
+                    return Ok(result);
+                }
 
-                return Ok(result);
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -64,9 +70,15 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                    var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID);
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID, userID);
+                    return Ok(result);
+                }
 
-                return Ok(result);
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -86,9 +98,16 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesListBySearchStringAsync(searchString, latitude, longitude);
 
-                return Ok(result);
+                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlacesListBySearchStringAsync(searchString, latitude, longitude, userID);
+                    return Ok(result);
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {

@@ -55,7 +55,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude)
+        public async Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude, Guid userID)
         {
             try
             {
@@ -82,6 +82,7 @@ namespace ApplicationCore.Services
 
                 foreach (Place place in placeList)
                 {
+                    bool isLiked = await _userLikeRepository.CheckExistance(userID, place.ID);
                     // opening day
                     DayOfWeek day = DateTime.Now.DayOfWeek;
                     var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
@@ -98,6 +99,7 @@ namespace ApplicationCore.Services
                         CloseHour = openingHours != null ? $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}" : "-",
                         IsOpen = openingHours != null,
                         Image = place.Image,
+                        IsLiked = isLiked,
                         PlaceID = place.ID,
                         Coords = placeCords,
                     };
@@ -114,7 +116,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, Guid tagID)
+        public async Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, Guid tagID, Guid userID)
         {
             try
             {
@@ -135,6 +137,7 @@ namespace ApplicationCore.Services
                 var placeList = await _placeRepository.GetPlacesByCategoryAsync(cords, tagID);
                 foreach (Place place in placeList)
                 {
+                    bool isLiked = await _userLikeRepository.CheckExistance(userID, place.ID);
                     // opening day
                     DayOfWeek day = DateTime.Now.DayOfWeek;
                     var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
@@ -150,6 +153,7 @@ namespace ApplicationCore.Services
                         OpeningHour = openingHours != null ? $"{openingHours.Opens.Hours}:{openingHours.Opens.Minutes}" : "-",
                         CloseHour = openingHours != null ? $"{openingHours.Closes.Hours}:{openingHours.Closes.Minutes}" : "-",
                         IsOpen = openingHours != null,
+                        IsLiked = isLiked,
                         Image = place.Image,
                         PlaceID = place.ID,
                         Coords = placeCords,
@@ -168,7 +172,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude)
+        public async Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude, Guid userID)
         {
             try
             {
@@ -191,6 +195,7 @@ namespace ApplicationCore.Services
                 {
                     DayOfWeek day = DateTime.Now.DayOfWeek;
                     var openingHours = await _placeRepository.GetPlaceOpeningHourAsync(place, day);
+                    bool isLiked = await _userLikeRepository.CheckExistance(userID, place.ID);
                     bool showHours = false;
                     var openHourString = "-";
                     var closeHourString = "-";
@@ -210,6 +215,7 @@ namespace ApplicationCore.Services
                         OpeningHour = openHourString,
                         CloseHour = closeHourString,
                         IsOpen = showHours,
+                        IsLiked = isLiked,
                         Image = place.Image,
                         PlaceID = place.ID,
                         Coords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y }
@@ -422,6 +428,7 @@ namespace ApplicationCore.Services
             try
             {
                 var place = await _placeRepository.GetPlaceDetailsAsync(placeID);
+                bool isLiked = await _userLikeRepository.CheckExistance(userID, placeID);
 
                 var placeDetails = MappingHelper.Mapper.Map<PlaceDetails, PlaceResult>(place.PlaceDetails);
 
@@ -456,6 +463,7 @@ namespace ApplicationCore.Services
                 PlaceDetailsResult result = new PlaceDetailsResult()
                 {
                     PlaceID = place.ID,
+                    IsLiked = isLiked,
                     PlaceResult = placeDetails,
                     PlaceMenuResult = new PlaceMenuResult()
                     {
@@ -505,6 +513,7 @@ namespace ApplicationCore.Services
                         OpeningHour = openHourString,
                         CloseHour = closeHourString,
                         IsOpen = showHours,
+                        IsLiked = true,
                         Image = place.Image,
                         PlaceID = place.ID,
                         Coords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y }

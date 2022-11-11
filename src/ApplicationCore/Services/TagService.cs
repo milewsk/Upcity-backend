@@ -2,6 +2,7 @@
 using ApplicationCore.Services.Interfaces;
 using Common.Dto.Tag;
 using Infrastructure.Data.Models;
+using Infrastructure.Helpers;
 using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,6 +23,23 @@ namespace ApplicationCore.Services
             _tagRepository = tagRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;
+        }
+
+        public async Task<List<TagResult>> GetPlaceTagListAsync()
+        {
+            try
+            {
+                var tags = await _tagRepository.GetAllPlaceTagsAsync();
+
+                var result = MappingHelper.Mapper.Map<List<Tag>, List<TagResult>>(tags);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> CreateTagAsync(CreateTagModel model)

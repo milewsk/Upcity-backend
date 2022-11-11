@@ -26,6 +26,28 @@ namespace PublicApi.Controllers
             _authService = authService;
         }
 
+        [Route("list")]
+        [HttpGet]
+        public async Task<IActionResult> PlaceTagList()
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                List<TagResult> result = await _tagService.GetPlaceTagListAsync();
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
         [Route("createTag")]
         [HttpPost]
         public async Task<IActionResult> CreateTag([FromBody] CreateTagModel tagModel)

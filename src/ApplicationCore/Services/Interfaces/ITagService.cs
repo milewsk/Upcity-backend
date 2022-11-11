@@ -9,6 +9,8 @@ namespace ApplicationCore.Services.Interfaces
 {
    public interface ITagService
     {
+        // we could simplyfy there and do it in one method
+        Task<List<TagResult>> GetPlaceTagListAsync();
         Task<bool> CreateTagAsync(CreateTagModel model);
         Task<bool> DeleteTagAsync(Guid tagID);
         Task<bool> CreatePlaceTagsAsync(Place place, List<Guid> tagIDs);
