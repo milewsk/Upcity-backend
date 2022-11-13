@@ -430,7 +430,11 @@ namespace ApplicationCore.Services
                 var place = await _placeRepository.GetPlaceDetailsAsync(placeID);
                 bool isLiked = await _userLikeRepository.CheckExistance(userID, placeID);
 
+                //coords
+                var placeCords = new Coords() { X = place.Coordinates.Location.Coordinate.X, Y = place.Coordinates.Location.Coordinate.Y };
+
                 var placeDetails = MappingHelper.Mapper.Map<PlaceDetails, PlaceResult>(place.PlaceDetails);
+                placeDetails.Name = place.Name;
 
                 List<PlaceCategoryResult> categoryResults = new List<PlaceCategoryResult>();
                 foreach (var category in place.PlaceMenu.PlaceMenuCategories)
@@ -464,6 +468,7 @@ namespace ApplicationCore.Services
                 {
                     PlaceID = place.ID,
                     IsLiked = isLiked,
+                    Coords = placeCords,
                     PlaceResult = placeDetails,
                     PlaceMenuResult = new PlaceMenuResult()
                     {
@@ -539,7 +544,7 @@ namespace ApplicationCore.Services
 
                 if (user == null)
                 {
-                    return false;
+                    throw new Exception("User not found");
                 }
 
                 bool isExistingAlready = await _userLikeRepository.CheckExistance(userID, placeID);

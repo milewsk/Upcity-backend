@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Repositories.Interfaces;
 using ApplicationCore.Services.Interfaces;
 using Common.Dto.Reservation;
+using Common.Enums;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
 using Infrastructure.Services.Interfaces;
@@ -26,11 +27,19 @@ namespace ApplicationCore.Services
             _appLogger = appLogger;
         }
 
-        public async Task<bool> CreateReservationAsync(CreateReservationModel model)
+        public async Task<bool> CreateReservationAsync(CreateReservationModel model, Guid userID)
         {
             try
             {
-                Reservation newReservation = MappingHelper.Mapper.Map<CreateReservationModel, Reservation>(model);
+                Reservation newReservation = new Reservation()
+                {
+                    UserID = userID,
+                    PlaceID = model.PalceID,
+                    SeatNumber = model.SeatNumber,
+                    StartTime = DateTime.Parse(model.StartDate),
+                    EndTime = DateTime.Parse(model.EndDate),
+                    Status = ReservationStatus.Pending,                 
+                };
 
                 await _reservationRepository.CreateReservationAsync(newReservation);
 
@@ -79,7 +88,7 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-        
+
         public async Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce)
         {
             try
@@ -94,7 +103,7 @@ namespace ApplicationCore.Services
                     User user = await _userRepository.GetUserByGuid(parsedGuid);
 
                     List<Reservation> reservations = await _reservationRepository.GetUserReservationListAsync(user.ID);
-                    foreach(var reservation in reservations)
+                    foreach (var reservation in reservations)
                     {
                         ReservationShortcutResult item = new ReservationShortcutResult()
                         {
@@ -130,7 +139,7 @@ namespace ApplicationCore.Services
                     SeatsCount = reservation.SeatNumber,
                     EndTime = reservation.EndTime.Date.ToShortTimeString(),
                     StartTime = reservation.StartTime.Date.ToShortTimeString(),
-                    IsActive = reservation.StartTime > DateTime.Now
+                    Status = reservation.Status
                 };
 
                 return result;

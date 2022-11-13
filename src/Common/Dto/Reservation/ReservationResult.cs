@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +13,6 @@ namespace Common.Dto.Reservation
 
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public bool IsActive { get; set; }
+        public ReservationStatus Status { get; set; }
     }
 }

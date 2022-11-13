@@ -182,6 +182,7 @@ namespace ApplicationCore.Repositories
                               .Include(x => x.PlaceDetails)
                               .Include(x => x.PlaceOpeningHours)
                               .Include(x => x.PlaceOpinions)
+                              .Include(x => x.Coordinates)
                               .Include(x => x.PlaceMenu).ThenInclude(x => x.PlaceMenuCategories).ThenInclude(x => x.Products)
                               .Where(x => x.ID == placeID).FirstOrDefaultAsync();
 
@@ -288,7 +289,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                var result = await _context.UserLikes.Include(x => x.Place).Where(x => x.UserID == userID).Select(x => x.Place).ToListAsync();
+                var result = await _context.UserLikes.Include(x => x.Place).ThenInclude(x => x.Coordinates).Where(x => x.UserID == userID).Select(x => x.Place).ToListAsync();
                 return result;
             }
             catch (Exception ex)

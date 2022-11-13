@@ -38,6 +38,8 @@ namespace Infrastructure.Data
 
 
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -66,6 +68,8 @@ namespace Infrastructure.Data
             builder.Entity<PlaceMenuCategory>().HasMany<Product>(p => p.Products).WithOne(pr => pr.PlaceMenuCategory).HasForeignKey(pr => pr.PlaceMenuCategoryID);
             builder.Entity<Place>().HasMany<Reservation>(p => p.Reservations).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Reservation_Places_PlaceID");
             builder.Entity<Place>().HasMany<PlaceOpeningHours>(p => p.PlaceOpeningHours).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_OpeningHours_Places_PlaceID");
+            builder.Entity<Place>().HasMany<Promotion>(p => p.Promotions).WithOne(pr => pr.Place).HasForeignKey(pr => pr.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Promotion_Places_PlaceID");
+            builder.Entity<Place>().HasMany<Message>(p => p.Messages).WithOne(m => m.Place).HasForeignKey(m => m.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Message_Places_PlaceID");
 
             builder.Entity<PlaceTag>().HasKey(pt => pt.ID);
             builder.Entity<PlaceTag>().HasOne<Place>(pt => pt.Place).WithMany(p => p.PlaceTags).HasForeignKey(pt => pt.PlaceID);

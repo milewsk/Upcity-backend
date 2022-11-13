@@ -30,7 +30,7 @@ namespace Infrastructure.Helpers
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.TagID, opt => opt.MapFrom(src => src.ID));
 
-                //  cfg.CreateMap<List<Place>, List<PlaceShortcutResult>>();
+                cfg.CreateMap<PlaceDetails, PlaceResult>();
 
 
 

@@ -20,6 +20,8 @@ namespace Infrastructure.Data.Models
 
         public ICollection<Reservation> Reservations { get; set; }
         public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<Promotion> Promotions { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
 
 

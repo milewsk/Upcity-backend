@@ -214,7 +214,7 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
                     return Unauthorized();
                 }
@@ -242,7 +242,7 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
                     return Unauthorized();
                 }
@@ -265,13 +265,13 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("/places/favourite")]
+        [Route("places/favourite")]
         [HttpGet]
         public async Task<IActionResult> GetFavouritePlaceList()
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
                     return Unauthorized();
                 }

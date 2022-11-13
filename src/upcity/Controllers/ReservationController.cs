@@ -37,9 +37,16 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _reservationService.CreateReservationAsync(model);
 
-                return Ok(result);
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _reservationService.CreateReservationAsync(model, userID);
+                    return Ok(result);
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {

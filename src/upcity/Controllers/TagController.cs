@@ -32,7 +32,7 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 {
                     return Unauthorized();
                 }

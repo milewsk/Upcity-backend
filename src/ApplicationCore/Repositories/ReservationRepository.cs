@@ -41,7 +41,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Reservations.Where(x => x.UserID == userID && x.StartTime > DateTime.Now).OrderBy(x => x.StartTime).ToListAsync();
+                return await _context.Reservations.Include(x => x.Place).Where(x => x.UserID == userID && x.StartTime > DateTime.Now).OrderBy(x => x.StartTime).ToListAsync();
             }
             catch (Exception ex)
             {
