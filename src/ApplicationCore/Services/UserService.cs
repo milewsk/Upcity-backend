@@ -196,6 +196,26 @@ namespace ApplicationCore.Services
             }
         }
 
+        public async Task<LoyalityProgramAccount> GetUserLoyalityCardAsync(Guid userID)
+        {
+            try
+            {
+                var card = await _userRepository.GetUserLoyalityCardAsync(userID);
+                if (card == null)
+                {
+                    return null;
+                }
+
+                return card;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+        }
+
+
         public async Task<UserClaim> GetUserClaimAsync(Guid userID)
         {
             try

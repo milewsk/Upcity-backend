@@ -15,11 +15,11 @@ using System.Text;
 
 namespace ApplicationCore.Services
 {
-     public static class ConfigureCoreServices
+    public static class ConfigureCoreServices
     {
         public static void AddWebServices(IServiceCollection services, IConfiguration configuration)
         {
-            
+
             //services.AddSingleton(IPasswordHasher<T>, PasswordHasher<T>);
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserLikeRepository, UserLikeRepository>();
@@ -27,6 +27,8 @@ namespace ApplicationCore.Services
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IUserLikeRepository, UserLikeRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
@@ -36,6 +38,8 @@ namespace ApplicationCore.Services
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<IMessageService, MessageService>();
+
 
             services.AddScoped<IJwtService, JwtService>();
 

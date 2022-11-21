@@ -15,6 +15,12 @@ namespace Common.Enums
         Niedziela = 7
     }
 
+    public enum PaymentStatus
+    {
+        UnPaid = 0,
+        Paid = 1
+    }
+
     public enum TagType
     {
         Place = 1,

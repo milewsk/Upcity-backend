@@ -34,6 +34,19 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
+        
+        public async Task<List<Guid>> GetPlaceIDsAsync(Guid userID)
+        {
+            try
+            {
+                return await _context.UserLikes.Where(x => x.UserID == userID).Select(x=> x.PlaceID).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
 
         public async Task<bool> CheckExistance(Guid userID, Guid placeID)
         {

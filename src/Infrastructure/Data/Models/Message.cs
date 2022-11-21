@@ -10,5 +10,6 @@ namespace Infrastructure.Data.Models
         public Place Place { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Date { get; set; }
     }
 }

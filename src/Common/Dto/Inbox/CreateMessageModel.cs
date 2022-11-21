@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Models
+namespace Common.Dto.Inbox
 {
-    public class Promotion : EntityBase
+   public class CreateMessageModel
     {
         public Guid PlaceID { get; set; }
-        public Place Place { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Date { get; set; }
     }
 }

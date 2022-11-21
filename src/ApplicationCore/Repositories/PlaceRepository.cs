@@ -183,6 +183,7 @@ namespace ApplicationCore.Repositories
                               .Include(x => x.PlaceOpeningHours)
                               .Include(x => x.PlaceOpinions)
                               .Include(x => x.Coordinates)
+                              .Include(x => x.Promotions)
                               .Include(x => x.PlaceMenu).ThenInclude(x => x.PlaceMenuCategories).ThenInclude(x => x.Products)
                               .Where(x => x.ID == placeID).FirstOrDefaultAsync();
 

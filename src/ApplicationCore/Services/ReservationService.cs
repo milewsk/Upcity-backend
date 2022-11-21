@@ -33,9 +33,13 @@ namespace ApplicationCore.Services
             {
                 Reservation newReservation = new Reservation()
                 {
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
                     UserID = userID,
-                    PlaceID = model.PalceID,
+                    PlaceID = model.PlaceID,
                     SeatNumber = model.SeatNumber,
+                    Price = model.Price,
+                    PaymentStatus = PaymentStatus.UnPaid,
                     StartTime = DateTime.Parse(model.StartDate),
                     EndTime = DateTime.Parse(model.EndDate),
                     Status = ReservationStatus.Pending,                 
@@ -62,7 +66,10 @@ namespace ApplicationCore.Services
             try
             {
                 var reservation = await _reservationRepository.GetOne(reservationID);
-                await _reservationRepository.Remove(reservation);
+                reservation.Status = ReservationStatus.Canceled;
+                reservation.LastModificationDate = DateTime.Now;
+
+                await _reservationRepository.SaveChangesAsync();
 
                 return true;
             }
@@ -73,11 +80,11 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<ReservationResult>> GetActiveUserReservationsAsync(Guid userID)
+        public async Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID)
         {
             try
             {
-                List<Reservation> result = await _reservationRepository.GetAllActiveUserReservationsAsync(userID);
+                List<Reservation> result = await _reservationRepository.GetUserReservationsAsync(userID);
                 List<ReservationResult> reservationResults = MappingHelper.Mapper.Map<List<Reservation>, List<ReservationResult>>(result);
 
                 return reservationResults;
@@ -103,19 +110,23 @@ namespace ApplicationCore.Services
                     User user = await _userRepository.GetUserByGuid(parsedGuid);
 
                     List<Reservation> reservations = await _reservationRepository.GetUserReservationListAsync(user.ID);
-                    foreach (var reservation in reservations)
+                    if (reservations != null)
                     {
-                        ReservationShortcutResult item = new ReservationShortcutResult()
+                        foreach (var reservation in reservations)
                         {
-                            ReservationID = reservation.ID,
-                            ReservationDate = reservation.StartTime.Date.ToShortDateString(),
-                            StartHour = reservation.StartTime.Date.ToShortTimeString(),
-                            SeatCount = reservation.SeatNumber,
-                            IsActive = DateTime.Now >= reservation.StartTime.Date ? 0 : 1,
-                            PlaceName = reservation.Place.Name
-                        };
+                            ReservationShortcutResult item = new ReservationShortcutResult()
+                            {
+                                ReservationID = reservation.ID,
+                                ReservationDate = reservation.StartTime.Date.ToShortDateString(),
+                                StartHour = reservation.StartTime.Date.ToShortTimeString(),
+                                SeatCount = reservation.SeatNumber,
+                                Status = reservation.Status,
+                                PaymentStatus = reservation.PaymentStatus,
+                                PlaceName = reservation.Place.Name
+                            };
 
-                        result.Add(item);
+                            result.Add(item);
+                        }
                     }
                 }
                 return result;

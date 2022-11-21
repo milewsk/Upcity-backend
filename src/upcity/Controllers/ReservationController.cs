@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace PublicApi.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ReservationController : ControllerBase
     {
         private readonly IReservationService _reservationService;
@@ -55,6 +57,28 @@ namespace PublicApi.Controllers
             }
         }
 
+        [Route("cancel/{reservationID}/{status}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeReservationStatus([FromRoute] Guid reservationID, ReservationStatus status)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                var result = await _reservationService.CancelReservationAsync(reservationID);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        //thats for user cancel
         [Route("cancel/{reservationID}")]
         [HttpPost]
         public async Task<IActionResult> CancelReservation([FromRoute] Guid reservationID)
@@ -97,7 +121,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("/reservations")]
+        [Route("reservations")]
         [HttpGet]
         public async Task<IActionResult> GetUserReservationList()
         {

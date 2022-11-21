@@ -115,6 +115,7 @@ namespace upcity.Controllers
 
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
                             var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
+                            var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
                             if(userDetails == null || userClaim == null)
                             {
                                 return BadRequest(new { errorMessage = "404 Error" });
@@ -125,6 +126,7 @@ namespace upcity.Controllers
                                 FirstName = userDetails.FirstName,
                                 Jwt = jwt,
                                 Claim = userClaim.Value
+                                
                             };
 
                             return Ok(data);

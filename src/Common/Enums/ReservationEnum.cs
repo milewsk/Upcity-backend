@@ -7,16 +7,17 @@ namespace Common.Enums
 {
     public enum CreateReservationResult
     {
-        Ok= 1, 
+        Ok = 1,
         DateIsIncorrect = 2,
         Error = 3
     }
 
     public enum ReservationStatus
     {
-        Confirmed= 0,
+        Confirmed = 0,
         Pending = 1,
-        Expired = 3,
+        Expired = 2,
+        ToPay = 3,
         Canceled = 4
     }
 }

@@ -464,6 +464,20 @@ namespace ApplicationCore.Services
                     openingTimes.Add(item);
                 }
 
+                List<PromotionResult> promotions = new List<PromotionResult>();
+
+                foreach (var prom in place.Promotions)
+                {
+                    PromotionResult res = new PromotionResult()
+                    {
+                        PlaceID = prom.PlaceID,
+                        Content = prom.Content,
+                        Title = prom.Title,
+                    };
+
+                    promotions.Add(res);
+                }
+
                 PlaceDetailsResult result = new PlaceDetailsResult()
                 {
                     PlaceID = place.ID,
@@ -477,7 +491,9 @@ namespace ApplicationCore.Services
                     PlaceOpeningHours = new PlaceOpeningHoursModel()
                     {
                         OpeningTimes = openingTimes
-                    }
+                    },
+                    PromotionResults = promotions,
+                    StandardPrice = place.StandardPrice
                 };
 
                 return result;

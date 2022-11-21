@@ -11,6 +11,7 @@ namespace Common.Dto.Models
         public Guid PlaceID { get; set; }
 
         public bool IsLiked { get; set; }
+        public decimal StandardPrice { get; set; }
         public Coords Coords { get; set; }
         //Place
         public PlaceResult PlaceResult { get; set; }
@@ -18,5 +19,7 @@ namespace Common.Dto.Models
         public PlaceOpeningHoursModel PlaceOpeningHours { get; set; }
         //Menu
         public PlaceMenuResult PlaceMenuResult { get; set; }
+        //promotion list
+        public List<PromotionResult> PromotionResults { get; set; }
     }
 }

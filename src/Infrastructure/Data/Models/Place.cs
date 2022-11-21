@@ -11,6 +11,7 @@ namespace Infrastructure.Data.Models
         public string Name { get; set; }
         public string Image { get; set; }
         public byte IsActive { get; set; }
+        public decimal StandardPrice { get; set; }
 
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }

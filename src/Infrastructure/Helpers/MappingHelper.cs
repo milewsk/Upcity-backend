@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Dto;
+using Common.Dto.Inbox;
 using Common.Dto.Place;
 using Common.Dto.Tag;
 using Infrastructure.Data.Models;
@@ -29,6 +30,9 @@ namespace Infrastructure.Helpers
                 cfg.CreateMap<Tag, TagResult>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.TagID, opt => opt.MapFrom(src => src.ID));
+                
+                cfg.CreateMap<Message, MessageResult>()
+                .ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
 
                 cfg.CreateMap<PlaceDetails, PlaceResult>();
 
