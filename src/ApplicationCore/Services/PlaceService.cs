@@ -388,17 +388,17 @@ namespace ApplicationCore.Services
 
                 foreach (var item in modelList.Items)
                 {
-                    //var itemToAdd = new PlaceOpeningHours()
-                    //{
-                    //    PlaceID = Guid.Parse(modelList.PlaceID),
-                    //    CreationDate = DateTime.Now,
-                    //    LastModificationDate = DateTime.Now,
-                    //    Opens = item.OpenTime,
-                    //    Closes = item.CloseTime,
-                    //    DayOfWeek = item.DayOfWeek
-                    //};
+                    var itemToAdd = new PlaceOpeningHours()
+                    {
+                        PlaceID = modelList.PlaceID,
+                        CreationDate = DateTime.Now,
+                        LastModificationDate = DateTime.Now,
+                        Opens = TimeSpan.Parse(item.OpenTime),
+                        Closes = TimeSpan.Parse(item.CloseTime),
+                        DayOfWeek = item.DayOfWeek
+                    };
 
-                    //placeOpeningHours.Add(itemToAdd);
+                    placeOpeningHours.Add(itemToAdd);
                 }
 
                 return await _placeRepository.CreatePlaceOpeningHoursAsync(placeOpeningHours); ;
@@ -414,6 +414,17 @@ namespace ApplicationCore.Services
         {
             try
             {
+                var place = await _placeRepository.GetPlaceAsync(categoryModel.PlaceID);
+
+                var placeCategory = new PlaceMenuCategory()
+                {
+                    PlaceMenuID = place.PlaceMenu.ID,
+                    Name = categoryModel.Name,
+
+                };
+
+               await _placeRepository.CreatePlaceMenuCategoryAsync(placeCategory);
+
                 return true;
             }
             catch (Exception ex)

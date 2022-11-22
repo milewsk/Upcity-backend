@@ -122,30 +122,30 @@ namespace ApplicationCore.Repositories
             }
         }
         
-        public async Task<bool> EditProductAsync(Product product)
-        {
-            try
-            {
-                var productToEdit = await GetOne(product.ID);
+        //public async Task<bool> EditProductAsync(Product product)
+        //{
+        //    try
+        //    {
+        //        var productToEdit = await GetOne(product.ID);
 
-                if(productToEdit.ID == null)
-                {
-                    return false;
-                }
+        //        if(productToEdit.ID == null)
+        //        {
+        //            return false;
+        //        }
 
-                MappingHelper.Mapper.Map(product, productToEdit);
-                productToEdit.LastModificationDate = DateTime.Now;
+        //        MappingHelper.Mapper.Map(product, productToEdit);
+        //        productToEdit.LastModificationDate = DateTime.Now;
                 
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex.Message);
+        //        throw;
+        //    }
+        //}
 
         //done 
         public async Task<bool> CreateProductAsync(Product model)

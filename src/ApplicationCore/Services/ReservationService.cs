@@ -40,8 +40,8 @@ namespace ApplicationCore.Services
                     SeatNumber = model.SeatNumber,
                     Price = model.Price,
                     PaymentStatus = PaymentStatus.UnPaid,
-                    StartTime = DateTime.Parse(model.StartDate),
-                    EndTime = DateTime.Parse(model.EndDate),
+                    StartTime = DateTime.Parse(model.StartTime),
+                    EndTime = DateTime.Parse(model.EndTime),
                     Status = ReservationStatus.Pending,
                 };
 
@@ -136,8 +136,8 @@ namespace ApplicationCore.Services
                             {
                                 ReservationID = reservation.ID,
                                 ReservationDate = reservation.StartTime.Date.ToShortDateString(),
-                                StartHour = reservation.StartTime.Date.ToShortTimeString(),
-                                SeatCount = reservation.SeatNumber,
+                                StartTime = reservation.StartTime.Date.ToShortDateString() +' '+ reservation.StartTime.ToShortTimeString(),
+                                SeatNumber = reservation.SeatNumber,
                                 Status = reservation.Status,
                                 PaymentStatus = reservation.PaymentStatus,
                                 PlaceName = reservation.Place.Name,

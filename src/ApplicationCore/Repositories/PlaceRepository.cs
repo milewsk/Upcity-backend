@@ -39,6 +39,19 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
+        
+        public async Task<Place> GetPlaceAsync(Guid placeID)
+        {
+            try
+            {
+                return await _context.Places.Include(x => x.PlaceMenu).Where(x => x.ID == placeID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
 
         public async Task<List<Place>> GetListNearLocationAsync(Coords cords)
         {
@@ -277,6 +290,20 @@ namespace ApplicationCore.Repositories
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 await _context.AddAsync(placeMenu);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task CreatePlaceMenuCategoryAsync(PlaceMenuCategory placeMenuCategory)
+        {
+            try
+            {
+                await _context.AddAsync(placeMenuCategory);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
