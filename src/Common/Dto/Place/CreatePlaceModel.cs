@@ -17,7 +17,11 @@ namespace Common.Dto.Models
         public string PhoneNumber { get; set; }
         public string RegisterFirm { get; set; }
         public string NIP { get; set; }
+        public int MaxSeatNumber { get; set; }
 
         public List<Guid> TagIDs { get; set; }
+
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 }

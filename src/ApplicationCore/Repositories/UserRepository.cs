@@ -91,6 +91,19 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<LoyalityProgramAccount> GetUserLoyalityCardAsync(Guid userID)
+        {
+            try
+            {
+                return await _context.LoyalityProgramAccounts.Where(x => x.UserID == userID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task CreateUserDetailsAsync(UserDetails details)
         {
             try

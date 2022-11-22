@@ -8,6 +8,5 @@ namespace Common.Dto.Place
     {
         public string Name { get; set; }
         public Guid PlaceID { get; set; }
-
     }
 }

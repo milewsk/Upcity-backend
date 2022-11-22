@@ -9,6 +9,7 @@ namespace Infrastructure.Data.Models
     public class Product : EntityBase
     {
         public string Name { get; set; }
+        [Range(0, 2000)]
         public decimal Price { get; set; }
         public string Description { get; set; }
         public bool HaveDiscount { get; set; }

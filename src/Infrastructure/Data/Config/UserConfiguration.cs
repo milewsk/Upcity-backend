@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Config
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserLikeConfiguration : IEntityTypeConfiguration<UserLike>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<UserLike> builder)
         {
             builder.HasKey(u => u.ID);
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
             builder.Property(b => b.LastModificationDate).IsRequired().HasDefaultValue(new DateTime());
-            builder.Property(us => us.Email).IsRequired(true).HasMaxLength(50);
-            builder.Property(us => us.Password).IsRequired(true).HasMaxLength(50);
+            builder.Property(b => b.PlaceID).IsRequired();
+            builder.Property(b => b.UserID).IsRequired();
         }
     }
 }

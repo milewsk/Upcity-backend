@@ -14,5 +14,6 @@ namespace Common.Dto.Place
         public string PhoneNumber { get; set; }
         public string RegisterFirm { get; set; }
         public string NIP { get; set; }
+        public int MaxSeatNumber { get; set; }
     }
 }

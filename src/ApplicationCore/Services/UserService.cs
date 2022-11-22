@@ -118,22 +118,31 @@ namespace ApplicationCore.Services
 
         public async Task<Tuple<UserLoginResult, bool>> CreateUserLoyalityProgramAccountAsync(string jwt)
         {
-            var ss = _jwtService.Verify(jwt);
-            var user = await GetUserByGuidAsync(Guid.Parse(ss.Payload.Iss));
-            if (user.ID != null)
-
+            try
             {
+                var ss = _jwtService.Verify(jwt);
+                var user = await GetUserByGuidAsync(Guid.Parse(ss.Payload.Iss));
+                if (user.ID != null)
 
+                {
+
+                }
+                //LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
+                //{
+                //    CreationDate = DateTime.Now,
+                //    LastModificationDate = DateTime.Now,
+                //    Points = 0,
+                //    UserID = user.ID,
+                //    User = user
+                //};
+                return null;
             }
-            //LoyalityProgramAccount loyalProgram = new LoyalityProgramAccount()
-            //{
-            //    CreationDate = DateTime.Now,
-            //    LastModificationDate = DateTime.Now,
-            //    Points = 0,
-            //    UserID = user.ID,
-            //    User = user
-            //};
-            return null;
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+
         }
 
         public async Task<User> GetUserByGuidAsync(Guid id)
@@ -145,7 +154,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
-                return null;
+                throw;
             }
         }
 
@@ -187,6 +196,26 @@ namespace ApplicationCore.Services
             }
         }
 
+        public async Task<LoyalityProgramAccount> GetUserLoyalityCardAsync(Guid userID)
+        {
+            try
+            {
+                var card = await _userRepository.GetUserLoyalityCardAsync(userID);
+                if (card == null)
+                {
+                    return null;
+                }
+
+                return card;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+        }
+
+
         public async Task<UserClaim> GetUserClaimAsync(Guid userID)
         {
             try
@@ -215,7 +244,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
-                return false;
+                throw;
             }
         }
 
@@ -239,7 +268,7 @@ namespace ApplicationCore.Services
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
-                return false;
+                throw;
             }
         }
 
@@ -255,14 +284,38 @@ namespace ApplicationCore.Services
                     LastModificationDate = DateTime.Now,
                 };
 
-               await _userRepository.AddAsync(user);
+                await _userRepository.AddAsync(user);
                 return user;
 
             }
             catch (Exception ex)
             {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
 
-                return null;
+        }
+
+        private async Task<User> GetLoaylityCardInfo(string email, string password)
+        {
+            try
+            {
+                User user = new User()
+                {
+                    Email = email,
+                    Password = password,
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                };
+
+                await _userRepository.AddAsync(user);
+                return user;
+
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
             }
 
         }

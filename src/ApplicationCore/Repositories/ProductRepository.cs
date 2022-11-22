@@ -3,6 +3,7 @@ using Common.Dto.Models;
 using Common.Dto.Product;
 using Infrastructure.Data;
 using Infrastructure.Data.Models;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -120,6 +121,31 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
+        
+        public async Task<bool> EditProductAsync(Product product)
+        {
+            try
+            {
+                var productToEdit = await GetOne(product.ID);
+
+                if(productToEdit.ID == null)
+                {
+                    return false;
+                }
+
+                MappingHelper.Mapper.Map(product, productToEdit);
+                productToEdit.LastModificationDate = DateTime.Now;
+                
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
 
         //done 
         public async Task<bool> CreateProductAsync(Product model)
@@ -131,18 +157,8 @@ namespace ApplicationCore.Repositories
                     return false;
                 }
 
-                Product newProduct = new Product()
-                {
-                    CreationDate = DateTime.Now,
-                    LastModificationDate = DateTime.Now,
-                    Name = model.Name,
-                    Price = model.Price,
-                    Description = model.Description,
-                };
-
-                var product = await _context.Products.AddAsync(newProduct);
+                var product = await _context.Products.AddAsync(model);
                 await _context.SaveChangesAsync();
-
 
                 if (product == null)
                 {

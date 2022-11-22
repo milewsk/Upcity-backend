@@ -22,13 +22,13 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
-        public async Task<List<Reservation>> GetUserReservationList(Guid userID)
+        public async Task<List<Reservation>> GetUserReservationListAsync(Guid userID)
         {
             try
             {
-               // var userReservations = await _context
-
-                return await _context.Reservations.Where(x => x.TableID != null).ToListAsync();
+                return await _context.Reservations
+                    .Include(x => x.Place)
+                    .Where(x => x.UserID == userID).OrderBy(x => x.StartTime).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -36,6 +36,20 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
+
+        public async Task<List<Reservation>> GetUserReservationsAsync(Guid userID)
+        {
+            try
+            {
+                return await _context.Reservations.Include(x => x.Place).Where(x => x.UserID == userID).OrderBy(x => x.StartTime.Ticks).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
 
         public async Task<Reservation> GetReservationAsync(Guid reservationID)
         {
@@ -50,12 +64,14 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task CreateReservationAsync(Reservation reservation)
+        public async Task<bool> CreateReservationAsync(Reservation reservation)
         {
             try
             {
                 await _context.Reservations.AddAsync(reservation);
                 await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception ex)
             {

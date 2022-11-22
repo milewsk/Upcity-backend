@@ -30,38 +30,10 @@ namespace PublicApi.Controllers
             _authService = authService;
         }
 
-        [HttpGet]
-        [Route("places")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetPlacesListAsync()
-        {
-            try
-            {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
-
-                var result = await _placeService.GetPlacesAsync();
-                if (result.Count != 0)
-                {
-                    return Ok(result);
-                }
-
-                return BadRequest(new { errorMessage = "Nie znaleziono żadnych miejsc" });
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
         //lokalizacja
-        [Route("places/{latitude}/{longitude}")]
+        [Route("list/{latitude}/{longitude}")]
         [HttpGet]
-        public async Task<IActionResult> GetPlaceListUserLocationAsync([FromRoute] string latitude, [FromRoute] string longitude)
+        public async Task<IActionResult> GetPlaceListNearLocation([FromRoute] string latitude, [FromRoute] string longitude)
         {
             try
             {
@@ -69,14 +41,16 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesNearUserLocationAsync(latitude, longitude);
 
-                if (result.Count > 0)
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude, userID);
                     return Ok(result);
                 }
 
-                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -85,10 +59,10 @@ namespace PublicApi.Controllers
             }
         }
 
-        //
-        [Route("places/{latitude}/{longitude}/{categoryID}")]
+        //duplikacja z tym wyżej
+        [Route("places/{latitude}/{longitude}/{tagID}")]
         [HttpGet]
-        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] string categoryID)
+        public async Task<IActionResult> GetPlaceByCategoryAsync([FromRoute] string latitude, [FromRoute] string longitude, [FromRoute] Guid tagID)
         {
             try
             {
@@ -96,14 +70,15 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, categoryID);
-
-                if (result.Count > 0)
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID, userID);
                     return Ok(result);
                 }
 
-                return BadRequest(new { errorMessage = "Nie można pobrać danych" });
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -112,9 +87,10 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("places/search/{searchString}")]
+        //done
         [HttpGet]
-        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString)
+        [Route("search/{searchString}/{latitude}/{longitude}")]
+        public async Task<IActionResult> GetPlaceListBySearchStringAsync([FromRoute] string searchString, [FromRoute] string latitude, [FromRoute] string longitude)
         {
             try
             {
@@ -122,9 +98,16 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = _placeService.GetPlacesListBySearchStringAsync(searchString);
 
-                return Ok(result);
+                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlacesListBySearchStringAsync(searchString, latitude, longitude, userID);
+                    return Ok(result);
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -146,6 +129,33 @@ namespace PublicApi.Controllers
                 var result = await _placeService.CreatePlaceAsync(placeModel);
 
                 return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("openingHours/create")]
+        [HttpPost]
+        public async Task<IActionResult> CreateOpeningHours([FromBody] CreateOpeningHoursModelList modelList)
+        {
+            try
+            {
+
+                var res = modelList;
+
+                var date = new DateTime(1970, 01, 01).AddMilliseconds(double.Parse(res.Items[0].OpenTime)).ToLocalTime();
+
+                DateTime x = date;
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
+                var result = await _placeService.CreateOpeningHoursAsync(modelList);
+
+                return Ok(true);
             }
             catch (Exception e)
             {
@@ -176,33 +186,6 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("place/menu/product/add")]
-        [HttpPost]
-        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
-        {
-            try
-            {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
-
-                var result = await _productService.CreateProductAsync(productModel);
-
-                if (result == true)
-                {
-                    return Ok(result);
-                }
-
-                return BadRequest(false);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
         [Route("place/menu/category/add")]
         [HttpPost]
         public async Task<IActionResult> CreatePlaceMenuCategoryAsync([FromBody] CreatePlaceMenuCategoryModel categoryModel)
@@ -217,6 +200,92 @@ namespace PublicApi.Controllers
                 bool result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
 
                 return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("details/{placeID}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDetails([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetPlaceDetailsAsync(Guid.Parse(placeID), userID);
+                    return Ok(result);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("favourite/{placeID}")]
+        [HttpPost]
+        public async Task<IActionResult> AddToFavourite([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss); 
+                    var result = await _placeService.AddToFavouriteAsync(Guid.Parse(placeID), userID);
+                    return Ok(result);
+                }
+                return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("places/favourite")]
+        [HttpGet]
+        public async Task<IActionResult> GetFavouritePlaceList()
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                //we want to get user based on request
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _placeService.GetFavouritePlaceListAsync(userID);
+                    return Ok(result);
+                }
+                return BadRequest();
+
             }
             catch (Exception e)
             {

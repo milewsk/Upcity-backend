@@ -6,7 +6,7 @@ namespace Infrastructure.Data.Models
 {
    public class PlaceOpeningHours : EntityBase
     {
-        public byte DayOfWeek { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
         public TimeSpan Opens { get; set; }
         public TimeSpan Closes { get; set; }
 

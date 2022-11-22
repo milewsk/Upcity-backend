@@ -38,7 +38,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<Point>("Location")
                         .IsRequired()
-                        .HasColumnType("geography");
+                        .HasColumnType("geometry");
 
                     b.Property<Guid>("PlaceID")
                         .HasColumnType("uniqueidentifier");
@@ -81,6 +81,40 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("LoyalityProgramAccounts");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.Message", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<DateTime>("LastModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<Guid>("PlaceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PlaceID");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Models.Place", b =>
@@ -140,6 +174,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<int>("MaxSeatNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("NIP")
                         .HasColumnType("nvarchar(max)");
@@ -234,8 +271,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-                    b.Property<byte>("DayOfWeek")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("LastModificationDate")
                         .ValueGeneratedOnAdd()
@@ -373,10 +410,14 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.Property<DateTime>("LastModificationDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
                     b.Property<Guid>("ProductID")
                         .HasColumnType("uniqueidentifier");
@@ -391,6 +432,47 @@ namespace Infrastructure.Migrations
                     b.HasIndex("TagID");
 
                     b.ToTable("ProductTags");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.Promotion", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<int>("PersonCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PlaceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PlaceID");
+
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Models.Reservation", b =>
@@ -412,51 +494,25 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+                    b.Property<Guid>("PlaceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("SeatNumber")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("TableID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("TableID");
-
-                    b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Infrastructure.Data.Models.Table", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ChairsAmount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<int>("IsReserved")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<DateTime>("LastModificationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<Guid>("PlaceID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
                     b.HasIndex("PlaceID");
 
-                    b.ToTable("Tables");
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Models.Tag", b =>
@@ -476,11 +532,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-                    b.Property<byte>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
                     b.Property<DateTime>("LastModificationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -488,6 +539,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -598,6 +652,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("UsersDetails");
                 });
 
+            modelBuilder.Entity("Infrastructure.Data.Models.UserLike", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<DateTime>("LastModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<Guid>("PlaceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PlaceID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserLikes");
+                });
+
             modelBuilder.Entity("Infrastructure.Data.Models.Coordinates", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
@@ -613,6 +698,16 @@ namespace Infrastructure.Migrations
                         .WithOne("LoyalityProgramAccount")
                         .HasForeignKey("Infrastructure.Data.Models.LoyalityProgramAccount", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.Message", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Models.Place", "Place")
+                        .WithMany("Messages")
+                        .HasForeignKey("PlaceID")
+                        .HasConstraintName("FK_Message_Places_PlaceID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -646,9 +741,10 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Infrastructure.Data.Models.PlaceOpeningHours", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
-                        .WithMany()
+                        .WithMany("PlaceOpeningHours")
                         .HasForeignKey("PlaceID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_OpeningHours_Places_PlaceID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -700,23 +796,29 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Data.Models.Reservation", b =>
+            modelBuilder.Entity("Infrastructure.Data.Models.Promotion", b =>
                 {
-                    b.HasOne("Infrastructure.Data.Models.Table", "Table")
-                        .WithMany("Reservations")
-                        .HasForeignKey("TableID")
-                        .HasConstraintName("FK_Reservation_Tables_TableID")
+                    b.HasOne("Infrastructure.Data.Models.Place", "Place")
+                        .WithMany("Promotions")
+                        .HasForeignKey("PlaceID")
+                        .HasConstraintName("FK_Promotion_Places_PlaceID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Data.Models.Table", b =>
+            modelBuilder.Entity("Infrastructure.Data.Models.Reservation", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
-                        .WithMany("Tables")
+                        .WithMany("Reservations")
                         .HasForeignKey("PlaceID")
-                        .HasConstraintName("FK_Tables_Places_PlaceID")
+                        .HasConstraintName("FK_Reservation_Places_PlaceID")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Data.Models.User", "User")
+                        .WithMany("Reservations")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -734,6 +836,21 @@ namespace Infrastructure.Migrations
                     b.HasOne("Infrastructure.Data.Models.User", "User")
                         .WithOne("UserDetails")
                         .HasForeignKey("Infrastructure.Data.Models.UserDetails", "UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.UserLike", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Models.Place", "Place")
+                        .WithMany()
+                        .HasForeignKey("PlaceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Data.Models.User", "User")
+                        .WithMany("UserLikes")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

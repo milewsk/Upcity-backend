@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NetTopologySuite.Geometries;
+using Common.Utils;
 
 namespace ApplicationCore.Repositories
 {
@@ -39,21 +40,38 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Place>> GetListNearLocationAsync(double[] cords)
+        public async Task<List<Place>> GetListNearLocationAsync(Coords cords)
         {
             try
             {
                 //long = x lat = y
                 GeometryFactory geometryFactory = new GeometryFactory();
-                Coordinate userGeo = new Coordinate
+                Coordinate userGeo = new Coordinate()
                 {
-                    X = cords[0],
-                    Y = cords[1]
+                    X = cords.X,
+                    Y = cords.Y
                 };
 
-                var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, cords[0]));
 
-                return await _context.Places.Include(x => x.Coordinates).Where(x => x.IsActive == 1 && circle.Covers(x.Coordinates.Location)).ToListAsync();
+                //20km
+                var circle = geometryFactory.CreatePoint(userGeo).Buffer(MeterToDegree(20000, userGeo.Y));
+
+                List<Place> result = new List<Place>();
+                var list = await _context.Places
+                            .Include(x => x.Coordinates)
+                            .Include(x => x.PlaceOpeningHours)
+                            .Include(x => x.PlaceTags)
+                            .Where(x => x.IsActive == 1).ToListAsync();
+
+                foreach (var item in list)
+                {
+                    if (circle.Covers(item.Coordinates.Location))
+                    {
+                        result.Add(item);
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -62,7 +80,7 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Place>> GetPlacesByCategoryAsync(double[] cords, Guid categoryID)
+        public async Task<List<Place>> GetPlacesByCategoryAsync(Coords cords, Guid categoryID)
         {
             try
             {
@@ -70,11 +88,11 @@ namespace ApplicationCore.Repositories
 
                 List<Place> result = new List<Place>();
 
-                foreach(var item in list)
+                foreach (var item in list)
                 {
-                    foreach(var cat in item.PlaceTags)
+                    foreach (var cat in item.PlaceTags)
                     {
-                        if(cat.ID == categoryID)
+                        if (cat.ID == categoryID)
                         {
                             result.Add(item);
                         }
@@ -90,18 +108,21 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        //done
         private double MeterToDegree(double meters, double latitude)
         {
             return meters / (111.32 * 1000 * Math.Cos(latitude * (Math.PI / 180)));
         }
 
+        //done
         public async Task<List<Place>> GetListBySearchStringAsync(string searchedText)
         {
             try
             {
                 return await _context.Places.Include(x => x.PlaceDetails)
+                                            .Include(x => x.Coordinates)
                                             .Where(x => (EF.Functions.Like(x.Name, $"%{searchedText}%")
-                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%") 
+                                                        || EF.Functions.Like(x.PlaceDetails.City, $"%{searchedText}%")
                                                         || EF.Functions.Like(x.PlaceDetails.Address, $"%{searchedText}%"))
                                                         && x.IsActive == 1).ToListAsync();
             }
@@ -125,11 +146,11 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<PlaceDetails> GetPlaceDetailsAsync(Guid placeID)
+        public async Task<PlaceOpeningHours> GetPlaceOpeningHourAsync(Place place, DayOfWeek day)
         {
             try
             {
-                return await _context.PlacesDetails.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+                return await _context.PlaceOpeningHours.Where(x => x.PlaceID == place.ID && x.DayOfWeek == day).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -145,6 +166,28 @@ namespace ApplicationCore.Repositories
             {
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 return await _context.PlaceMenus.Where(x => x.PlaceID == placeID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<Place> GetPlaceDetailsAsync(Guid placeID)
+        {
+            try
+            {
+                var result = await _context.Places
+                              .Include(x => x.PlaceDetails)
+                              .Include(x => x.PlaceOpeningHours)
+                              .Include(x => x.PlaceOpinions)
+                              .Include(x => x.Coordinates)
+                              .Include(x => x.Promotions)
+                              .Include(x => x.PlaceMenu).ThenInclude(x => x.PlaceMenuCategories).ThenInclude(x => x.Products)
+                              .Where(x => x.ID == placeID).FirstOrDefaultAsync();
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -183,13 +226,29 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
+        public async Task CreatePlaceCoordinatesAsync(Infrastructure.Data.Models.Coordinates coords)
         {
             try
             {
-                //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
-                await _context.AddRangeAsync(openingHoursList);
+                var xty = coords.Location.Boundary;
+                await _context.Coordinates.AddAsync(coords);
                 await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList)
+        {
+            try
+            {
+                await _context.PlaceOpeningHours.AddRangeAsync(openingHoursList);
+                await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -211,7 +270,7 @@ namespace ApplicationCore.Repositories
                 _appLogger.LogError(ex.Message);
                 throw;
             }
-        } 
+        }
         public async Task CreatePlaceMenuAsync(PlaceMenu placeMenu)
         {
             try
@@ -219,6 +278,20 @@ namespace ApplicationCore.Repositories
                 //zrobić strukturę menu => ma ileś tam kategorii i kategorie mają ileś tam dań
                 await _context.AddAsync(placeMenu);
                 await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<Place>> GetLikedListAsync(Guid userID)
+        {
+            try
+            {
+                var result = await _context.UserLikes.Include(x => x.Place).ThenInclude(x => x.Coordinates).Where(x => x.UserID == userID).Select(x => x.Place).ToListAsync();
+                return result;
             }
             catch (Exception ex)
             {

@@ -20,5 +20,6 @@ namespace ApplicationCore.Interfaces
         void AddRange(IEnumerable<TEntity> entities);
         Task<bool> Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
+        Task SaveChangesAsync();
     }
 }

@@ -12,16 +12,20 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IPlaceService
     {
-        //fajne jeśli chcemy zwrócić odpowiedź co do konkretnego błędu od razu
-        //nazwewnictwo sefix - nazwa metody + result , zwracany obiekt + Dto , nazwa kotrolera + nazwa metody + model
-        Task<Tuple<PlaceCreatePlaceStatusResult, PlaceDetailsResult>> CreatePlaceAsync(CreatePlaceModel model);
+        Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreatePlaceAsync(CreatePlaceModel model);
+        Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList);
+        Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
+
         Task<List<PlaceResult>> GetPlacesAsync();
-        Task<List<PlaceResult>> GetPlacesNearUserLocationAsync(string latitude, string longitude);
-        Task<List<PlaceResult>> GetPlacesByCategoryAsync(string latitude, string longitude, string categoryID);
-        Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString);
+        Task<PlaceDetailsResult> GetPlaceDetailsAsync(Guid placeID, Guid userID);
+        Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, Guid tagID, Guid userID);
+        Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude, Guid userID);
+        Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude, Guid userID);
+        Task<List<PlaceShortcutResult>> GetFavouritePlaceListAsync(Guid userID);
+   
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
 
-        Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
+        Task<bool> AddToFavouriteAsync(Guid placeID, Guid userID);
     }
 }

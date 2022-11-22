@@ -11,15 +11,18 @@ namespace Infrastructure.Data.Models
         public string Name { get; set; }
         public string Image { get; set; }
         public byte IsActive { get; set; }
+        public decimal StandardPrice { get; set; }
 
         public PlaceDetails PlaceDetails { get; set; }
         public Coordinates Coordinates { get; set; }
         public PlaceMenu PlaceMenu { get; set; }
+        public ICollection<PlaceOpeningHours> PlaceOpeningHours { get; set; }
 
 
-        public ICollection<Table> Tables { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
         public ICollection<PlaceOpinion> PlaceOpinions { get; set; }
-        //public ICollection<Product> Products { get; set; }
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<Promotion> Promotions { get; set; }
         public IList<PlaceTag> PlaceTags { get; set; }
 
 

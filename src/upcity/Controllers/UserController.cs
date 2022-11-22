@@ -26,12 +26,13 @@ namespace upcity.Controllers
     {
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
+        private readonly IAuthorizationService _authService;
 
-        public UserController(IUserService userService, IJwtService jwtService)
+        public UserController(IUserService userService, IJwtService jwtService, IAuthorizationService authorizationService)
         {
             _userService = userService;
             _jwtService = jwtService;
-
+            _authService = authorizationService;
         }
 
         //move to service
@@ -114,6 +115,7 @@ namespace upcity.Controllers
 
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
                             var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
+                            var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
                             if(userDetails == null || userClaim == null)
                             {
                                 return BadRequest(new { errorMessage = "404 Error" });
@@ -124,6 +126,7 @@ namespace upcity.Controllers
                                 FirstName = userDetails.FirstName,
                                 Jwt = jwt,
                                 Claim = userClaim.Value
+                                
                             };
 
                             return Ok(data);
@@ -162,5 +165,29 @@ namespace upcity.Controllers
             }
         }
 
+        [Route("loyalityCard")]
+        [HttpGet]
+        public async Task<IActionResult> GetLoyalityCardInfo([FromRoute] string email)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                var isEmailAlreadyTaken = await _userService.IsEmailExist(email);
+                if (isEmailAlreadyTaken)
+                {
+                    return Conflict();
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }

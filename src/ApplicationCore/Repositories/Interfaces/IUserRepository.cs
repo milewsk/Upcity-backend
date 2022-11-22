@@ -18,6 +18,7 @@ namespace ApplicationCore.Repositories.Interfaces
         Task CreateUserDetailsAsync(UserDetails userDetails);
         Task CreateUserClaimAsync(UserClaim claim);
         Task CreateUserLoyalityAccountAsync(LoyalityProgramAccount account);
+        Task<LoyalityProgramAccount> GetUserLoyalityCardAsync(Guid userID);
         Task<UserClaim> GetUserClaimAsync(Guid userID);
         Task<UserDetails> GetUserDetailsAsync(Guid userID);
         //Task AddClaims(User user,List<Claim> claims);

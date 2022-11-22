@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Common.Dto;
+using Common.Dto.Inbox;
+using Common.Dto.Place;
+using Common.Dto.Tag;
 using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -20,9 +23,26 @@ namespace Infrastructure.Helpers
 
         public static void RegisterMappings()
         {
-            MapperConfig = new MapperConfiguration(cfg => {
-
+            MapperConfig = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<UserDto, User>();
+
+                cfg.CreateMap<Tag, TagResult>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.TagID, opt => opt.MapFrom(src => src.ID));
+                
+                cfg.CreateMap<Message, MessageResult>()
+                .ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
+
+                cfg.CreateMap<PlaceDetails, PlaceResult>();
+
+
+
+                //cfg.CreateMap<Place, PlaceShortcutResult>()
+                //        .ForMember(dest => dest.CloseHour , opt => opt.MapFrom(src => src.PlaceOpeningHours.Closes.ToString()))
+                //        .ForMember(dest => dest.OpeningHour, opt => opt.MapFrom(src => src.PlaceOpeningHours.Opens.ToString()))
+                //        .ForMember(dest => dest.OpeningHour, opt => opt.MapFrom(src => src.PlaceOpeningHours.Opens.ToString()))
+                //        ;
             });
         }
     }
