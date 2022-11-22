@@ -1,4 +1,5 @@
 ﻿using Common.Dto.Reservation;
+using Common.Enums;
 using Infrastructure.Data.Models;
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,6 @@ namespace ApplicationCore.Services.Interfaces
         Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID);
         Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce);
         Task<ReservationResult> GetReservationDetailsAsync(Guid reservationID);
-
+        Task<bool> ChangeReservationStatusAsync(Guid reservationID, ReservationStatus status);
     }
 }

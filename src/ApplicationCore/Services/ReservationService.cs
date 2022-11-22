@@ -42,7 +42,7 @@ namespace ApplicationCore.Services
                     PaymentStatus = PaymentStatus.UnPaid,
                     StartTime = DateTime.Parse(model.StartDate),
                     EndTime = DateTime.Parse(model.EndDate),
-                    Status = ReservationStatus.Pending,                 
+                    Status = ReservationStatus.Pending,
                 };
 
                 await _reservationRepository.CreateReservationAsync(newReservation);
@@ -96,6 +96,24 @@ namespace ApplicationCore.Services
             }
         }
 
+        public async Task<bool> ChangeReservationStatusAsync(Guid reservationID, ReservationStatus status)
+        {
+            try
+            {
+                var reservation = await _reservationRepository.GetReservationAsync(reservationID);
+                reservation.Status = status;
+
+               await _reservationRepository.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return false;
+            }
+        }
+
         public async Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce)
         {
             try
@@ -122,7 +140,8 @@ namespace ApplicationCore.Services
                                 SeatCount = reservation.SeatNumber,
                                 Status = reservation.Status,
                                 PaymentStatus = reservation.PaymentStatus,
-                                PlaceName = reservation.Place.Name
+                                PlaceName = reservation.Place.Name,
+                                Price = reservation.Price
                             };
 
                             result.Add(item);

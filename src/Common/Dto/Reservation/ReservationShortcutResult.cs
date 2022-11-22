@@ -14,5 +14,6 @@ namespace Common.Dto.Reservation
         public int SeatCount { get; set;  }
         public ReservationStatus Status { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
+        public decimal Price { get; set; }
     }
 }

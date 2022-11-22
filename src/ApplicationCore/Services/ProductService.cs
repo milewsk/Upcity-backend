@@ -97,10 +97,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var productToEdit = await _productRepository.GetOne(model.ProductID);
-
-
-                var result = await _productRepository.SetDiscountAsync(productToEdit);
+                var result = await _productRepository.SetDiscountAsync(model);
                 return result;
             }
             catch (Exception ex)
@@ -109,19 +106,19 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-        
+
         // we are assuming in discount price
         public async Task<bool> EditProductAsync(EditProductModel model)
         {
             try
-            {                
+            {
                 var productToEdit = await _productRepository.GetOne(model.ProductID);
                 if (productToEdit == null)
                 {
                     return false;
                 }
 
-                 MappingHelper.Mapper.Map(model, productToEdit);
+                MappingHelper.Mapper.Map(model, productToEdit);
 
                 var result = await _productRepository.EditProductAsync(productToEdit);
                 return result;

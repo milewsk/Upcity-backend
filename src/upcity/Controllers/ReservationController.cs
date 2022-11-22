@@ -57,7 +57,7 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("cancel/{reservationID}/{status}")]
+        [Route("status/{reservationID}/{status}")]
         [HttpPost]
         public async Task<IActionResult> ChangeReservationStatus([FromRoute] Guid reservationID, ReservationStatus status)
         {
@@ -67,7 +67,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
-                var result = await _reservationService.CancelReservationAsync(reservationID);
+                var result = await _reservationService.ChangeReservationStatusAsync(reservationID, status);
 
                 return Ok(result);
             }
