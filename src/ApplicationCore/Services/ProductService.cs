@@ -53,6 +53,8 @@ namespace ApplicationCore.Services
                     Price = productModel.Price,
                     Description = productModel.Description,
                     PlaceMenuCategoryID = productModel.CategoryID,
+                    HaveDiscount = false,
+                    DiscountPrice = productModel.Price,
                 };
 
                 var result = await _productRepository.CreateProductAsync(newProduct);
