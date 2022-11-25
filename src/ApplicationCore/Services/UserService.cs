@@ -252,24 +252,83 @@ namespace ApplicationCore.Services
         {
             try
             {
-                Regex emailRegex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-                                                + "@"
-                                                + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$");
-                Regex passwordRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
-
-                if (emailRegex.IsMatch(email) && passwordRegex.IsMatch(password))
+                if (EmailValidator(email) && PasswordValidator(password))
                 {
                     return true;
                 }
 
-                //do zmiany potem 
-                return true;
+                return false;
             }
             catch (Exception ex)
             {
                 _appLogger.LogWarning(ex.Message);
                 throw;
             }
+        }
+
+        private bool PasswordValidator(string password)
+        {
+            try
+            {
+                Regex passwordRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
+
+                if (passwordRegex.IsMatch(password))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> ChangePasswordAsync(Guid userID, string newPassword)
+        {
+            try
+            {
+                if (PasswordValidator(newPassword))
+                {
+                    var user = await _userRepository.GetUserByGuid(userID);
+                    user.Password = newPassword;
+                    await _userRepository.SaveChangesAsync();
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        private bool EmailValidator(string email)
+        {
+            try
+            {
+                Regex emailRegex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
+                                                + "@"
+                                                + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$");
+
+                if (emailRegex.IsMatch(email))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+
         }
 
         private async Task<User> CreateUser(string email, string password)

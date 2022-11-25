@@ -216,6 +216,7 @@ namespace upcity.Controllers
             }
         }
 
+        //not gonna use for now
         [Route("edit")]
         [HttpPost]
         public async Task<IActionResult> EditPersonalInfo([FromBody] UserEditModel model)

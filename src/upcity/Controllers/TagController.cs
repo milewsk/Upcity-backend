@@ -25,7 +25,8 @@ namespace PublicApi.Controllers
             _jwtService = jwtService;
             _authService = authService;
         }
-
+        
+        // admin/owner
         [Route("list")]
         [HttpGet]
         public async Task<IActionResult> PlaceTagList()
@@ -48,6 +49,7 @@ namespace PublicApi.Controllers
             }
         }
 
+        //  admin
         [Route("createTag")]
         [HttpPost]
         public async Task<IActionResult> CreateTag([FromBody] CreateTagModel tagModel)
@@ -70,9 +72,9 @@ namespace PublicApi.Controllers
             }
         }
 
+        //  admin
         // i want to implement that but i don't know if i would have time
         //usuń rekordy placeTag/productTag po dezaktywacji Taga
-
         [Route("delete/{tagID}")]
         [HttpPost]
         public async Task<IActionResult> DeleteTag([FromRoute] string tagID)

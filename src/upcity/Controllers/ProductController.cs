@@ -53,5 +53,32 @@ namespace PublicApi.Controllers
                 throw;
             }
         }
+
+        [Route("delete/{productID}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct([FromRoute] Guid productID)
+        {
+            try
+            {
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
+
+                var result = await _productService.DeleteProduct(productID);
+
+                if (result == true)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(false);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
     }
 }
