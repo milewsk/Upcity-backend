@@ -9,8 +9,8 @@ namespace Common.Dto.Reservation
         //przesłać cenę startową wraz z place do placeSlice
         public Guid PlaceID { get; set; }
         public decimal Price { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public int SeatNumber { get; set; }
     }
 }

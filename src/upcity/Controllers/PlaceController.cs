@@ -143,12 +143,6 @@ namespace PublicApi.Controllers
         {
             try
             {
-
-                var res = modelList;
-
-                var date = new DateTime(1970, 01, 01).AddMilliseconds(double.Parse(res.Items[0].OpenTime)).ToLocalTime();
-
-                DateTime x = date;
                 //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
                 //{
                 //    return Unauthorized();
@@ -192,10 +186,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
 
                 bool result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
 

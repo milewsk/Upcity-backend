@@ -33,10 +33,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
 
                 var result = await _productService.CreateProductAsync(productModel);
 

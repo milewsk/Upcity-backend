@@ -11,6 +11,7 @@ namespace ApplicationCore.Repositories.Interfaces
     public interface IPlaceRepository : IRepository<Place>
     {
         Task<List<Place>> GetListAsync();
+        Task<Place> GetPlaceAsync(Guid placeID);
         Task<Place> GetPlaceDetailsAsync(Guid placeID);
         Task<List<Place>> GetListNearLocationAsync(Coords coords);
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);
@@ -25,6 +26,7 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<bool> CreatePlaceOpeningHoursAsync(List<PlaceOpeningHours> openingHoursList);
         Task CreatePlaceTagsAsync(List<PlaceTag> placeTags);
         Task CreatePlaceMenuAsync(PlaceMenu placeMenu);
+        Task CreatePlaceMenuCategoryAsync(PlaceMenuCategory placeMenuCategory);
         Task CreatePlaceCoordinatesAsync(Infrastructure.Data.Models.Coordinates coords);
     }
 }
