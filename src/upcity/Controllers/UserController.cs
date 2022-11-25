@@ -17,6 +17,7 @@ using Common.Enums;
 using System.Net.Http;
 using PublicApi.Controllers;
 using Common.Dto.Models;
+using Common.Dto.User;
 
 namespace upcity.Controllers
 {
@@ -116,7 +117,7 @@ namespace upcity.Controllers
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
                             var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
                             var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
-                            if(userDetails == null || userClaim == null)
+                            if (userDetails == null || userClaim == null)
                             {
                                 return BadRequest(new { errorMessage = "404 Error" });
                             }
@@ -126,7 +127,7 @@ namespace upcity.Controllers
                                 FirstName = userDetails.FirstName,
                                 Jwt = jwt,
                                 Claim = userClaim.Value
-                                
+
                             };
 
                             return Ok(data);
@@ -167,7 +168,7 @@ namespace upcity.Controllers
 
         [Route("loyalityCard")]
         [HttpGet]
-        public async Task<IActionResult> GetLoyalityCardInfo([FromRoute] string email)
+        public async Task<IActionResult> GetLoyalityCard()
         {
             try
             {
@@ -176,12 +177,66 @@ namespace upcity.Controllers
                     return Unauthorized();
                 }
 
-                var isEmailAlreadyTaken = await _userService.IsEmailExist(email);
-                if (isEmailAlreadyTaken)
-                {
-                    return Conflict();
-                }
+
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("password/{newPassword}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromRoute] string newPassword)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _userService.ChangePasswordAsync(userID, newPassword);
+
+                    return Ok(result);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("edit")]
+        [HttpPost]
+        public async Task<IActionResult> EditPersonalInfo([FromBody] UserEditModel model)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    Guid userID = Guid.Parse(token.Payload.Iss);
+                    var result = await _userService.EditUserAsync(userID, model);
+
+                    return Ok(result);
+                }
+
+                return BadRequest();
             }
             catch (Exception e)
             {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Dto.Models;
 using Common.Dto;
+using Common.Dto.User;
 
 namespace ApplicationCore.Services.Interfaces
 {
@@ -27,5 +28,8 @@ namespace ApplicationCore.Services.Interfaces
 
         Task<LoyalityProgramAccount> GetUserLoyalityCardAsync(Guid userID);
         //bool CheckCrudentials(string email, string password);
+
+        Task<bool> ChangePasswordAsync(Guid userID, string newPassword);
+        Task<bool> EditUserAsync(Guid userID, UserEditModel model);
     }
 }
