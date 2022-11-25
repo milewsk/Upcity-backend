@@ -56,7 +56,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Users.Where(x => x.ID == id).FirstOrDefaultAsync();
+                return await _context.Users.Include(x => x.LoyalityProgramAccount).Include(x=> x.UserDetails).Where(x => x.ID == id).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
