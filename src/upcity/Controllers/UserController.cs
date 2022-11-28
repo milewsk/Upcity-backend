@@ -253,6 +253,26 @@ namespace upcity.Controllers
             }
         }
 
+        [Route("delete/{userID}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid userID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Admin))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _userService.DeleteUserAsync(userID);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
 
         //not gonna use for now
         [Route("edit")]
@@ -270,7 +290,7 @@ namespace upcity.Controllers
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
-        //          var result = await _userService.EditUserAsync(userID, model);
+                    //          var result = await _userService.EditUserAsync(userID, model);
 
                     return Ok(true);
                 }

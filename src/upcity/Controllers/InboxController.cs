@@ -48,6 +48,27 @@ namespace PublicApi.Controllers
             }
         }
 
+        [Route("create")]
+        [HttpPost]
+        public async Task<IActionResult> CreateAdminMessage([FromBody] CreateMessageAdminModel model)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _messageService.CreateAdminMessageAsync(model);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
         [Route("messages")]
         [HttpGet]
         public async Task<IActionResult> GetUserMessageList()

@@ -362,6 +362,20 @@ namespace ApplicationCore.Services
 
         }
 
+        public async Task<bool> DeleteUserAsync(Guid userID)
+        {
+            try
+            {
+                return await _userRepository.RemoveUserAsync(userID);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
+
+        }
+
         private async Task<User> CreateUser(string email, string password)
         {
             try

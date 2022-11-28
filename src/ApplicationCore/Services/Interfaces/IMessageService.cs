@@ -13,5 +13,6 @@ namespace ApplicationCore.Services.Interfaces
     {
         Task<List<MessageResult>> GetUserMessagesAsync(Guid userID);
         Task<bool> CreateMessageAsync(CreateMessageModel model);
+        Task<bool> CreateAdminMessageAsync(CreateMessageAdminModel model);
     }
 }

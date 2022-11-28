@@ -72,5 +72,27 @@ namespace ApplicationCore.Services.Interfaces
                 throw;
             }
         }
+
+        public async Task<bool> CreateMessageAsync(CreateMessageModel model)
+        {
+            try
+            {
+                Message newMessage = new Message()
+                {
+                    Content = model.Content,
+                    CreationDate = DateTime.Now,
+                    LastModificationDate = DateTime.Now,
+                    PlaceID = model.PlaceID,
+                    Title = model.Title
+                };
+
+                return await _messageRepository.CreateMessageAsync(newMessage);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
     }
 }
