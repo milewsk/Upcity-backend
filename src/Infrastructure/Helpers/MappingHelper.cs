@@ -3,6 +3,7 @@ using Common.Dto;
 using Common.Dto.Inbox;
 using Common.Dto.Place;
 using Common.Dto.Tag;
+using Common.Dto.User;
 using Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,10 @@ namespace Infrastructure.Helpers
                 
                 cfg.CreateMap<Message, MessageResult>()
                 .ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
+
+                cfg.CreateMap<User, UserShortcutResult>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.UserDetails.FirstName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserDetails.Surname));
 
                 cfg.CreateMap<PlaceDetails, PlaceResult>();
 

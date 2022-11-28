@@ -423,7 +423,7 @@ namespace ApplicationCore.Services
 
                 };
 
-               await _placeRepository.CreatePlaceMenuCategoryAsync(placeCategory);
+                await _placeRepository.CreatePlaceMenuCategoryAsync(placeCategory);
 
                 return true;
             }
@@ -514,6 +514,26 @@ namespace ApplicationCore.Services
                 _appLogger.LogError(ex.Message);
                 throw;
             }
+        }
+
+        public async Task<PlaceDetailsResult> GetOwnerPlaceDataAsync(Guid ownerID)
+        {
+
+            try
+            {
+                PlaceDetailsResult result = new PlaceDetailsResult();
+                var place = await _placeRepository.GetPlaceForOwnerAsync(ownerID);
+                var placeDetails = await _placeRepository.GetPlaceDetailsAsync(place.ID);
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+
         }
 
         public async Task<List<PlaceShortcutResult>> GetFavouritePlaceListAsync(Guid userID)

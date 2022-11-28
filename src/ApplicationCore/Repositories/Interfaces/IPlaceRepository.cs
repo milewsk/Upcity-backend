@@ -12,6 +12,7 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<List<Place>> GetListAsync();
         Task<Place> GetPlaceAsync(Guid placeID);
+        Task<Place> GetPlaceForOwnerAsync(Guid ownerID);
         Task<Place> GetPlaceDetailsAsync(Guid placeID);
         Task<List<Place>> GetListNearLocationAsync(Coords coords);
         Task<List<Place>> GetListBySearchStringAsync(string searchedText);

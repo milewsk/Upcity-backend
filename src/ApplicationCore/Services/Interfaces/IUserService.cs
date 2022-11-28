@@ -30,6 +30,6 @@ namespace ApplicationCore.Services.Interfaces
         //bool CheckCrudentials(string email, string password);
 
         Task<bool> ChangePasswordAsync(Guid userID, string newPassword);
-        Task<bool> EditUserAsync(Guid userID, UserEditModel model);
+        Task<List<UserShortcutResult>> GetUserListAsync(string searchString);
     }
 }

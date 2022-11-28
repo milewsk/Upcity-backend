@@ -39,7 +39,20 @@ namespace ApplicationCore.Repositories
                 return null;
             }
         }
-        
+
+        public async Task<Place> GetPlaceForOwnerAsync(Guid ownerID)
+        {
+            try
+            {
+                return await _context.Places.Where(x => x.OwnerID == ownerID).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<Place> GetPlaceAsync(Guid placeID)
         {
             try

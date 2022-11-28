@@ -13,6 +13,8 @@ using System.Text.RegularExpressions;
 using System.Security.Claims;
 using Common.Dto.Models;
 using Common.Dto;
+using Common.Dto.User;
+using Infrastructure.Helpers;
 
 namespace ApplicationCore.Services
 {
@@ -27,6 +29,36 @@ namespace ApplicationCore.Services
             _userRepository = userRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;
+        }
+
+        public async Task<List<UserShortcutResult>> GetUserListAsync(string searchString)
+        {
+            try
+            {
+                List<UserShortcutResult> result = new List<UserShortcutResult>();
+                List<User> userList = new List<User>();
+
+                if (string.IsNullOrEmpty(searchString))
+                {
+                    userList = await _userRepository.GetUserListAsync();
+                }
+                else
+                {
+                    userList = await _userRepository.GetUserListBySearchStringAsync(searchString);
+                }
+
+                foreach (var user in userList)
+                {
+                    result.Add(MappingHelper.Mapper.Map<UserShortcutResult>(user));
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogWarning(ex.Message);
+                throw;
+            }
         }
 
         public async Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel)
@@ -142,7 +174,6 @@ namespace ApplicationCore.Services
                 _appLogger.LogWarning(ex.Message);
                 throw;
             }
-
         }
 
         public async Task<User> GetUserByGuidAsync(Guid id)

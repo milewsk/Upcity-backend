@@ -26,12 +26,14 @@ namespace upcity.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPlaceService _placeService;
         private readonly IJwtService _jwtService;
         private readonly IAuthorizationService _authService;
 
-        public UserController(IUserService userService, IJwtService jwtService, IAuthorizationService authorizationService)
+        public UserController(IUserService userService, IPlaceService placeService, IJwtService jwtService, IAuthorizationService authorizationService)
         {
             _userService = userService;
+            _placeService = placeService;
             _jwtService = jwtService;
             _authService = authorizationService;
         }
@@ -116,6 +118,13 @@ namespace upcity.Controllers
 
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
                             var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
+
+                            //if(userClaim.Value == (int)UserClaimsEnum.Owner)
+                            //{
+                            //    var place = await _placeService.GetOwnerPlaceDataAsync(result.Item2.ID)
+                            //    var placeDetailsResult = await _placeService.GetPlaceDetailsAsync(  , result.Item2.ID)
+                            //}
+
                             var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
                             if (userDetails == null || userClaim == null)
                             {
@@ -216,6 +225,35 @@ namespace upcity.Controllers
             }
         }
 
+        [Route("list/{searchString}")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserList([FromBody] string searchString)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Admin))
+                {
+                    return Unauthorized();
+                }
+
+
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                {
+                    var result = await _userService.GetUserListAsync(searchString);
+
+                    return Ok(result);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+
         //not gonna use for now
         [Route("edit")]
         [HttpPost]
@@ -232,9 +270,9 @@ namespace upcity.Controllers
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
-                    var result = await _userService.EditUserAsync(userID, model);
+        //          var result = await _userService.EditUserAsync(userID, model);
 
-                    return Ok(result);
+                    return Ok(true);
                 }
 
                 return BadRequest();

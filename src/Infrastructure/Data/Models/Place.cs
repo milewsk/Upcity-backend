@@ -8,6 +8,7 @@ namespace Infrastructure.Data.Models
 {
     public class Place : EntityBase
     {
+        public Guid OwnerID { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
         public byte IsActive { get; set; }

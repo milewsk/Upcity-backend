@@ -26,6 +26,61 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
+        public async Task<List<User>> GetUserListAsync()
+        {
+            try
+            {
+                return await _context.Users.Include(x => x.UserDetails).Include(x => x.UserClaim).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<User>> GetUserListBySearchStringAsync(string searchString)
+        {
+            try
+            {
+                return await _context.Users
+                    .Include(x => x.UserDetails)
+                    .Include(x => x.UserClaim)
+                    .Where(x => x.Email.Contains(searchString) 
+                    || x.UserDetails.Surname.Contains(searchString)
+                    || x.UserDetails.FirstName.Contains(searchString))
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<bool> RemoveUserAsync(Guid userID)
+        {
+            try
+            {
+                User user = await _context.Users.Where(x => x.ID == userID).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                _context.Remove<User>(user);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return false;
+            }
+        }
+
         public async Task<User> GetUser(string email, string password)
         {
             try
@@ -56,7 +111,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                return await _context.Users.Include(x => x.LoyalityProgramAccount).Include(x=> x.UserDetails).Where(x => x.ID == id).FirstOrDefaultAsync();
+                return await _context.Users.Include(x => x.LoyalityProgramAccount).Include(x => x.UserDetails).Where(x => x.ID == id).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

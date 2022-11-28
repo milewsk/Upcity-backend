@@ -48,7 +48,7 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                var result = await _context.Messages.Include(x=> x.Place).Where(x => placeIDs.Contains(x.PlaceID)).OrderBy(x => x.CreationDate).ToListAsync();
+                var result = await _context.Messages.Include(x=> x.Place).Where(x => placeIDs.Contains(x.PlaceID.Value)).OrderBy(x => x.CreationDate).ToListAsync();
 
                 return result;
             }

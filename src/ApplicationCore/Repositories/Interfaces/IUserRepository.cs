@@ -14,6 +14,8 @@ namespace ApplicationCore.Repositories.Interfaces
     {
         Task<User> GetUser(string email, string password);
         Task<User> GetUserByGuid(Guid id);
+        Task<List<User>> GetUserListAsync();
+        Task<List<User>> GetUserListBySearchStringAsync(string searchString);
         Task<bool> IsUserExistWithEmail(string email);
         Task CreateUserDetailsAsync(UserDetails userDetails);
         Task CreateUserClaimAsync(UserClaim claim);
@@ -22,5 +24,7 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<UserClaim> GetUserClaimAsync(Guid userID);
         Task<UserDetails> GetUserDetailsAsync(Guid userID);
         //Task AddClaims(User user,List<Claim> claims);
+
+        Task<bool> RemoveUserAsync(Guid userID);
     }
 }
