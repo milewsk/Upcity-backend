@@ -37,10 +37,11 @@ namespace Infrastructure.Data
         public DbSet<ProductTag> ProductTags { get; set; }
 
 
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Message> Messages { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
+        public DbSet<PrivateMessage> PrivateMessages { get; set; }
+        public DbSet<PlaceMessage> PlaceMessages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,6 +58,7 @@ namespace Infrastructure.Data
             builder.Entity<User>().HasOne<UserClaim>(u => u.UserClaim).WithOne(uc => uc.User).HasForeignKey<UserClaim>(uc => uc.UserID);
             builder.Entity<User>().HasOne<LoyalityProgramAccount>(u => u.LoyalityProgramAccount).WithOne(ud => ud.User).HasForeignKey<LoyalityProgramAccount>(ud => ud.UserID);
             builder.Entity<User>().HasMany<Reservation>(u => u.Reservations).WithOne(r => r.User).HasForeignKey(r => r.UserID);
+            builder.Entity<User>().HasMany<PrivateMessage>(p => p.PrivateMessages).WithOne(m => m.User).HasForeignKey(m => m.UserID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Message_User_PlaceID");
 
             builder.Entity<Place>().HasOne(p => p.Coordinates).WithOne(c => c.Place).HasForeignKey<Coordinates>(c => c.PlaceID);
             builder.Entity<Place>().HasOne(p => p.PlaceDetails).WithOne(pd => pd.Place).HasForeignKey<PlaceDetails>(pd => pd.PlaceID);
@@ -69,8 +71,8 @@ namespace Infrastructure.Data
             builder.Entity<Place>().HasMany<Reservation>(p => p.Reservations).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Reservation_Places_PlaceID");
             builder.Entity<Place>().HasMany<PlaceOpeningHours>(p => p.PlaceOpeningHours).WithOne(r => r.Place).HasForeignKey(r => r.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_OpeningHours_Places_PlaceID");
             builder.Entity<Place>().HasMany<Promotion>(p => p.Promotions).WithOne(pr => pr.Place).HasForeignKey(pr => pr.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Promotion_Places_PlaceID");
-            builder.Entity<Place>().HasMany<Message>(p => p.Messages).WithOne(m => m.Place).HasForeignKey(m => m.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Message_Places_PlaceID");
-
+            builder.Entity<Place>().HasMany<PlaceMessage>(p => p.PlaceMessages).WithOne(m => m.Place).HasForeignKey(m => m.PlaceID).OnDelete(DeleteBehavior.Restrict).HasConstraintName("FK_Message_Places_PlaceID");
+          
             builder.Entity<PlaceTag>().HasKey(pt => pt.ID);
             builder.Entity<PlaceTag>().HasOne<Place>(pt => pt.Place).WithMany(p => p.PlaceTags).HasForeignKey(pt => pt.PlaceID);
 

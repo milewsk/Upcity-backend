@@ -23,11 +23,32 @@ namespace ApplicationCore.Repositories
             _logger = logger;
         }
 
-        public async Task<bool> CreateMessageAsync(Message message)
+        public async Task<bool> CreatePrivateMessageAsync(PrivateMessage message)
         {
             try
             {
-                await _context.Messages.AddAsync(message);
+                await _context.PrivateMessages.AddAsync(message);
+                await _context.SaveChangesAsync();
+
+                if (message.ID != null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+        
+        public async Task<bool> CreatePlaceMessageAsync(PlaceMessage message)
+        {
+            try
+            {
+                await _context.PlaceMessages.AddAsync(message);
                 await _context.SaveChangesAsync();
 
                 if (message.ID != null)
@@ -44,11 +65,26 @@ namespace ApplicationCore.Repositories
             }
         }
 
-        public async Task<List<Message>> GetMessagesForUserAsync(List<Guid> placeIDs)
+        public async Task<List<PlaceMessage>> GetPlaceMessagesForUserAsync(List<Guid> placeIDs)
         {
             try
             {
-                var result = await _context.Messages.Include(x=> x.Place).Where(x => placeIDs.Contains(x.PlaceID.Value)).OrderBy(x => x.CreationDate).ToListAsync();
+                var result = await _context.PlaceMessages.Include(x=> x.Place).Where(x => placeIDs.Contains(x.PlaceID)).OrderBy(x => x.CreationDate).ToListAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<List<PrivateMessage>> GetPrivateMessagesForUserAsync(Guid userID)
+        {
+            try
+            {
+                var result = await _context.PrivateMessages.Where(x => x.UserID == userID).OrderBy(x => x.CreationDate).ToListAsync();
 
                 return result;
             }

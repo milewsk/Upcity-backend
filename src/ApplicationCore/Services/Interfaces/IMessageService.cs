@@ -12,7 +12,7 @@ namespace ApplicationCore.Services.Interfaces
    public interface IMessageService
     {
         Task<List<MessageResult>> GetUserMessagesAsync(Guid userID);
-        Task<bool> CreateMessageAsync(CreateMessageModel model);
-        Task<bool> CreateAdminMessageAsync(CreateMessageAdminModel model);
+        Task<bool> CreatePlaceMessageAsync(CreateMessageModel model);
+        Task<bool> CreatePrivateMessageAsync(CreateMessageAdminModel model);
     }
 }

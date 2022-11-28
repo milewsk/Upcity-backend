@@ -16,7 +16,7 @@ namespace Infrastructure.Data.Models
         public UserDetails UserDetails { get; set; }
         public LoyalityProgramAccount LoyalityProgramAccount { get; set; }
         public ICollection<UserLike> UserLikes { get; set; }
-        
+        public ICollection<PrivateMessage> PrivateMessages { get; set; }
         public ICollection<Reservation> Reservations { get; set; }
     }
 }

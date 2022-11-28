@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Infrastructure.Data.Models
 {
-    public class PrivateMessage : Message
+   public class PlaceMessage : Message
     {
-        public Guid UserID { get; set; }
-        public User User { get; set; }
+        public Guid PlaceID { get; set; }
+        public Place Place { get; set; }
     }
 }

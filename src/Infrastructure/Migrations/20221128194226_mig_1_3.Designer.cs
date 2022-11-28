@@ -4,15 +4,17 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221128194226_mig_1_3")]
+    partial class mig_1_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,6 +83,44 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("LoyalityProgramAccounts");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.Message", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModificationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Message");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Message");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Models.Place", b =>
@@ -229,43 +269,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("PlaceMenuCategories");
                 });
 
-            modelBuilder.Entity("Infrastructure.Data.Models.PlaceMessage", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModificationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<Guid>("PlaceID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("PlaceID");
-
-                    b.ToTable("PlaceMessages");
-                });
-
             modelBuilder.Entity("Infrastructure.Data.Models.PlaceOpeningHours", b =>
                 {
                     b.Property<Guid>("ID")
@@ -366,43 +369,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("TagID");
 
                     b.ToTable("PlaceTags");
-                });
-
-            modelBuilder.Entity("Infrastructure.Data.Models.PrivateMessage", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModificationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("PrivateMessages");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Models.Product", b =>
@@ -732,6 +698,30 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserLikes");
                 });
 
+            modelBuilder.Entity("Infrastructure.Data.Models.PlaceMessage", b =>
+                {
+                    b.HasBaseType("Infrastructure.Data.Models.Message");
+
+                    b.Property<Guid>("PlaceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("PlaceID");
+
+                    b.HasDiscriminator().HasValue("PlaceMessage");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.PrivateMessage", b =>
+                {
+                    b.HasBaseType("Infrastructure.Data.Models.Message");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("UserID");
+
+                    b.HasDiscriminator().HasValue("PrivateMessage");
+                });
+
             modelBuilder.Entity("Infrastructure.Data.Models.Coordinates", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
@@ -777,16 +767,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Infrastructure.Data.Models.PlaceMessage", b =>
-                {
-                    b.HasOne("Infrastructure.Data.Models.Place", "Place")
-                        .WithMany("PlaceMessages")
-                        .HasForeignKey("PlaceID")
-                        .HasConstraintName("FK_Message_Places_PlaceID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Infrastructure.Data.Models.PlaceOpeningHours", b =>
                 {
                     b.HasOne("Infrastructure.Data.Models.Place", "Place")
@@ -818,16 +798,6 @@ namespace Infrastructure.Migrations
                         .WithMany("PlaceTags")
                         .HasForeignKey("TagID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Infrastructure.Data.Models.PrivateMessage", b =>
-                {
-                    b.HasOne("Infrastructure.Data.Models.User", "User")
-                        .WithMany("PrivateMessages")
-                        .HasForeignKey("UserID")
-                        .HasConstraintName("FK_Message_User_PlaceID")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -911,6 +881,26 @@ namespace Infrastructure.Migrations
                         .WithMany("UserLikes")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.PlaceMessage", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Models.Place", "Place")
+                        .WithMany("PlaceMessages")
+                        .HasForeignKey("PlaceID")
+                        .HasConstraintName("FK_Message_Places_PlaceID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Models.PrivateMessage", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Models.User", "User")
+                        .WithMany("PrivateMessages")
+                        .HasForeignKey("UserID")
+                        .HasConstraintName("FK_Message_User_PlaceID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

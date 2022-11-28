@@ -33,12 +33,12 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
 
-                var result = await _messageService.CreateMessageAsync(model);
+                var result = await _messageService.CreatePlaceMessageAsync(model);
                 return Ok(result);
             }
             catch (Exception e)
@@ -48,18 +48,18 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("create")]
+        [Route("create/admin")]
         [HttpPost]
         public async Task<IActionResult> CreateAdminMessage([FromBody] CreateMessageAdminModel model)
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
 
-                var result = await _messageService.CreateAdminMessageAsync(model);
+                var result = await _messageService.CreatePrivateMessageAsync(model);
                 return Ok(result);
             }
             catch (Exception e)

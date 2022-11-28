@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace ApplicationCore.Services.Interfaces
 {
-   public class MessageService : IMessageService
+    public class MessageService : IMessageService
     {
         private readonly ILogger<MessageService> _appLogger;
         private readonly IMessageRepository _messageRepository;
@@ -33,12 +33,27 @@ namespace ApplicationCore.Services.Interfaces
             {
                 List<Guid> placeList = await _userLikeRepository.GetPlaceIDsAsync(userID);
 
-                var messages = await _messageRepository.GetMessagesForUserAsync(placeList);
+                var messages = await _messageRepository.GetPlaceMessagesForUserAsync(placeList);
+                var privateMessages = await _messageRepository.GetPrivateMessagesForUserAsync(userID);
                 var result = new List<MessageResult>();
 
-                foreach(var message in messages)
+                foreach (var message in messages)
                 {
                     var item = MappingHelper.Mapper.Map<MessageResult>(message);
+                    result.Add(item);
+                }
+
+                foreach (var message in privateMessages)
+                {
+                    var item = new MessageResult()
+                    {
+                        Content = message.Content,
+                        Date = message.Date,
+                        PlaceName = "System Message",
+                        Title = message.Title,
+
+                    };
+
                     result.Add(item);
                 }
 
@@ -51,20 +66,21 @@ namespace ApplicationCore.Services.Interfaces
             }
         }
 
-        public async Task<bool> CreateMessageAsync(CreateMessageModel model)
+        public async Task<bool> CreatePlaceMessageAsync(CreateMessageModel model)
         {
             try
             {
-                Message newMessage = new Message()
+                PlaceMessage newMessage = new PlaceMessage()
                 {
                     Content = model.Content,
                     CreationDate = DateTime.Now,
                     LastModificationDate = DateTime.Now,
                     PlaceID = model.PlaceID,
+                    Date = model.Date,
                     Title = model.Title
                 };
 
-                return await _messageRepository.CreateMessageAsync(newMessage);
+                return await _messageRepository.CreatePlaceMessageAsync(newMessage);
             }
             catch (Exception ex)
             {
@@ -73,20 +89,21 @@ namespace ApplicationCore.Services.Interfaces
             }
         }
 
-        public async Task<bool> CreateMessageAsync(CreateMessageModel model)
+        public async Task<bool> CreatePrivateMessageAsync(CreateMessageAdminModel model)
         {
             try
             {
-                Message newMessage = new Message()
+                PrivateMessage newMessage = new PrivateMessage()
                 {
                     Content = model.Content,
                     CreationDate = DateTime.Now,
                     LastModificationDate = DateTime.Now,
-                    PlaceID = model.PlaceID,
+                    UserID = model.UserID,
+                    Date = model.Date,
                     Title = model.Title
                 };
 
-                return await _messageRepository.CreateMessageAsync(newMessage);
+                return await _messageRepository.CreatePrivateMessageAsync(newMessage);
             }
             catch (Exception ex)
             {

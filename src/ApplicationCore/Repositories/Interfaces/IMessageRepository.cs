@@ -9,7 +9,9 @@ namespace ApplicationCore.Repositories.Interfaces
 {
     public interface IMessageRepository : IRepository<Message>
     {
-        Task<bool> CreateMessageAsync(Message message);
-        Task<List<Message>> GetMessagesForUserAsync(List<Guid> placeIDs);
+        Task<bool> CreatePlaceMessageAsync(PlaceMessage message);
+        Task<bool> CreatePrivateMessageAsync(PrivateMessage message);
+        Task<List<PlaceMessage>> GetPlaceMessagesForUserAsync(List<Guid> placeIDs);
+        Task<List<PrivateMessage>> GetPrivateMessagesForUserAsync(Guid userID);
     }
 }

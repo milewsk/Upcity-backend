@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Infrastructure.Data.Config
 {
-    public class MessageConfiguration : IEntityTypeConfiguration<Message>
+    public class PrivateMessageConfiguration : IEntityTypeConfiguration<PrivateMessage>
     {
-        public void Configure(EntityTypeBuilder<Message> builder)
+        public void Configure(EntityTypeBuilder<PrivateMessage> builder)
         {
             builder.HasKey(b => b.ID);
             builder.Property(b => b.CreationDate).IsRequired().HasDefaultValue(new DateTime());
