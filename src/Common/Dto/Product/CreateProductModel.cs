@@ -11,6 +11,5 @@ namespace Common.Dto.Models
         public string Description { get; set; }
 
         public Guid CategoryID { get; set; }
-        public List<Guid> TagIDs { get; set; }
     }
 }
