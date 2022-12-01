@@ -27,5 +27,6 @@ namespace ApplicationCore.Services.Interfaces
         Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID);
 
         Task<bool> AddToFavouriteAsync(Guid placeID, Guid userID);
+        Task<PlaceDetailsResult> GetOwnerPlaceDataAsync(Guid ownerID);
     }
 }

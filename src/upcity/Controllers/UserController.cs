@@ -46,15 +46,12 @@ namespace upcity.Controllers
             try
             {
                 var jwt = Request.Cookies["jwt"];
-
                 var token = _jwtService.Verify(jwt);
-
                 Guid userId = new Guid(token.Issuer);
 
                 var user = await _userService.GetUserByGuidAsync(userId);
 
                 return Ok(user);
-
             }
             catch (Exception e)
             {
@@ -119,25 +116,28 @@ namespace upcity.Controllers
                             var userDetails = await _userService.GetUserDetailsAsync(result.Item2.ID);
                             var userClaim = await _userService.GetUserClaimAsync(result.Item2.ID);
 
-                            //if(userClaim.Value == (int)UserClaimsEnum.Owner)
-                            //{
-                            //    var place = await _placeService.GetOwnerPlaceDataAsync(result.Item2.ID)
-                            //    var placeDetailsResult = await _placeService.GetPlaceDetailsAsync(  , result.Item2.ID)
-                            //}
+                            UserLoginDto data = new UserLoginDto();
+
+                            if(userClaim.Value == (int)UserClaimsEnum.Owner)
+                            {
+                                var placeDetailsResult = await _placeService.GetOwnerPlaceDataAsync(result.Item2.ID);
+                                data.FirstName = userDetails.FirstName;
+                                data.Jwt = jwt;
+                                data.Claim = userClaim.Value;
+                                data.PlaceDetails = placeDetailsResult;
+                            }
+                            else if (userClaim.Value == (int)UserClaimsEnum.User)
+                            {
+                                data.FirstName = userDetails.FirstName;
+                                data.Jwt = jwt;
+                                data.Claim = userClaim.Value;
+                            }
 
                             var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
                             if (userDetails == null || userClaim == null)
                             {
                                 return BadRequest(new { errorMessage = "404 Error" });
                             }
-
-                            UserLoginDto data = new UserLoginDto()
-                            {
-                                FirstName = userDetails.FirstName,
-                                Jwt = jwt,
-                                Claim = userClaim.Value
-
-                            };
 
                             return Ok(data);
                         case UserLoginResult.WrongPassword:

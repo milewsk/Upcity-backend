@@ -525,7 +525,6 @@ namespace ApplicationCore.Services
                 var place = await _placeRepository.GetPlaceForOwnerAsync(ownerID);
                 var placeDetails = await _placeRepository.GetPlaceDetailsAsync(place.ID);
 
-
                 return result;
             }
             catch (Exception ex)

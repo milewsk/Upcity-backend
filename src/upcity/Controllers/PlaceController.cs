@@ -180,28 +180,6 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("place/menu/category/add")]
-        [HttpPost]
-        public async Task<IActionResult> CreatePlaceMenuCategoryAsync([FromBody] CreatePlaceMenuCategoryModel categoryModel)
-        {
-            try
-            {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                //{
-                //    return Unauthorized();
-                //}
-
-                bool result = await _placeService.CreatePlaceMenuCategoryAsync(categoryModel);
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-                throw;
-            }
-        }
-
         [Route("details/{placeID}")]
         [HttpGet]
         public async Task<IActionResult> GetDetails([FromRoute] string placeID)

@@ -297,6 +297,7 @@ namespace ApplicationCore.Repositories
                 throw;
             }
         }
+
         public async Task CreatePlaceMenuAsync(PlaceMenu placeMenu)
         {
             try

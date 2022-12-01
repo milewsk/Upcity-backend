@@ -29,7 +29,7 @@ namespace PublicApi.Controllers
 
         [Route("add")]
         [HttpPost]
-        public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductModel productModel)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductModel productModel)
         {
             try
             {
