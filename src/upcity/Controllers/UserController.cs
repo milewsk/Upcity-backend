@@ -121,24 +121,13 @@ namespace upcity.Controllers
                             if(userClaim.Value == (int)UserClaimsEnum.Owner)
                             {
                                 var placeDetailsResult = await _placeService.GetOwnerPlaceDataAsync(result.Item2.ID);
-                                data.FirstName = userDetails.FirstName;
-                                data.Jwt = jwt;
-                                data.Claim = userClaim.Value;
                                 data.PlaceDetails = placeDetailsResult;
                             }
-                            else if (userClaim.Value == (int)UserClaimsEnum.User)
-                            {
+
                                 data.FirstName = userDetails.FirstName;
                                 data.Jwt = jwt;
                                 data.Claim = userClaim.Value;
-                            }
-
-                            var userCard = await _userService.GetUserLoyalityCardAsync(result.Item2.ID);
-                            if (userDetails == null || userClaim == null)
-                            {
-                                return BadRequest(new { errorMessage = "404 Error" });
-                            }
-
+                 
                             return Ok(data);
                         case UserLoginResult.WrongPassword:
                             return NotFound(new { errorMessage = result.Item1.GetDescription() });
@@ -225,9 +214,9 @@ namespace upcity.Controllers
             }
         }
 
-        [Route("list/{searchString}")]
+        [Route("list/{searchString?}")]
         [HttpGet]
-        public async Task<IActionResult> GetUserList([FromBody] string searchString)
+        public async Task<IActionResult> GetUserList([FromRoute] string searchString = "")
         {
             try
             {

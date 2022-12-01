@@ -38,6 +38,7 @@ namespace Infrastructure.Helpers
 
                 cfg.CreateMap<User, UserShortcutResult>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.UserDetails.FirstName))
+                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.ID))
                 .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserDetails.Surname));
 
                 cfg.CreateMap<PlaceDetails, PlaceResult>();
