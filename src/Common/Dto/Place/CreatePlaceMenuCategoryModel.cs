@@ -6,7 +6,7 @@ namespace Common.Dto.Place
 {
     public class CreatePlaceMenuCategoryModel
     {
-        public string Name { get; set; }
         public Guid PlaceID { get; set; }
+        public string Name { get; set; }
     }
 }

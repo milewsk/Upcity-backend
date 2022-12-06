@@ -6,10 +6,10 @@ namespace Common.Dto.Product
 {
     public class ProductResult
     {
+        public Guid? ProductID { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
         public string Description { get; set; }
-
     }
 }

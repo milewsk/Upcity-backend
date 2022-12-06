@@ -26,6 +26,28 @@ namespace PublicApi.Controllers
             _authService = authService;
         }
 
+        [Route("menu/{placeID}")]
+        [HttpPost]
+        public async Task<IActionResult> GetPlaceMenu([FromRoute] Guid placeID)
+        {
+            try
+            {
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
+
+                var result = await _placeMenuService.GetPlaceMenuAsync(placeID);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
         [Route("category/add")]
         [HttpPost]
         public async Task<IActionResult> CreatePlaceMenuCategoryAsync([FromBody] CreatePlaceMenuCategoryModel categoryModel)

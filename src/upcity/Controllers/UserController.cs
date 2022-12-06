@@ -118,16 +118,16 @@ namespace upcity.Controllers
 
                             UserLoginDto data = new UserLoginDto();
 
-                            if(userClaim.Value == (int)UserClaimsEnum.Owner)
+                            if (userClaim.Value == (int)UserClaimsEnum.Owner)
                             {
-                                var placeDetailsResult = await _placeService.GetOwnerPlaceDataAsync(result.Item2.ID);
-                                data.PlaceDetails = placeDetailsResult;
+                                var placeID = await _placeService.GetOwnerPlaceIDAsync(result.Item2.ID);
+                                data.OwnerPlaceID = placeID;
                             }
 
-                                data.FirstName = userDetails.FirstName;
-                                data.Jwt = jwt;
-                                data.Claim = userClaim.Value;
-                 
+                            data.FirstName = userDetails.FirstName;
+                            data.Jwt = jwt;
+                            data.Claim = userClaim.Value;
+
                             return Ok(data);
                         case UserLoginResult.WrongPassword:
                             return NotFound(new { errorMessage = result.Item1.GetDescription() });
@@ -220,10 +220,10 @@ namespace upcity.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Admin))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Admin))
+                //{
+                //    return Unauthorized();
+                //}
 
 
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))

@@ -516,16 +516,14 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<PlaceDetailsResult> GetOwnerPlaceDataAsync(Guid ownerID)
+        public async Task<Guid> GetOwnerPlaceIDAsync(Guid ownerID)
         {
 
             try
             {
-                PlaceDetailsResult result = new PlaceDetailsResult();
                 var place = await _placeRepository.GetPlaceForOwnerAsync(ownerID);
-                var placeDetails = await _placeRepository.GetPlaceDetailsAsync(place.ID);
 
-                return result;
+                return place.ID;
             }
             catch (Exception ex)
             {

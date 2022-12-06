@@ -2,6 +2,7 @@
 using ApplicationCore.Services.Interfaces;
 using Common.Dto.Inbox;
 using Common.Dto.Place;
+using Common.Dto.Product;
 using Common.Dto.Tag;
 using Infrastructure.Data.Models;
 using Infrastructure.Helpers;
@@ -27,6 +28,39 @@ namespace ApplicationCore.Services.Interfaces
             _placeCategoryRepository = placeCategoryRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;
+        }
+
+        public async Task<PlaceMenuResult> GetPlaceMenuAsync(Guid placeID)
+        {
+            try
+            {
+                var place = await _placeRepository.GetPlaceDetailsAsync(placeID);
+
+                PlaceMenuResult result = new PlaceMenuResult();
+
+                List<PlaceCategoryResult> categoryResults = new List<PlaceCategoryResult>();
+                foreach (var category in place.PlaceMenu.PlaceMenuCategories)
+                {
+                    List<ProductResult> productResults = new List<ProductResult>();
+                    foreach (var product in category.Products)
+                    {
+                        ProductResult prodResult = new ProductResult() { ProductID = product.ID, Name = product.Name, Description = product.Description, DiscountPrice = product.DiscountPrice, Price = product.Price };
+                        productResults.Add(prodResult);
+                    }
+
+                    PlaceCategoryResult item = new PlaceCategoryResult() { PlaceCategoryID = category.ID, Name = category.Name, ProductResults = productResults };
+                    categoryResults.Add(item);
+                }
+
+                result.PlaceCategoryResults = categoryResults;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> CreateMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel)

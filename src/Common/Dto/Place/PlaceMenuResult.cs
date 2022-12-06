@@ -12,6 +12,7 @@ namespace Common.Dto.Place
 
     public class PlaceCategoryResult
     {
+        public Guid? PlaceCategoryID { get;set; }
         public string Name { get; set; }
         public List<ProductResult> ProductResults { get; set; }
     }

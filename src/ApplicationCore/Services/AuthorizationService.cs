@@ -31,7 +31,6 @@ namespace ApplicationCore.Services
             {
                 if (request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
-                    request.Headers.TryGetValue("jwt", out var saa);
                     var token = jwtSerivce.Verify(jwtHeader.ToString());
                     Guid parsedGuid = Guid.Parse(token.Payload.Iss);
 

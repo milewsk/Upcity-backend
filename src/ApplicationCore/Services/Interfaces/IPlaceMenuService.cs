@@ -12,6 +12,7 @@ namespace ApplicationCore.Services.Interfaces
 {
     public interface IPlaceMenuService
     {
+        Task<PlaceMenuResult> GetPlaceMenuAsync(Guid placeID);
         Task<bool> CreateMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
         Task<bool> DeleteMenuCategoryAsync(Guid categoryID);
     }

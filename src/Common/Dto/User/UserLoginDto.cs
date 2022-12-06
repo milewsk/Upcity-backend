@@ -11,6 +11,6 @@ namespace Common.Dto
         public string FirstName { get; set; }
         public int Claim { get; set; }
         public int LoyalityPoints { get; set; }
-        public PlaceDetailsResult PlaceDetails { get; set; }
+        public Guid? OwnerPlaceID { get; set; }
     }
 }
