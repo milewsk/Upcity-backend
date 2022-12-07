@@ -29,6 +29,28 @@ namespace PublicApi.Controllers
             _authService = authService;
         }
 
+        [Route("place/{placeID}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceReservationList([FromRoute] Guid placeID)
+        {
+            try
+            {
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
+
+                var result = await _reservationService.GetPlaceReservationListAsync(placeID);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
         [Route("create")]
         [HttpPost]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationModel model)

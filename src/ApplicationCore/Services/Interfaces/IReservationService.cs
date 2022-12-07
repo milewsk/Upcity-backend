@@ -14,7 +14,7 @@ namespace ApplicationCore.Services.Interfaces
     {
         Task<bool> CreateReservationAsync(CreateReservationModel model, Guid userID);
         Task<bool> CancelReservationAsync(Guid reservationID);
-        Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID);
+        Task<List<ReservationShortcutResult>> GetPlaceReservationListAsync(Guid placeID);
         Task<List<ReservationShortcutResult>> GetUserReservationListAsync(HttpRequest request, IJwtService jwtSerivce);
         Task<ReservationResult> GetReservationDetailsAsync(Guid reservationID);
         Task<bool> ChangeReservationStatusAsync(Guid reservationID, ReservationStatus status);

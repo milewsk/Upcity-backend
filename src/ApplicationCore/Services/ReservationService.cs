@@ -80,22 +80,6 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<List<ReservationResult>> GetUserReservationsAsync(Guid userID)
-        {
-            try
-            {
-                List<Reservation> result = await _reservationRepository.GetUserReservationsAsync(userID);
-                List<ReservationResult> reservationResults = MappingHelper.Mapper.Map<List<Reservation>, List<ReservationResult>>(result);
-
-                return reservationResults;
-            }
-            catch (Exception ex)
-            {
-                _appLogger.LogError(ex.Message);
-                throw;
-            }
-        }
-
         public async Task<bool> ChangeReservationStatusAsync(Guid reservationID, ReservationStatus status)
         {
             try
@@ -103,7 +87,7 @@ namespace ApplicationCore.Services
                 var reservation = await _reservationRepository.GetReservationAsync(reservationID);
                 reservation.Status = status;
 
-               await _reservationRepository.SaveChangesAsync();
+                await _reservationRepository.SaveChangesAsync();
 
                 return true;
             }
@@ -111,6 +95,41 @@ namespace ApplicationCore.Services
             {
                 _appLogger.LogError(ex.Message);
                 return false;
+            }
+        }
+
+        public async Task<List<ReservationShortcutResult>> GetPlaceReservationListAsync(Guid placeID)
+        {
+            try
+            {
+                List<ReservationShortcutResult> result = new List<ReservationShortcutResult>();
+
+                List<Reservation> reservations = await _reservationRepository.GetPlaceReservationListAsync(placeID);
+                if (reservations != null)
+                {
+                    foreach (var reservation in reservations)
+                    {
+                        ReservationShortcutResult item = new ReservationShortcutResult()
+                        {
+                            ReservationID = reservation.ID,
+                            ReservationDate = reservation.StartTime.Date.ToShortDateString(),
+                            StartTime = reservation.StartTime.Date.ToShortDateString() + ' ' + reservation.StartTime.ToShortTimeString(),
+                            SeatNumber = reservation.SeatNumber,
+                            Status = reservation.Status,
+                            PaymentStatus = reservation.PaymentStatus,
+                            PlaceName = reservation.Place.Name,
+                            Price = reservation.Price
+                        };
+
+                        result.Add(item);
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
             }
         }
 
@@ -136,7 +155,7 @@ namespace ApplicationCore.Services
                             {
                                 ReservationID = reservation.ID,
                                 ReservationDate = reservation.StartTime.Date.ToShortDateString(),
-                                StartTime = reservation.StartTime.Date.ToShortDateString() +' '+ reservation.StartTime.ToShortTimeString(),
+                                StartTime = reservation.StartTime.Date.ToShortDateString() + ' ' + reservation.StartTime.ToShortTimeString(),
                                 SeatNumber = reservation.SeatNumber,
                                 Status = reservation.Status,
                                 PaymentStatus = reservation.PaymentStatus,

@@ -37,6 +37,21 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<List<Reservation>> GetPlaceReservationListAsync(Guid placeID)
+        {
+            try
+            {
+                return await _context.Reservations
+                    .Include(x => x.Place)
+                    .Where(x => x.PlaceID == placeID).OrderByDescending(x => x.StartTime).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<List<Reservation>> GetUserReservationsAsync(Guid userID)
         {
             try

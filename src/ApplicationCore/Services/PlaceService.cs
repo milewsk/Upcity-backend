@@ -371,7 +371,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                return _placeRepository.GetPlaceOpeningHourAsync(placeID);
+                return null;
             }
             catch (Exception ex)
             {

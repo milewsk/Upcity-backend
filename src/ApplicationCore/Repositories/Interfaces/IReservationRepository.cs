@@ -13,5 +13,6 @@ namespace ApplicationCore.Repositories.Interfaces
         Task<List<Reservation>> GetUserReservationListAsync(Guid userID);
         Task<bool> CreateReservationAsync(Reservation reservation);
         Task<List<Reservation>> GetUserReservationsAsync(Guid userID);
+        Task<List<Reservation>> GetPlaceReservationListAsync(Guid placeID);
     }
 }
