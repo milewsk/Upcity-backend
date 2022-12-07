@@ -62,7 +62,12 @@ namespace ApplicationCore.Repositories
         {
             try
             {
-                User user = await _context.Users.Where(x => x.ID == userID).FirstOrDefaultAsync();
+                User user = await _context.Users
+                    .Include(x => x.LoyalityProgramAccount)
+                    .Include(x=> x.UserDetails)
+                    .Include(x=> x.UserLikes)
+                    .Include(x=> x.UserClaim)
+                    .Where(x => x.ID == userID).FirstOrDefaultAsync();
 
                 if (user == null)
                 {

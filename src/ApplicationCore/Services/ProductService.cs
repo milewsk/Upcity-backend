@@ -95,6 +95,27 @@ namespace ApplicationCore.Services
             }
         }
 
+        public async Task<bool> DeleteCategoryProductListAsync(Guid categoryID)
+        {
+            try
+            {
+                var productListToDelete = await _productRepository.GetProductListByMenuCategoryAsync(categoryID);
+
+                if (productListToDelete == null)
+                {
+                    return false;
+                }
+
+                _productRepository.RemoveRange(productListToDelete);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task<bool> SetDiscountAsync(ProductSetDiscountModel model)
         {
             try

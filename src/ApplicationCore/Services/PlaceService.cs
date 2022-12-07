@@ -366,7 +366,22 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
+
         public Task<PlaceMenuResult> GetPlaceMenuResultAsync(Guid placeID)
+        {
+            try
+            {
+                return _placeRepository.GetPlaceOpeningHourAsync(placeID);
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
+
+        public Task<PlaceOpeningHoursModel> GetPlaceOpeningHours(Guid placeID)
         {
             try
             {
@@ -378,7 +393,6 @@ namespace ApplicationCore.Services
                 throw;
             }
         }
-
 
         public async Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList)
         {

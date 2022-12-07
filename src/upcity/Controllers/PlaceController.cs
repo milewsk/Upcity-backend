@@ -99,7 +99,7 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
 
-                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
+                if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
@@ -137,7 +137,29 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("openingHours/create")]
+        [Route("place/hours")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlaceOpeningHours([FromRoute] string placeID)
+        {
+            try
+            {
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
+
+                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(Guid.Parse(placeID));
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
+        }
+
+        [Route("hours/create")]
         [HttpPost]
         public async Task<IActionResult> CreateOpeningHours([FromBody] CreateOpeningHoursModelList modelList)
         {
@@ -179,6 +201,8 @@ namespace PublicApi.Controllers
                 throw;
             }
         }
+
+
 
         [Route("details/{placeID}")]
         [HttpGet]
@@ -223,7 +247,7 @@ namespace PublicApi.Controllers
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
-                    Guid userID = Guid.Parse(token.Payload.Iss); 
+                    Guid userID = Guid.Parse(token.Payload.Iss);
                     var result = await _placeService.AddToFavouriteAsync(Guid.Parse(placeID), userID);
                     return Ok(result);
                 }

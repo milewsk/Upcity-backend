@@ -81,6 +81,7 @@ namespace PublicApi.Controllers
                 //    return Unauthorized();
                 //}
 
+                bool productResult = await _productService.DeleteCategoryProductListAsync(categoryID);
                 bool result = await _placeMenuService.DeleteMenuCategoryAsync(categoryID);
 
                 return Ok(result);
