@@ -30,5 +30,6 @@ namespace ApplicationCore.Repositories.Interfaces
         Task CreatePlaceMenuCategoryAsync(PlaceMenuCategory placeMenuCategory);
         Task CreatePlaceCoordinatesAsync(Infrastructure.Data.Models.Coordinates coords);
         Task<List<PlaceOpeningHours>> GetPlaceOpeningHourAsync(Place place);
+        Task<List<PlaceOpeningHours>> GetOpeningHourListAsync(Guid placeID);
     }
 }

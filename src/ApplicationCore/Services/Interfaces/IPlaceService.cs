@@ -13,12 +13,13 @@ namespace ApplicationCore.Services.Interfaces
     public interface IPlaceService
     {
         Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreatePlaceAsync(CreatePlaceModel model);
-        Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList);
+
         Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();
 
         Task<List<PlaceResult>> GetPlacesAsync();
         Task<PlaceDetailsResult> GetPlaceDetailsAsync(Guid placeID, Guid userID);
+
         Task<List<PlaceShortcutResult>> GetPlacesByCategoryAsync(string latitude, string longitude, Guid tagID, Guid userID);
         Task<List<PlaceShortcutResult>> GetPlacesListBySearchStringAsync(string searchString, string latitude, string longitude, Guid userID);
         Task<List<PlaceShortcutResult>> GetPlaceListNearLocationAsync(string latitude, string longitude, Guid userID);
@@ -28,5 +29,11 @@ namespace ApplicationCore.Services.Interfaces
 
         Task<bool> AddToFavouriteAsync(Guid placeID, Guid userID);
         Task<Guid> GetOwnerPlaceIDAsync(Guid ownerID);
+
+
+        //Opening Hours
+        Task<GetPlaceOpeningHourListResult> GetPlaceOpeningHoursAsync(Guid placeID);
+        Task<bool> UpdateOpeningHoursAsync(UpdatePlaceOpeningHourListModel modelList);     
+        Task<bool> CreateOpeningHoursAsync(Guid placeID);
     }
 }

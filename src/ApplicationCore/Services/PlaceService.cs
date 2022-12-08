@@ -313,6 +313,9 @@ namespace ApplicationCore.Services
 
                 await _placeRepository.CreatePlaceMenuAsync(newPlaceMenu);
 
+                //create opening hour entities
+                await CreateOpeningHoursAsync(newPlace.ID);
+
                 if (newPlaceMenu.ID == null)
                 {
                     return new Tuple<PlaceCreatePlaceStatusResult, bool>(PlaceCreatePlaceStatusResult.IncorrectData, false);
@@ -381,11 +384,29 @@ namespace ApplicationCore.Services
         }
 
 
-        public Task<PlaceOpeningHoursModel> GetPlaceOpeningHours(Guid placeID)
+        public async Task<GetPlaceOpeningHourListResult> GetPlaceOpeningHoursAsync(Guid placeID)
         {
             try
             {
-                return null;
+                var result = new GetPlaceOpeningHourListResult();
+                result.PlaceID = placeID;
+
+                var list = await _placeRepository.GetOpeningHourListAsync(placeID);
+
+                foreach(var item in list)
+                {
+                    var resultItem = new OpeningTimeModel()
+                    {
+                        ID = item.ID,
+                        CloseTime = item.Closes.ToString(),
+                        OpenTime = item.Opens.ToString(),
+                        Day = item.DayOfWeek,
+                    };
+
+                    result.OpeningTimes.Add(resultItem);
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -394,33 +415,90 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList)
+        //public async Task<bool> CreateOpeningHoursAsync(CreateOpeningHoursModelList modelList)
+        //{
+        //    try
+        //    {
+        //        var placeID = modelList.PlaceID;
+
+        //        List<PlaceOpeningHours> placeOpeningHours = new List<PlaceOpeningHours>();
+
+        //        foreach (var item in modelList.Items)
+        //        {
+        //            var itemToAdd = new PlaceOpeningHours()
+        //            {
+        //                PlaceID = modelList.PlaceID,
+        //                CreationDate = DateTime.Now,
+        //                LastModificationDate = DateTime.Now,
+        //                Opens = TimeSpan.Parse(item.OpenTime),
+        //                Closes = TimeSpan.Parse(item.CloseTime),
+        //                DayOfWeek = item.DayOfWeek
+        //            };
+
+        //            placeOpeningHours.Add(itemToAdd);
+        //        }
+
+        //        return await _placeRepository.CreatePlaceOpeningHoursAsync(placeOpeningHours);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _appLogger.LogError(ex.Message);
+        //        throw;
+        //    }
+        //}
+
+        public async Task<bool> CreateOpeningHoursAsync(Guid placeID)
         {
             try
             {
                 List<PlaceOpeningHours> placeOpeningHours = new List<PlaceOpeningHours>();
 
-                foreach (var item in modelList.Items)
+                for(int i = 0; i < 7; i++)
                 {
                     var itemToAdd = new PlaceOpeningHours()
                     {
-                        PlaceID = modelList.PlaceID,
+                        PlaceID = placeID,
                         CreationDate = DateTime.Now,
                         LastModificationDate = DateTime.Now,
-                        Opens = TimeSpan.Parse(item.OpenTime),
-                        Closes = TimeSpan.Parse(item.CloseTime),
-                        DayOfWeek = item.DayOfWeek
+                        Opens = TimeSpan.Parse("0:00"),
+                        Closes = TimeSpan.Parse("0:00"),
+                        DayOfWeek = (DayOfWeek)i
                     };
 
                     placeOpeningHours.Add(itemToAdd);
                 }
 
-                return await _placeRepository.CreatePlaceOpeningHoursAsync(placeOpeningHours); ;
+                return await _placeRepository.CreatePlaceOpeningHoursAsync(placeOpeningHours);
             }
             catch (Exception ex)
             {
                 _appLogger.LogError(ex.Message);
                 throw;
+            }
+        }
+
+        public async Task<bool> UpdateOpeningHoursAsync(UpdatePlaceOpeningHourListModel modelList)
+        {
+            try
+            {
+                var placeID = modelList.PlaceID;
+                List<PlaceOpeningHours> placeOpeningHours = await _placeRepository.GetOpeningHourListAsync(placeID);
+
+                foreach (var item in modelList.OpeningTimes)
+                {
+                    var itemToEdit = placeOpeningHours.Find(x => x.ID == item.ID);
+                    itemToEdit.LastModificationDate = DateTime.Now;
+                    itemToEdit.Opens = TimeSpan.Parse(item.OpenTime);
+                    itemToEdit.Closes = TimeSpan.Parse(item.CloseTime);
+                }
+
+                await _placeRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                return false;
             }
         }
 

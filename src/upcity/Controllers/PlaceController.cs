@@ -139,7 +139,7 @@ namespace PublicApi.Controllers
 
         [Route("place/hours")]
         [HttpGet]
-        public async Task<IActionResult> GetPlaceOpeningHours([FromRoute] string placeID)
+        public async Task<IActionResult> GetPlaceOpeningHours([FromRoute] Guid placeID)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace PublicApi.Controllers
                     return Unauthorized();
                 }
 
-                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(Guid.Parse(placeID));
+                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(placeID);
 
                 return Ok(result);
             }
@@ -159,9 +159,9 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("hours/create")]
+        [Route("hours/update")]
         [HttpPost]
-        public async Task<IActionResult> CreateOpeningHours([FromBody] CreateOpeningHoursModelList modelList)
+        public async Task<IActionResult> UpdatePlaceOpeningHours([FromBody] UpdatePlaceOpeningHourListModel modelList)
         {
             try
             {
@@ -169,9 +169,9 @@ namespace PublicApi.Controllers
                 //{
                 //    return Unauthorized();
                 //}
-                var result = await _placeService.CreateOpeningHoursAsync(modelList);
 
-                return Ok(true);
+                var result = await _placeService.UpdateOpeningHoursAsync(modelList);
+                return Ok(result);
             }
             catch (Exception e)
             {

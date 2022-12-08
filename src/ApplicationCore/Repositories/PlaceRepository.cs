@@ -296,6 +296,20 @@ namespace ApplicationCore.Repositories
             }
         }
 
+        public async Task<List<PlaceOpeningHours>> GetOpeningHourListAsync(Guid placeID)
+        {
+            try
+            {
+                var result = await _context.PlaceOpeningHours.Where(x => x.PlaceID == placeID).ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _appLogger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public async Task CreatePlaceTagsAsync(List<PlaceTag> placeTags)
         {
             try
