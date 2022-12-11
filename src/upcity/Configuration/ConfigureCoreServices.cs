@@ -29,6 +29,7 @@ namespace ApplicationCore.Services
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserLikeRepository, UserLikeRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IPlaceCategoryRepository, PlaceCategoryRepository>();
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
@@ -39,6 +40,7 @@ namespace ApplicationCore.Services
             services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IPlaceMenuService, PlaceMenuSerivce>();
 
 
             services.AddScoped<IJwtService, JwtService>();

@@ -37,10 +37,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
 
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
@@ -70,6 +70,7 @@ namespace PublicApi.Controllers
                 {
                     return Unauthorized();
                 }
+
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
@@ -94,10 +95,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
 
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
@@ -137,18 +138,18 @@ namespace PublicApi.Controllers
             }
         }
 
-        [Route("place/hours")]
+        [Route("hours/{placeID}")]
         [HttpGet]
         public async Task<IActionResult> GetPlaceOpeningHours([FromRoute] Guid placeID)
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                //{
+                //    return Unauthorized();
+                //}
 
-                PlaceMenuResult result = await _placeService.GetPlaceMenuResultAsync(placeID);
+                var result = await _placeService.GetPlaceOpeningHoursAsync(placeID);
 
                 return Ok(result);
             }

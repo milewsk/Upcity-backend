@@ -25,6 +25,7 @@ namespace ApplicationCore.Services.Interfaces
         public PlaceMenuSerivce(IPlaceService placeService, IPlaceCategoryRepository placeCategoryRepository, IPlaceRepository placeRepository, ILogger<PlaceMenuSerivce> appLogger, IJwtService jwtService)
         {
             _placeService = placeService;
+            _placeRepository = placeRepository;
             _placeCategoryRepository = placeCategoryRepository;
             _jwtService = jwtService;
             _appLogger = appLogger;

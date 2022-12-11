@@ -374,6 +374,9 @@ namespace ApplicationCore.Services
         {
             try
             {
+                var result = new PlaceMenuResult();
+              //  var items = 
+
                 return null;
             }
             catch (Exception ex)
@@ -388,8 +391,7 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var result = new GetPlaceOpeningHourListResult();
-                result.PlaceID = placeID;
+                var result = new GetPlaceOpeningHourListResult() { OpeningTimes = new List<OpeningTimeModel>(), PlaceID = placeID };
 
                 var list = await _placeRepository.GetOpeningHourListAsync(placeID);
 

@@ -27,7 +27,7 @@ namespace PublicApi.Controllers
         }
 
         [Route("menu/{placeID}")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GetPlaceMenu([FromRoute] Guid placeID)
         {
             try

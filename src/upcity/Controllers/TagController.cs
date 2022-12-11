@@ -33,10 +33,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                {
-                    return Unauthorized();
-                }
+                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                //{
+                //    return Unauthorized();
+                //}
 
                 List<TagResult> result = await _tagService.GetPlaceTagListAsync();
 
