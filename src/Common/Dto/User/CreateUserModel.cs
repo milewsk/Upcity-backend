@@ -1,7 +1,9 @@
 ﻿using Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Common.Dto.Models
 {
@@ -13,6 +15,7 @@ namespace Common.Dto.Models
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
         public string Image { get; set; }
+        public IFormFile ImageFile { get; set; }
         public UserClaimsEnum Claim { get; set; }
     }
 }

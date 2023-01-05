@@ -9,7 +9,7 @@ namespace Common.Dto.Models
     public class PlaceDetailsResult
     {
         public Guid PlaceID { get; set; }
-
+        public string Image { get; set; }
         public bool IsLiked { get; set; }
         public decimal StandardPrice { get; set; }
         public Coords Coords { get; set; }

@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using Infrastructure.Helpers.Enums;
 using Common.Dto.Models;
 using Common.Dto.Place;
+using Common.Dto.User;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ApplicationCore.Services.Interfaces
 {
     public interface IPlaceService
     {
         Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreatePlaceAsync(CreatePlaceModel model);
+        Task<Tuple<PlaceCreatePlaceStatusResult, bool>> CreateOwnerPlaceAsync(CreateOwnerWithPlaceModel model, IWebHostEnvironment hostEnviroment);
 
         Task<bool> CreatePlaceMenuCategoryAsync(CreatePlaceMenuCategoryModel categoryModel);
         Task<Tuple<PlaceEditPlaceStatusResult, bool>> EditPlaceAsync();

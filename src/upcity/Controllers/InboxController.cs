@@ -33,10 +33,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
 
                 var result = await _messageService.CreatePlaceMessageAsync(model);
                 return Ok(result);
@@ -54,10 +54,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
 
                 var result = await _messageService.CreatePrivateMessageAsync(model);
                 return Ok(result);
@@ -84,7 +84,6 @@ namespace PublicApi.Controllers
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
-
                     var result = await _messageService.GetUserMessagesAsync(userID);
                     return Ok(result);
                 }

@@ -139,12 +139,14 @@ namespace ApplicationCore.Services
             {
                 List<ReservationShortcutResult> result = new List<ReservationShortcutResult>();
 
-                //we want to get user based on request
-                if (request.Headers.TryGetValue("jwt", out var jwtHeader))
-                {
-                    var token = jwtSerivce.Verify(jwtHeader.ToString());
-                    Guid parsedGuid = Guid.Parse(token.Payload.Iss);
-                    User user = await _userRepository.GetUserByGuid(parsedGuid);
+                ////we want to get user based on request
+                //if (request.Headers.TryGetValue("jwt", out var jwtHeader))
+                //{
+                //    var token = jwtSerivce.Verify(jwtHeader.ToString());
+                //    Guid parsedGuid = Guid.Parse(token.Payload.Iss);
+                Guid parsedGuid = Guid.Parse("68a06b43-eb63-46c6-326a-08daa240262c");
+
+                User user = await _userRepository.GetUserByGuid(parsedGuid);
 
                     List<Reservation> reservations = await _reservationRepository.GetUserReservationListAsync(user.ID);
                     if (reservations != null)
@@ -166,7 +168,7 @@ namespace ApplicationCore.Services
                             result.Add(item);
                         }
                     }
-                }
+               // }
                 return result;
             }
             catch (Exception ex)

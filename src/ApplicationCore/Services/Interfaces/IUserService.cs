@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Common.Dto.Models;
 using Common.Dto;
 using Common.Dto.User;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ApplicationCore.Services.Interfaces
 {
@@ -15,7 +16,7 @@ namespace ApplicationCore.Services.Interfaces
     {
         Task<Tuple<UserLoginResult, User>> GetUserByEmailAndPasswordAsync(string email, string password);
 
-        Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel);
+        Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel, IWebHostEnvironment hostEnvironment);
 
         Task<User> GetUserByGuidAsync(Guid ID);
 

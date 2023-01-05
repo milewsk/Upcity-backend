@@ -15,6 +15,9 @@ using Common.Dto.Models;
 using Common.Dto;
 using Common.Dto.User;
 using Infrastructure.Helpers;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Linq;
 
 namespace ApplicationCore.Services
 {
@@ -61,7 +64,7 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel)
+        public async Task<Tuple<UserRegisterResult, UserLoginDto>> RegisterUser(CreateUserModel userModel, IWebHostEnvironment hostEnviroment)
         {
             try
             {
@@ -85,6 +88,19 @@ namespace ApplicationCore.Services
 
                     if (user.ID != null)
                     {
+                        string imagePath = "";
+                        string imageName = "";
+                        if (userModel.ImageFile != null)
+                        {
+                            imageName = new string(Path.GetFileNameWithoutExtension(userModel.ImageFile.FileName).Take(10).ToArray()).Replace(' ', '_');
+                            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(userModel.ImageFile.FileName);
+                            imagePath = Path.Combine(hostEnviroment.ContentRootPath, "Images", imageName);
+                            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                await userModel.ImageFile.CopyToAsync(fileStream);
+                            }
+
+                        }
                         var jwt = _jwtService.Generate(user.ID);
                         UserDetails newUserDetails = new UserDetails()
                         {
@@ -93,7 +109,7 @@ namespace ApplicationCore.Services
                             FirstName = userModel.FirstName,
                             Surname = userModel.Surname,
                             BirthDate = userModel.BirthDate,
-                            Image = userModel.Image,
+                            Image = imageName,
                             UserID = user.ID
                         };
                         await _userRepository.CreateUserDetailsAsync(newUserDetails);

@@ -18,6 +18,8 @@ using System.Net.Http;
 using PublicApi.Controllers;
 using Common.Dto.Models;
 using Common.Dto.User;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace upcity.Controllers
 {
@@ -29,13 +31,16 @@ namespace upcity.Controllers
         private readonly IPlaceService _placeService;
         private readonly IJwtService _jwtService;
         private readonly IAuthorizationService _authService;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public UserController(IUserService userService, IPlaceService placeService, IJwtService jwtService, IAuthorizationService authorizationService)
+        public UserController(IUserService userService, IPlaceService placeService, IJwtService jwtService,
+            IAuthorizationService authorizationService, IWebHostEnvironment hostEnvironment)
         {
             _userService = userService;
             _placeService = placeService;
             _jwtService = jwtService;
             _authService = authorizationService;
+            _hostEnvironment = hostEnvironment;
         }
 
         //move to service
@@ -85,9 +90,25 @@ namespace upcity.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] CreateUserModel userModel)
+        public async Task<IActionResult> RegisterUser([FromForm] CreateUserModel userModel)
         {
-            var result = await _userService.RegisterUser(userModel);
+            var result = await _userService.RegisterUser(userModel, _hostEnvironment);
+
+            if (result.Item2 != null)
+            {
+                return Created("created", result.Item2);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("register/Owner")]
+        public async Task<IActionResult> RegisterOwner([FromForm] CreateOwnerWithPlaceModel model)
+        {
+            var result = await _userService.RegisterUser(model, _hostEnvironment);
+
+            var resultPlace = await _placeService.CreateOwnerPlaceAsync(model, _hostEnvironment);
 
             if (result.Item2 != null)
             {
@@ -127,6 +148,7 @@ namespace upcity.Controllers
                             data.FirstName = userDetails.FirstName;
                             data.Jwt = jwt;
                             data.Claim = userClaim.Value;
+                            data.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}",Request.Scheme, Request.Host, Request.PathBase, userDetails.Image);
 
                             return Ok(data);
                         case UserLoginResult.WrongPassword:

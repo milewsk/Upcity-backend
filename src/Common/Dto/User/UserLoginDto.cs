@@ -12,5 +12,7 @@ namespace Common.Dto
         public int Claim { get; set; }
         public int LoyalityPoints { get; set; }
         public Guid? OwnerPlaceID { get; set; }
+
+        public string ImageSrc { get; set; }
     }
 }

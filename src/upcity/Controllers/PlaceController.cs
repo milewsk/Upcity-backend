@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,16 +38,25 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
 
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
-                    var token = _jwtService.Verify(jwtHeader.ToString());
+                    //var handler = new JwtSecurityTokenHandler();
+                    //JwtSecurityToken tokenn = handler.ReadJwtToken(jwtHeader);
+                    var token = _jwtService.Verify(Convert.ToString(jwtHeader));
                     Guid userID = Guid.Parse(token.Payload.Iss);
+                    //Guid userID = Guid.Parse("68a06b43-eb63-46c6-326a-08daa240262c");
                     var result = await _placeService.GetPlaceListNearLocationAsync(latitude, longitude, userID);
+
+                    foreach (var place in result)
+                    {
+                        place.Image = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, place.Image);
+                    }
+
                     return Ok(result);
                 }
 
@@ -76,6 +86,11 @@ namespace PublicApi.Controllers
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
                     var result = await _placeService.GetPlacesByCategoryAsync(latitude, longitude, tagID, userID);
+
+                    foreach (var place in result)
+                    {
+                        place.Image = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, place.Image);
+                    }
                     return Ok(result);
                 }
 
@@ -95,16 +110,23 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
 
                 if (Request.Headers.TryGetValue("jwt", out var jwtHeader))
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
+                    //  Guid userID = Guid.Parse("68a06b43-eb63-46c6-326a-08daa240262c");
                     var result = await _placeService.GetPlacesListBySearchStringAsync(searchString, latitude, longitude, userID);
+
+                    foreach (var place in result)
+                    {
+                        place.Image = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, place.Image);
+                    }
+
                     return Ok(result);
                 }
 
@@ -123,10 +145,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
                 var result = await _placeService.CreatePlaceAsync(placeModel);
 
                 return Ok(result);
@@ -144,10 +166,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.Owner))
+                {
+                    return Unauthorized();
+                }
 
                 var result = await _placeService.GetPlaceOpeningHoursAsync(placeID);
 
@@ -166,10 +188,10 @@ namespace PublicApi.Controllers
         {
             try
             {
-                //if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
-                //{
-                //    return Unauthorized();
-                //}
+                if (!await _authService.Authorize(Request, _jwtService, UserClaimsEnum.User))
+                {
+                    return Unauthorized();
+                }
 
                 var result = await _placeService.UpdateOpeningHoursAsync(modelList);
                 return Ok(result);
@@ -221,6 +243,8 @@ namespace PublicApi.Controllers
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
                     var result = await _placeService.GetPlaceDetailsAsync(Guid.Parse(placeID), userID);
+                    result.Image = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, result.Image);
+
                     return Ok(result);
                 }
 
@@ -249,6 +273,7 @@ namespace PublicApi.Controllers
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
+                    //Guid userID = Guid.Parse("68a06b43-eb63-46c6-326a-08daa240262c");
                     var result = await _placeService.AddToFavouriteAsync(Guid.Parse(placeID), userID);
                     return Ok(result);
                 }
@@ -278,7 +303,14 @@ namespace PublicApi.Controllers
                 {
                     var token = _jwtService.Verify(jwtHeader.ToString());
                     Guid userID = Guid.Parse(token.Payload.Iss);
+                    //Guid userID = Guid.Parse("68a06b43-eb63-46c6-326a-08daa240262c");
                     var result = await _placeService.GetFavouritePlaceListAsync(userID);
+
+                    foreach (var place in result)
+                    {
+                        place.Image = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, place.Image);
+                    }
+
                     return Ok(result);
                 }
                 return BadRequest();
